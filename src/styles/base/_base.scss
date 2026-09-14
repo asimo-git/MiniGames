@@ -1,0 +1,10 @@
+@use '../abstracts/variables' as tokens;
+
+body {
+  font-family: tokens.$font-family-primary;
+  font-size: tokens.$font-size-body-medium;
+  font-weight: tokens.$font-weight-regular;
+
+  background-color: tokens.$color-bg;
+  color: tokens.$color-on-bg;
+}

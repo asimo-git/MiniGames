@@ -1,0 +1,17 @@
+@use 'variables' as *;
+
+@mixin solid-border($width: 2px, $color: $color-black) {
+  border: $width solid $color;
+}
+
+@mixin button-base {
+  @include solid-border(2px, $color-black);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $button-medium-padding-y $button-medium-padding-x;
+  border-radius: $radius-small;
+  font-size: $font-size-label-large;
+  font-weight: $font-weight-bold;
+  color: $color-on-primary;
+}
