@@ -1,0 +1,20 @@
+#!/bin/sh
+
+subject=$(head -n 1 "$1")
+
+if ! printf '%s\n' "$subject" | grep -Eq '^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-z0-9-]+\))?!?: [a-z].+$'; then
+  echo ""
+  echo "ERROR: Invalid commit message."
+  echo ""
+  echo "Commit subject must follow Conventional Commits:"
+  echo "  type: description"
+  echo "  type(scope): description"
+  echo ""
+  echo "Examples:"
+  echo "  feat: add game board"
+  echo "  fix: correct score calculation"
+  echo "  refactor(game): simplify game state"
+  echo "  docs: update README"
+  echo ""
+  exit 1
+fi

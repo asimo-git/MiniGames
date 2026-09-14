@@ -1,0 +1,122 @@
+// Color tokens
+// Source: Figma Variables — Collection 1
+
+$color-white: #ffffff;
+$color-black: #111111;
+
+$color-bg: #f9f8f3;
+$color-surface: #fff9e5;
+$color-surface-low: #fffcf5;
+
+$color-on-bg: #5f5d75;
+$color-on-bg-low: #737380;
+
+$color-primary: #ffd02b;
+$color-primary-low: #fde047;
+$color-primary-high: #e5bb00;
+$color-on-primary: #242145;
+
+$color-bg-footer: #1e1b3a;
+$color-bg-footer-low: #2a264f;
+$color-bg-footer-lowest: #3c376e;
+$color-on-bg-footer: #b9b5c9;
+
+$color-secondary: #f0eeff;
+$color-tertiary: #3a2ebf;
+
+$color-price-free: #0b8a8f;
+
+$color-outline: #e5e7eb;
+$color-outline-variant: #d2d2d2;
+
+$color-text-placeholder: #969696;
+
+$color-like: #ff4b4b;
+$color-error: #b3261e;
+
+$color-avatar-random-1: #e9eef6;
+$color-avatar-random-2: #a3e2c9;
+$color-avatar-random-3: #bce3ff;
+$color-avatar-random-4: #ffc6ff;
+$color-avatar-random-5: #e8dff5;
+
+// Font sizes
+$font-size-display-large: 56px;
+$font-size-display-medium: 36px;
+$font-size-display-small: 24px;
+
+$font-size-headline-large: 32px;
+$font-size-headline-medium: 24px;
+$font-size-headline-small: 20px;
+
+$font-size-body-large: 18px;
+$font-size-body-medium: 16px;
+$font-size-body-small: 14px;
+
+$font-size-label-extra-large: 16px;
+$font-size-label-large: 14px;
+$font-size-label-medium: 12px;
+$font-size-label-small: 10px;
+
+// Font families
+$font-family-primary: 'Inter', sans-serif;
+$font-family-heading: 'Roboto', sans-serif;
+
+// Font weights
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+$font-weight-extra-bold: 800;
+
+// Base spacing scale
+$size-05: 4px;
+$size-1: 8px;
+$size-2: 16px;
+$size-3: 24px;
+$size-4: 32px;
+$size-5: 40px;
+$size-6: 48px;
+$size-7: 56px;
+$size-8: 64px;
+$size-9: 72px;
+$size-10: 80px;
+$size-11: 88px;
+$size-12: 96px;
+$size-13: 104px;
+$size-14: 112px;
+$size-15: 120px;
+
+// radius
+$radius-extra-small: 4px;
+$radius-small: 8px;
+$radius-medium: 12px;
+$radius-large: 16px;
+$radius-extra-large: 24px;
+$radius-full: 9999px;
+
+// Buttons
+// Large button
+$button-large-padding-x: 24px;
+$button-large-padding-y: 16px;
+
+// Medium button
+$button-medium-padding-x: 20px;
+$button-medium-padding-y: 10px;
+
+// Small button
+$button-small-padding-x: 16px;
+$button-small-padding-y: 8px;
+
+// Icon button
+$button-icon: 8px;
+
+// Shadow
+
+$shadow-level-1: 4px 4px $color-on-primary;
+$shadow-level-2: 6px 6px $color-on-primary;
+$shadow-level-3: 8px 8px $color-on-primary;
+
+// Breakpoints
+$breakpoint-desktop: 1920px;
+$breakpoint-tablet: 768px;
+$breakpoint-mobile: 375px;
