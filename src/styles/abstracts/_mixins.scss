@@ -15,3 +15,16 @@
   font-weight: $font-weight-bold;
   color: $color-on-primary;
 }
+
+@mixin main-container {
+  width: 100%;
+  padding: $size-2;
+
+  @media (max-width: $breakpoint-tablet) {
+    padding: $size-3 $size-5;
+  }
+
+  @media (max-width: $breakpoint-desktop) {
+    padding: $size-5 $size-15;
+  }
+}
