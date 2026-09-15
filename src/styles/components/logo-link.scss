@@ -1,0 +1,33 @@
+@use '../abstracts' as styles;
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: styles.$size-1;
+  text-decoration: none;
+
+  &__icon {
+    width: styles.$size-4;
+    height: styles.$size-4;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    margin: 0;
+    font-family: styles.$font-family-primary;
+    font-weight: styles.$font-weight-bold;
+    font-size: styles.$font-size-headline-medium;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      font-size: styles.$font-size-headline-small;
+    }
+  }
+
+  &__title--light {
+    color: styles.$color-white;
+  }
+
+  &__title--dark {
+    color: styles.$color-on-primary;
+  }
+}

@@ -1,23 +1,12 @@
 import { createElement } from '../utils/helpers';
-import logo from '../assets/icons/logo.svg';
+
 import type { Link } from '../utils/types';
+import { createLogoLink } from './logo-link';
 
 export function createHeader(): HTMLElement {
   const header = createElement('header', { className: 'header' });
-  header.append(createBrand(), createNavActions());
+  header.append(createLogoLink(), createNavActions());
   return header;
-}
-
-function createBrand(): HTMLElement {
-  const brand = createElement('a', { className: 'header__brand', attributes: { href: '/' } });
-  const icon = createElement('img', {
-    className: 'header__logo-icon',
-    attributes: { src: logo, alt: 'logo' },
-  });
-  const title = createElement('p', { className: 'header__title', textContent: 'MiniGames' });
-
-  brand.append(icon, title);
-  return brand;
 }
 
 function createNavActions(): HTMLElement {
