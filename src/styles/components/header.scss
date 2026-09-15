@@ -1,0 +1,126 @@
+@use '../abstracts' as styles;
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: styles.$size-2;
+  background-color: styles.$color-bg;
+  border-bottom: styles.$border-width solid styles.$color-on-primary;
+
+  padding: styles.$size-3 styles.$size-10;
+
+  @media (max-width: styles.$breakpoint-tablet) {
+    padding: styles.$size-2-5 styles.$size-5;
+  }
+
+  @media (max-width: styles.$breakpoint-mobile) {
+    padding: styles.$size-2;
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: styles.$size-1;
+    text-decoration: none;
+  }
+
+  &__logo-icon {
+    width: styles.$size-4;
+    height: styles.$size-4;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    margin: 0;
+    font-family: styles.$font-family-primary;
+    font-weight: styles.$font-weight-bold;
+    font-size: styles.$font-size-headline-medium;
+    color: styles.$color-on-primary;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      font-size: styles.$font-size-headline-small;
+    }
+  }
+
+  &__actions-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1 1 auto;
+    gap: styles.$size-4;
+  }
+
+  &__links {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    // Adaptability based on specific size to make managing container compression easier without an extra breakpoint.
+    flex: 0 1 409px;
+    min-width: 0;
+    gap: styles.$size-1;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      display: none;
+    }
+  }
+
+  &__link {
+    font-family: styles.$font-family-primary;
+    font-size: styles.$font-size-label-extra-large;
+    font-weight: styles.$font-weight-medium;
+    color: styles.$color-on-bg;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &--active {
+      font-weight: styles.$font-weight-bold;
+      color: styles.$color-on-primary;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
+    gap: styles.$size-2;
+  }
+
+  &__button--outline {
+    @include styles.button-base(
+      $radius: styles.$radius-small,
+      $padding-y: styles.$size-1-25,
+      $padding-x: styles.$size-2-5,
+      $font-size: styles.$font-size-body-small
+    );
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      display: none;
+    }
+  }
+
+  &__button--primary {
+    @include styles.button-accent(
+      $radius: styles.$radius-small,
+      $padding-y: styles.$size-1-25,
+      $padding-x: styles.$size-2-5,
+      $font-size: styles.$font-size-body-small
+    );
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      padding: styles.$size-1 styles.$size-2;
+    }
+  }
+
+  &__button--burger {
+    @include styles.button-base(
+      $radius: styles.$radius-small,
+      $padding-y: styles.$size-1-25,
+      $padding-x: styles.$size-1
+    );
+
+    @media (min-width: styles.$breakpoint-tablet) {
+      display: none;
+    }
+  }
+}

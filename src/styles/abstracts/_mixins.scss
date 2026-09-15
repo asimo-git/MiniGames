@@ -1,30 +1,79 @@
-@use 'variables' as *;
+@use 'variables' as tokens;
 
-@mixin solid-border($width: 2px, $color: $color-black) {
-  border: $width solid $color;
+// @mixin solid-border($width: 2px, $color: tokens.$color-black) {
+//   border: $width solid $color;
+// }
+@mixin solid-border($width: tokens.$border-width, $color: tokens.$color-black) {
+  box-shadow: inset 0 0 0 $width $color;
 }
 
-@mixin button-base {
-  @include solid-border(2px, $color-black);
+@mixin button-common(
+  $radius: tokens.$radius-large,
+  $padding-y: tokens.$button-large-padding-y,
+  $padding-x: tokens.$button-large-padding-x,
+  $font-size: tokens.$font-size-body-large
+) {
+  @include solid-border;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: $button-medium-padding-y $button-medium-padding-x;
-  border-radius: $radius-small;
-  font-size: $font-size-label-large;
-  font-weight: $font-weight-bold;
-  color: $color-on-primary;
+  padding: $padding-y $padding-x;
+  border-radius: $radius;
+  cursor: pointer;
+  font-size: $font-size;
+  font-weight: tokens.$font-weight-bold;
+  color: tokens.$color-on-primary;
+  white-space: nowrap;
+}
+
+@mixin button-base(
+  $radius: tokens.$radius-large,
+  $padding-y: tokens.$button-large-padding-y,
+  $padding-x: tokens.$button-large-padding-x,
+  $font-size: tokens.$font-size-body-large
+) {
+  @include button-common(
+    $radius: $radius,
+    $padding-y: $padding-y,
+    $padding-x: $padding-x,
+    $font-size: $font-size
+  );
+
+  &:hover {
+    background-color: tokens.$color-surface;
+  }
+}
+
+@mixin button-accent(
+  $radius: tokens.$radius-large,
+  $padding-y: tokens.$button-large-padding-y,
+  $padding-x: tokens.$button-large-padding-x,
+  $font-size: tokens.$font-size-body-large
+) {
+  @include button-common(
+    $radius: $radius,
+    $padding-y: $padding-y,
+    $padding-x: $padding-x,
+    $font-size: $font-size
+  );
+
+  background-color: tokens.$color-primary;
+
+  &:hover {
+    background-color: tokens.$color-primary-high;
+  }
 }
 
 @mixin main-container {
   width: 100%;
-  padding: $size-2;
+  padding: tokens.$size-2;
 
-  @media (max-width: $breakpoint-tablet) {
-    padding: $size-3 $size-5;
+  @media (min-width: tokens.$breakpoint-mobile) {
+    padding: tokens.$size-3 tokens.$size-5;
   }
 
-  @media (max-width: $breakpoint-desktop) {
-    padding: $size-5 $size-15;
+  @media (min-width: tokens.$breakpoint-tablet) {
+    padding: tokens.$size-5 tokens.$size-15;
   }
 }
