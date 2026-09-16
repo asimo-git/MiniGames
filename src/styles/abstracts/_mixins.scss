@@ -1,6 +1,6 @@
 @use 'variables' as tokens;
 
-@mixin solid-border($width: tokens.$border-width, $color: tokens.$color-black) {
+@mixin solid-border($width: tokens.$border-normal, $color: tokens.$color-black) {
   box-shadow: inset 0 0 0 $width $color;
 }
 
