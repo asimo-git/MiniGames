@@ -1,3 +1,4 @@
+import { createCarouselSection } from '../components/home-page/carousel-section';
 import { createHero } from '../components/home-page/hero';
 
 export function createHomePage(): HTMLElement {
@@ -5,7 +6,7 @@ export function createHomePage(): HTMLElement {
 
   const hero = createHero();
 
-  homePage.append(hero);
+  homePage.append(hero, createCarouselSection());
 
   return homePage;
 }
