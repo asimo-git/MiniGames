@@ -1,3 +1,4 @@
+import { createMainLayout } from './layouts/main-layout';
 import { createHomePage } from './pages/home-page';
 import './styles/main.scss';
 
@@ -9,7 +10,10 @@ function createRoot(): HTMLElement {
 }
 
 function renderApp(root: HTMLElement) {
-  root.append(createHomePage());
+  const page = createHomePage();
+  const layout = createMainLayout(page);
+
+  root.append(layout);
 }
 
 const root = createRoot();
