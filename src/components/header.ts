@@ -1,7 +1,9 @@
+import { ICONS } from '../utils/icons';
+import { NAV_LINKS } from '../data/nav-links';
 import { createElement } from '../utils/helpers';
-
-import type { Link } from '../utils/types';
+import { createBurgerMenu } from './burger-menu';
 import { createLogoLink } from './logo-link';
+import { createAuthButtons } from './auth-buttons';
 
 export function createHeader(): HTMLElement {
   const header = createElement('header', { className: 'header' });
@@ -17,14 +19,8 @@ function createNavActions(): HTMLElement {
 
 function createNavLinks(): HTMLElement {
   const nav = createElement('nav', { className: 'header__links' });
-  const links: Link[] = [
-    { label: 'Home', href: '#', active: true },
-    { label: 'Library', href: '#' },
-    { label: 'Tournaments', href: '#' },
-    { label: 'Community', href: '#' },
-  ];
 
-  for (const { label, href, active } of links) {
+  for (const { label, href, active } of NAV_LINKS) {
     const link = createElement('a', {
       className: `header__link${active ? ' header__link--active' : ''}`,
       textContent: label,
@@ -38,26 +34,15 @@ function createNavLinks(): HTMLElement {
 
 function createButtons(): HTMLElement {
   const wrapper = createElement('div', { className: 'header__buttons' });
+  const { menu, open } = createBurgerMenu();
 
-  const logIn = createElement('button', {
-    className: 'header__button header__button--outline',
-    textContent: 'Log In',
-    attributes: { type: 'button' },
-  });
-
-  const signUp = createElement('button', {
-    className: 'header__button header__button--primary',
-    textContent: 'Sign Up',
-    attributes: { type: 'button' },
-  });
-
-  const burgerMenu = createElement('button', {
+  const burgerButton = createElement('button', {
     className: 'header__button header__button--burger',
     attributes: { type: 'button', 'aria-label': 'Open menu' },
   });
+  burgerButton.innerHTML = ICONS.burger;
+  burgerButton.addEventListener('click', () => open());
 
-  burgerMenu.innerHTML = ` <svg width="16" height="10" viewBox="0 0 16 10" aria-hidden="true" > <line x1="0" y1="1" x2="16" y2="1" /> <line x1="0" y1="5" x2="16" y2="5" /> <line x1="0" y1="9" x2="16" y2="9" /> </svg> `;
-
-  wrapper.append(logIn, signUp, burgerMenu);
+  wrapper.append(createAuthButtons('header__button'), burgerButton, menu);
   return wrapper;
 }

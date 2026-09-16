@@ -1,0 +1,104 @@
+@use '../abstracts' as styles;
+
+.header__mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+
+  display: flex;
+  flex-direction: column;
+  gap: styles.$size-4;
+
+  width: 100%;
+  height: 100dvh;
+  padding: styles.$size-3;
+
+  background-color: styles.$color-bg-footer;
+
+  transform: translateX(100%);
+  visibility: hidden;
+  transition:
+    transform 0.5s ease,
+    visibility 0s linear 0.5s;
+
+  &--open {
+    transform: translateX(0);
+    visibility: visible;
+    transition:
+      transform 0.5s ease,
+      visibility 0s linear 0s;
+  }
+
+  &-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  &-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: styles.$size-4;
+    height: styles.$size-4;
+    background-color: styles.$color-bg-footer-low;
+    border: none;
+    border-radius: styles.$radius-small;
+    color: styles.$color-white;
+    cursor: pointer;
+
+    svg line {
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+  }
+
+  &-links {
+    display: flex;
+    flex-direction: column;
+    gap: styles.$size-3;
+    flex: 1 0 0;
+  }
+
+  &-link {
+    font-weight: styles.$font-weight-medium;
+    font-size: styles.$font-size-body-large;
+    color: styles.$color-on-bg-footer;
+    text-decoration: none;
+
+    &--active {
+      font-weight: styles.$font-weight-bold;
+      color: styles.$color-primary;
+    }
+  }
+
+  &-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: styles.$size-2;
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  &-button {
+    width: 100%;
+
+    &--outline {
+      @include styles.button-dark(
+        $radius: styles.$radius-small,
+        $padding-y: styles.$button-medium-padding-y,
+        $font-size: styles.$font-size-body-small
+      );
+    }
+
+    &--primary {
+      @include styles.button-accent(
+        $radius: styles.$radius-small,
+        $padding-y: styles.$button-medium-padding-y,
+        $font-size: styles.$font-size-body-small
+      );
+    }
+  }
+}

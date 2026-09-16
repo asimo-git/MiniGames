@@ -13,8 +13,6 @@
   $padding-x: tokens.$button-large-padding-x,
   $font-size: tokens.$font-size-body-large
 ) {
-  @include solid-border;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -39,6 +37,7 @@
     $padding-x: $padding-x,
     $font-size: $font-size
   );
+  @include solid-border;
 
   &:hover {
     background-color: tokens.$color-surface;
@@ -57,11 +56,32 @@
     $padding-x: $padding-x,
     $font-size: $font-size
   );
+  @include solid-border;
 
   background-color: tokens.$color-primary;
 
   &:hover {
     background-color: tokens.$color-primary-high;
+  }
+}
+
+@mixin button-dark(
+  $radius: tokens.$radius-large,
+  $padding-y: tokens.$button-large-padding-y,
+  $padding-x: tokens.$button-large-padding-x,
+  $font-size: tokens.$font-size-body-large
+) {
+  @include button-common(
+    $radius: $radius,
+    $padding-y: $padding-y,
+    $padding-x: $padding-x,
+    $font-size: $font-size
+  );
+  @include solid-border($color: tokens.$color-white);
+  color: tokens.$color-white;
+
+  &:hover {
+    @include solid-border($color: tokens.$color-primary);
   }
 }
 
