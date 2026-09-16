@@ -1,10 +1,7 @@
 @use '../abstracts' as styles;
 
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: styles.$size-2;
+  @include styles.flex($justify: space-between, $gap: styles.$size-2);
   background-color: styles.$color-bg;
   border-bottom: styles.$border-width solid styles.$color-on-primary;
   position: relative;
@@ -20,9 +17,7 @@
   }
 
   &__brand {
-    display: flex;
-    align-items: center;
-    gap: styles.$size-1;
+    @include styles.flex($gap: styles.$size-1);
     text-decoration: none;
   }
 
@@ -45,22 +40,15 @@
   }
 
   &__actions-bar {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+    @include styles.flex($justify: flex-end, $gap: styles.$size-4);
     flex: 1 1 auto;
-    gap: styles.$size-4;
   }
 
   &__links {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    @include styles.flex($justify: space-between, $gap: styles.$size-1, $wrap: wrap);
     // Adaptability based on specific size to make managing container compression easier without an extra breakpoint.
     flex: 0 1 409px;
     min-width: 0;
-    gap: styles.$size-1;
 
     @media (max-width: styles.$breakpoint-tablet) {
       display: none;
@@ -82,9 +70,7 @@
   }
 
   &__buttons {
-    display: flex;
-    align-items: center;
-    gap: styles.$size-2;
+    @include styles.flex($gap: styles.$size-2);
   }
 
   &__button--outline {

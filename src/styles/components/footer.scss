@@ -1,9 +1,7 @@
 @use '../abstracts' as styles;
 
 .footer {
-  display: flex;
-  flex-direction: column;
-  gap: styles.$size-8;
+  @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-8);
   background-color: styles.$color-bg-footer;
   padding: styles.$size-5 styles.$size-15;
 
@@ -19,10 +17,7 @@
   }
 
   &__top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: styles.$size-6;
+    @include styles.flex($align: flex-start, $justify: space-between, $gap: styles.$size-6);
     width: 100%;
 
     @media (max-width: styles.$breakpoint-tablet) {
@@ -32,9 +27,7 @@
   }
 
   &__promo-col {
-    display: flex;
-    flex-direction: column;
-    gap: styles.$size-3;
+    @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-3);
     width: 400px;
 
     @media (max-width: styles.$breakpoint-tablet) {
@@ -49,9 +42,7 @@
   }
 
   &__columns {
-    display: flex;
-    gap: styles.$size-10;
-    flex-wrap: wrap;
+    @include styles.flex($align: stretch, $gap: styles.$size-10, $wrap: wrap);
 
     @media (max-width: styles.$breakpoint-tablet) {
       gap: styles.$size-5;
@@ -60,9 +51,7 @@
   }
 
   &__column {
-    display: flex;
-    flex-direction: column;
-    gap: styles.$size-2;
+    @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-2);
     white-space: nowrap;
   }
 
@@ -82,14 +71,11 @@
   }
 
   &__socials {
-    display: flex;
-    gap: styles.$size-2;
+    @include styles.flex($align: stretch, $gap: styles.$size-2);
   }
 
   &__social {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include styles.flex($justify: center);
     width: styles.$size-5;
     height: styles.$size-5;
     border-radius: styles.$radius-full;
@@ -117,11 +103,7 @@
   }
 
   &__bottom {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: styles.$size-2;
+    @include styles.flex($justify: space-between, $gap: styles.$size-2, $wrap: wrap);
     width: 100%;
     border-top: 1px solid styles.$color-bg-footer-low;
     padding-top: styles.$size-2;
@@ -140,16 +122,12 @@
   }
 
   &__badge-link {
-    display: flex;
-    align-items: center;
-    gap: styles.$size-1;
+    @include styles.flex($gap: styles.$size-1);
     text-decoration: none;
   }
 
   &__badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include styles.flex($justify: center);
     width: styles.$size-3;
     height: styles.$size-3;
     border-radius: styles.$radius-medium;
