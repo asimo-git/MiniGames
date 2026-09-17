@@ -1,0 +1,204 @@
+@use '../../abstracts' as styles;
+
+.carousel {
+  @include styles.flex($direction: column, $align: flex-start, $gap: styles.$size-2);
+
+  --main-card-width: #{styles.$card-width-small};
+
+  @media (min-width: styles.$breakpoint-tablet) {
+    gap: styles.$size-3;
+    --main-card-width: #{styles.$card-width-medium};
+  }
+
+  @media (min-width: styles.$breakpoint-laptop) {
+    gap: styles.$size-5;
+    --main-card-width: #{styles.$card-width-big};
+  }
+  &__header {
+    @include styles.flex($justify: space-between);
+    width: 100%;
+  }
+
+  &__header-title {
+    @include styles.flex($gap: styles.$size-1);
+  }
+
+  &__accent {
+    width: styles.$size-1;
+    height: styles.$size-4;
+    background-color: styles.$color-primary;
+    border: styles.$border-thin solid styles.$color-on-primary;
+    border-radius: styles.$radius-extra-small;
+
+    @media (max-width: styles.$breakpoint-laptop) {
+      height: styles.$size-3;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-family: styles.$font-family-primary;
+    font-weight: styles.$font-weight-bold;
+    font-size: styles.$font-size-headline-large;
+    color: styles.$color-on-primary;
+    white-space: nowrap;
+
+    @media (max-width: styles.$breakpoint-laptop) {
+      font-size: styles.$font-size-headline-medium;
+    }
+  }
+
+  &__nav {
+    @include styles.flex($gap: styles.$size-2);
+  }
+
+  &__nav-button {
+    @include styles.flex($justify: center);
+    @include styles.solid-border(styles.$border-normal, styles.$color-on-primary);
+
+    width: styles.$size-6;
+    height: styles.$size-6;
+    border-radius: styles.$radius-full;
+    background-color: styles.$color-white;
+    cursor: not-allowed;
+
+    &--next {
+      background-color: styles.$color-primary;
+    }
+
+    @media (max-width: styles.$breakpoint-laptop) {
+      width: styles.$size-5;
+      height: styles.$size-5;
+    }
+  }
+
+  &__nav-icon {
+    width: styles.$size-3;
+    height: styles.$size-3;
+
+    @media (max-width: styles.$breakpoint-laptop) {
+      width: styles.$size-2-25;
+      height: styles.$size-2-25;
+    }
+  }
+
+  &__viewport {
+    width: 100%;
+    overflow-y: hidden;
+
+    // we compensate for the shadow clipping
+    padding-bottom: styles.$border-thick;
+    margin-bottom: calc(-1 * #{styles.$border-thick});
+
+    // snapping the active card to the center of the viewport
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__track {
+    @include styles.flex($gap: styles.$size-2);
+    width: max-content;
+    padding-inline: calc(50% - var(--main-card-width) / 2);
+  }
+
+  &__card {
+    container-type: inline-size;
+    flex-shrink: 0;
+    height: styles.$card-height-small;
+    overflow: hidden;
+    background-color: styles.$color-white;
+    border: styles.$border-medium solid styles.$color-on-primary;
+    border-radius: styles.$radius-large;
+    box-shadow: styles.$shadow-level-1;
+
+    scroll-snap-align: center;
+
+    @media (min-width: styles.$breakpoint-tablet) {
+      height: styles.$card-height-medium;
+    }
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      height: styles.$card-height-big;
+      border-radius: styles.$radius-extra-large;
+    }
+
+    &--main {
+      width: var(--main-card-width);
+    }
+
+    &--secondary {
+      width: styles.$card-width-secondary;
+
+      @media (max-width: styles.$breakpoint-laptop) {
+        width: styles.$card-width-small;
+      }
+    }
+  }
+
+  &__card-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__card-overlay {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: styles.$size-1;
+    padding: styles.$size-2;
+    // one-off layout, not used anywhere else
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.4) 17.3%,
+      rgba(0, 0, 0, 0.85) 46.2%
+    );
+  }
+
+  &__card-title {
+    margin: 0;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-family: styles.$font-family-primary;
+    font-weight: styles.$font-weight-bold;
+    font-size: styles.$font-size-body-large;
+    color: styles.$color-white;
+  }
+
+  &__card-meta {
+    @include styles.flex($justify: space-between);
+    width: 100%;
+  }
+
+  &__card-meta-item {
+    @include styles.flex($gap: styles.$size-05);
+  }
+
+  &__card-meta-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  &__card-meta-text {
+    font-family: styles.$font-family-primary;
+    font-weight: styles.$font-weight-bold;
+    font-size: styles.$font-size-body-medium;
+    color: styles.$color-white;
+    white-space: nowrap;
+  }
+}

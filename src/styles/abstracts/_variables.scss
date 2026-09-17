@@ -71,6 +71,7 @@ $size-05: 4px;
 $size-1: 8px;
 $size-1-25: 10px;
 $size-2: 16px;
+$size-2-25: 18px;
 $size-2-5: 20px;
 $size-3: 24px;
 $size-4: 32px;
@@ -118,9 +119,21 @@ $shadow-level-3: 8px 8px $color-on-primary;
 
 // Breakpoints
 $breakpoint-desktop: 1920px;
+$breakpoint-laptop: 1100px;
 $breakpoint-tablet: 768px;
 $breakpoint-mobile: 375px;
 
 // Border
+$border-thin: 1.5px;
 $border-normal: 2px;
+$border-medium: 2.5px;
 $border-thick: 3px;
+
+// Cards
+$card-width-big: 816px;
+$card-width-medium: 448px;
+$card-width-small: 218px;
+$card-width-secondary: 288px;
+$card-height-big: 384px;
+$card-height-medium: 280px;
+$card-height-small: 200px;

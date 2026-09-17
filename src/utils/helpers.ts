@@ -6,13 +6,13 @@ export function createElement<K extends keyof HTMLElementTagNameMap>(
 ): HTMLElementTagNameMap[K] {
   const element = document.createElement(tagName);
 
-  const { className, textContent, attributes } = options;
+  const { className, textContent, attributes, children } = options;
 
   if (className) {
     element.className = className;
   }
 
-  if (textContent) {
+  if (textContent !== undefined) {
     element.textContent = textContent;
   }
 
@@ -20,6 +20,10 @@ export function createElement<K extends keyof HTMLElementTagNameMap>(
     for (const [name, value] of Object.entries(attributes)) {
       element.setAttribute(name, value);
     }
+  }
+
+  if (children) {
+    element.append(...children);
   }
 
   return element;

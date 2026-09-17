@@ -82,19 +82,6 @@
   }
 }
 
-@mixin main-container {
-  width: 100%;
-  padding: tokens.$size-2;
-
-  @media (min-width: tokens.$breakpoint-mobile) {
-    padding: tokens.$size-3 tokens.$size-5;
-  }
-
-  @media (min-width: tokens.$breakpoint-tablet) {
-    padding: tokens.$size-5 tokens.$size-15;
-  }
-}
-
 @mixin flex($direction: row, $align: center, $justify: flex-start, $gap: null, $wrap: null) {
   display: flex;
   flex-direction: $direction;
