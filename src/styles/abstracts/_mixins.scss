@@ -97,14 +97,30 @@
   }
 }
 
-@mixin responsive-padding {
-  padding: tokens.$padding-small;
+@mixin responsive-padding(
+  $mobile: tokens.$padding-small,
+  $tablet: tokens.$padding-medium,
+  $laptop: tokens.$padding-large
+) {
+  padding: $mobile;
 
   @media (min-width: tokens.$breakpoint-tablet) {
-    padding: tokens.$padding-medium;
+    padding: $tablet;
   }
 
   @media (min-width: tokens.$breakpoint-laptop) {
-    padding: tokens.$padding-large;
+    padding: $laptop;
+  }
+}
+
+@mixin responsive-font-size($mobile, $tablet, $laptop) {
+  font-size: $mobile;
+
+  @media (min-width: tokens.$breakpoint-tablet) {
+    font-size: $tablet;
+  }
+
+  @media (min-width: tokens.$breakpoint-laptop) {
+    font-size: $laptop;
   }
 }

@@ -1,0 +1,124 @@
+@use '../../abstracts' as styles;
+
+.developers {
+  @include styles.flex($direction: column, $gap: styles.$size-2);
+  @include styles.responsive-padding;
+
+  @media (min-width: styles.$breakpoint-tablet) {
+    gap: styles.$size-3;
+  }
+
+  @media (min-width: styles.$breakpoint-laptop) {
+    flex-direction: row;
+    gap: styles.$size-5;
+  }
+
+  //   absolute values ​​for the image only
+  &__illustration {
+    width: 100%;
+    height: 227px;
+    object-fit: cover;
+    border-radius: styles.$radius-extra-large;
+
+    @media (min-width: styles.$breakpoint-tablet) {
+      height: 300px;
+    }
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      flex: 0 1 680px;
+      min-width: 0;
+      width: 680px;
+      height: auto;
+      align-self: stretch;
+    }
+  }
+
+  &__card {
+    @include styles.flex($direction: column, $align: flex-start, $gap: styles.$size-3);
+    @include styles.responsive-padding(
+      $mobile: styles.$size-3,
+      $tablet: styles.$size-4,
+      $laptop: styles.$size-5
+    );
+
+    flex: 1 1 auto;
+    background-color: styles.$color-white;
+    border: styles.$border-normal solid styles.$color-on-primary;
+    border-radius: styles.$radius-extra-large;
+    box-shadow: styles.$shadow-soft;
+  }
+
+  &__title {
+    font-size: styles.$font-size-headline-medium;
+    font-weight: styles.$font-weight-bold;
+    line-height: 1.2;
+    color: styles.$color-on-primary;
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      font-size: styles.$font-size-headline-large;
+    }
+  }
+
+  &__description {
+    @include styles.responsive-font-size(
+      styles.$font-size-label-medium,
+      styles.$font-size-body-small,
+      styles.$font-size-body-large
+    );
+
+    max-width: 878px;
+    font-weight: styles.$font-weight-regular;
+    line-height: 1.5;
+  }
+
+  &__button {
+    @include styles.button-accent(
+      $radius: styles.$radius-medium,
+      $padding-y: styles.$button-small-padding-y,
+      $padding-x: styles.$button-small-padding-x
+    );
+
+    @include styles.responsive-padding(
+      $mobile: styles.$button-small-padding-y styles.$button-small-padding-x,
+      $tablet: styles.$button-medium-padding-y styles.$button-medium-padding-x,
+      $laptop: styles.$button-large-padding-y styles.$button-large-padding-x
+    );
+
+    gap: styles.$size-1;
+  }
+
+  &__icon {
+    width: styles.$size-2;
+    height: styles.$size-2;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      width: styles.$size-3;
+      height: styles.$size-3;
+    }
+  }
+
+  &__button-label {
+    @include styles.responsive-font-size(
+      styles.$font-size-label-medium,
+      styles.$font-size-label-large,
+      styles.$font-size-body-large
+    );
+
+    font-family: styles.$font-family-heading;
+  }
+
+  &__contact {
+    @include styles.responsive-font-size(
+      styles.$font-size-label-medium,
+      styles.$font-size-label-medium,
+      styles.$font-size-body-small
+    );
+
+    color: styles.$color-on-bg-low;
+  }
+}
