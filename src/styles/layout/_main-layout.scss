@@ -12,16 +12,3 @@
     flex: 1;
   }
 }
-
-.main-container {
-  width: 100%;
-  padding: styles.$size-2;
-
-  @media (min-width: styles.$breakpoint-mobile) {
-    padding: styles.$size-3 styles.$size-5;
-  }
-
-  @media (min-width: styles.$breakpoint-laptop) {
-    padding: styles.$size-5 styles.$size-15;
-  }
-}

@@ -1,0 +1,29 @@
+@use '../abstracts' as styles;
+
+.subtitle {
+  @include styles.flex($direction: row, $align: center, $gap: styles.$size-1);
+
+  &__accent {
+    flex: none;
+    width: styles.$size-1;
+    height: styles.$size-4;
+    background-color: styles.$color-primary;
+    border: styles.$border-thin solid styles.$color-on-primary;
+    border-radius: styles.$radius-extra-small;
+
+    @media (max-width: styles.$breakpoint-laptop) {
+      height: styles.$size-3;
+    }
+  }
+
+  &__title {
+    font-size: styles.$font-size-headline-large;
+    font-weight: styles.$font-weight-bold;
+    line-height: 1.2;
+    color: styles.$color-on-primary;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      font-size: styles.$font-size-headline-medium;
+    }
+  }
+}

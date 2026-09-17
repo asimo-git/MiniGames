@@ -2,6 +2,7 @@
 
 .carousel {
   @include styles.flex($direction: column, $align: flex-start, $gap: styles.$size-2);
+  @include styles.responsive-padding;
 
   --main-card-width: #{styles.$card-width-small};
 
@@ -14,38 +15,10 @@
     gap: styles.$size-5;
     --main-card-width: #{styles.$card-width-big};
   }
+
   &__header {
     @include styles.flex($justify: space-between);
     width: 100%;
-  }
-
-  &__header-title {
-    @include styles.flex($gap: styles.$size-1);
-  }
-
-  &__accent {
-    width: styles.$size-1;
-    height: styles.$size-4;
-    background-color: styles.$color-primary;
-    border: styles.$border-thin solid styles.$color-on-primary;
-    border-radius: styles.$radius-extra-small;
-
-    @media (max-width: styles.$breakpoint-laptop) {
-      height: styles.$size-3;
-    }
-  }
-
-  &__title {
-    margin: 0;
-    font-family: styles.$font-family-primary;
-    font-weight: styles.$font-weight-bold;
-    font-size: styles.$font-size-headline-large;
-    color: styles.$color-on-primary;
-    white-space: nowrap;
-
-    @media (max-width: styles.$breakpoint-laptop) {
-      font-size: styles.$font-size-headline-medium;
-    }
   }
 
   &__nav {

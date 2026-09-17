@@ -4,6 +4,7 @@ import arrowBackIcon from '../../assets/icons/arrow_back.svg';
 import arrowForwardIcon from '../../assets/icons/arrow_forward.svg';
 import gamesData from '../../data/all-games-seed.json';
 import { createElement } from '../../utils/helpers';
+import { createSubtitle } from '../subtitle';
 
 type CardVariant = 'main' | 'secondary';
 
@@ -33,18 +34,7 @@ export function createCarouselSection(): HTMLElement {
 }
 
 function createCarouselHeader(): HTMLElement {
-  const titleGroup = createElement('div', {
-    className: 'carousel__header-title',
-    children: [
-      createElement('span', {
-        className: 'carousel__accent',
-      }),
-      createElement('h2', {
-        className: 'carousel__title',
-        textContent: 'New Games',
-      }),
-    ],
-  });
+  const titleGroup = createSubtitle('New Games');
 
   const nav = createElement('div', {
     className: 'carousel__nav',

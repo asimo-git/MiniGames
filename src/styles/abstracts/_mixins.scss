@@ -96,3 +96,15 @@
     flex-wrap: $wrap;
   }
 }
+
+@mixin responsive-padding {
+  padding: tokens.$padding-small;
+
+  @media (min-width: tokens.$breakpoint-tablet) {
+    padding: tokens.$padding-medium;
+  }
+
+  @media (min-width: tokens.$breakpoint-laptop) {
+    padding: tokens.$padding-large;
+  }
+}
