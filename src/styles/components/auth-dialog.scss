@@ -1,0 +1,278 @@
+@use '../abstracts' as styles;
+
+html:has(.auth-dialog-backdrop--visible) {
+  overflow: hidden;
+}
+
+.auth-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  align-items: safe center;
+  justify-content: center;
+  padding: styles.$size-2;
+  background-color: rgb(17 17 17 / 55%);
+  opacity: 0;
+  transition: opacity 500ms ease;
+
+  &--visible {
+    opacity: 1;
+
+    .auth-dialog {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+.auth-dialog {
+  @include styles.flex(column, flex-start, flex-start, styles.$size-3);
+
+  position: relative;
+  box-sizing: border-box;
+  width: 420px;
+  max-width: calc(100vw - #{styles.$size-4});
+  margin-block: auto;
+  padding: styles.$size-4;
+  background-color: styles.$color-bg;
+  border-radius: styles.$radius-extra-large;
+  box-shadow:
+    inset 0 0 0 styles.$border-thick styles.$color-on-primary,
+    8px 8px 0 styles.$color-black;
+
+  opacity: 0;
+  transform: scale(0.94) translateY(12px);
+  transition:
+    opacity 500ms ease,
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  &__tabs-slot {
+    width: 100%;
+  }
+
+  &__tabs {
+    @include styles.flex(row, flex-start, flex-start);
+    height: styles.$size-6;
+    overflow: hidden;
+    background-color: styles.$color-white;
+    border: styles.$border-medium solid styles.$color-on-primary;
+    border-radius: styles.$radius-medium;
+  }
+
+  &__tab {
+    flex: 1 1 0;
+    height: 100%;
+    border: none;
+    background: transparent;
+    border-radius: styles.$radius-small;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-bg;
+    cursor: pointer;
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
+    @include styles.flex(row, center, center);
+
+    &--active {
+      background-color: styles.$color-bg-footer-low;
+      color: styles.$color-white;
+    }
+  }
+
+  &__panel {
+    @include styles.flex(column, flex-start, flex-start, styles.$size-3);
+    width: 100%;
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 500ms ease,
+      transform 500ms ease;
+
+    &--leaving {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
+    &--entering {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+
+  &__header {
+    @include styles.flex(column, flex-start, flex-start, styles.$size-1);
+    width: 100%;
+  }
+
+  &__title {
+    margin: 0;
+    font-family: styles.$font-family-primary;
+    font-size: styles.$font-size-headline-medium;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-family: styles.$font-family-primary;
+    font-size: styles.$font-size-body-small;
+    color: styles.$color-on-bg;
+  }
+
+  &__form {
+    width: 100%;
+    @include styles.flex(column, flex-start, flex-start, styles.$size-2);
+  }
+
+  &__field {
+    width: 100%;
+    @include styles.flex(column, flex-start, flex-start, styles.$size-1);
+  }
+
+  &__label {
+    font-family: styles.$font-family-primary;
+    font-size: styles.$font-size-body-small;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+  }
+
+  &__input-wrapper {
+    box-sizing: border-box;
+    width: 100%;
+    height: styles.$size-6;
+    padding: 0 styles.$size-2;
+    background-color: styles.$color-white;
+    border: styles.$border-normal solid styles.$color-black;
+    border-radius: styles.$radius-small;
+    @include styles.flex(row, center, flex-start, styles.$size-2);
+
+    &:has(.auth-dialog__input:not(:placeholder-shown)) {
+      background-color: styles.$color-white;
+      border-color: styles.$color-black;
+    }
+
+    &:has(.auth-dialog__input:focus) {
+      background-color: styles.$color-surface-low;
+      border-color: styles.$color-on-primary;
+    }
+  }
+
+  &__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: styles.$font-family-primary;
+    font-size: styles.$font-size-body-small;
+    font-weight: styles.$font-weight-medium;
+    color: styles.$color-on-primary;
+
+    &::placeholder {
+      color: styles.$color-on-bg;
+    }
+  }
+
+  &__icon {
+    width: styles.$size-2;
+    height: styles.$size-2;
+  }
+
+  &__forgot-password-link {
+    align-self: flex-end;
+    font-weight: styles.$font-weight-bold;
+    font-size: styles.$font-size-body-small;
+    text-decoration-line: underline;
+    color: styles.$color-on-primary;
+    flex: none;
+  }
+
+  &__visibility-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    order: 2;
+    width: styles.$size-3;
+    height: styles.$size-3;
+    cursor: pointer;
+  }
+
+  &__visibility-icon {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__actions {
+    width: 100%;
+    @include styles.flex(column, flex-start, flex-start, styles.$size-2);
+  }
+
+  &__action {
+    @include styles.button-accent($radius: styles.$radius-medium);
+    font-size: styles.$font-size-body-medium;
+
+    width: 100%;
+    box-shadow:
+      inset 0 0 0 styles.$border-medium styles.$color-on-primary,
+      0 4px 0 styles.$color-on-primary;
+  }
+
+  &__divider {
+    @include styles.flex($gap: styles.$size-2);
+    width: 100%;
+  }
+
+  &__divider-line {
+    flex: 1 1 auto;
+    height: 0;
+    border-top: styles.$border-thin solid styles.$color-on-primary;
+    opacity: 0.2;
+  }
+
+  &__divider-label {
+    font-family: styles.$font-family-primary;
+    font-size: styles.$font-size-label-medium;
+    font-weight: styles.$font-weight-bold;
+    text-transform: uppercase;
+    color: styles.$color-on-bg;
+  }
+
+  &__google-button {
+    @include styles.button-base($radius: styles.$radius-medium, $padding-y: styles.$size-1-5);
+
+    width: 100%;
+    gap: styles.$size-2;
+    font-size: styles.$font-size-body-medium;
+    background-color: styles.$color-white;
+  }
+
+  &__google-icon {
+    display: inline-block;
+    width: styles.$size-3;
+    height: styles.$size-3;
+    border-radius: styles.$radius-extra-small;
+  }
+
+  &__footer {
+    width: 100%;
+    font-family: styles.$font-family-primary;
+    font-size: styles.$font-size-body-small;
+    color: styles.$color-on-bg;
+    @include styles.flex(row, flex-start, center, styles.$size-05);
+  }
+
+  &__footer-link {
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-family: styles.$font-family-primary;
+    font-size: styles.$font-size-body-small;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
