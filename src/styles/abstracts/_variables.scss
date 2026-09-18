@@ -71,6 +71,7 @@ $size-05: 4px;
 $size-075: 6px;
 $size-1: 8px;
 $size-1-25: 10px;
+$size-1-5: 12px;
 $size-2: 16px;
 $size-2-25: 18px;
 $size-2-5: 20px;
@@ -126,7 +127,7 @@ $shadow-soft:
 $breakpoint-desktop: 1920px;
 $breakpoint-laptop: 1100px;
 $breakpoint-tablet: 768px;
-$breakpoint-mobile: 375px;
+$breakpoint-mobile: 376px;
 
 // Border
 $border-thin: 1.5px;
@@ -140,8 +141,8 @@ $card-width-medium: 448px;
 $card-width-small: 218px;
 $card-width-secondary: 288px;
 $card-height-big: 384px;
-$card-height-medium: 280px;
-$card-height-small: 200px;
+$card-height-medium: 285px;
+$card-height-small: 203px;
 
 $padding-large: $size-5 $size-15;
 $padding-medium: $size-3 $size-5;

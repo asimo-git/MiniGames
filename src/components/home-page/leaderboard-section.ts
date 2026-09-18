@@ -28,7 +28,17 @@ const HEADER_COLUMNS: { id: ColumnId; label: string; shortLabel?: string }[] = [
 export function createLeaderboardSection(): HTMLElement {
   return createElement('section', {
     className: 'top-players',
-    children: [createSubtitle('Top Players This Week'), createTable()],
+    children: [
+      createElement('div', {
+        className: 'top-players__subtitle-full',
+        children: [createSubtitle('Top Players This Week')],
+      }),
+      createElement('div', {
+        className: 'top-players__subtitle-short',
+        children: [createSubtitle('Top Players')],
+      }),
+      createTable(),
+    ],
   });
 }
 

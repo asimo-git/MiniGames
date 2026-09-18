@@ -18,8 +18,17 @@ function createHeroCard(): HTMLElement {
 
   const description = createElement('p', {
     className: 'hero__text',
-    textContent:
-      'Discover hundreds of curated casual mini-games. Play instantly in your browser — puzzle, match 3, farm, and board classics.',
+    children: [
+      createElement('span', {
+        className: 'hero__text-full',
+        textContent:
+          'Discover hundreds of curated casual mini-games. Play instantly in your browser — puzzle, match 3, farm, and board classics.',
+      }),
+      createElement('span', {
+        className: 'hero__text-short',
+        textContent: 'Discover hundreds of curated casual mini-games right in your browser.',
+      }),
+    ],
   });
 
   card.append(title, description, createHeroButton());

@@ -30,7 +30,7 @@ function createCtaCard(): HTMLElement {
       createElement('p', {
         className: 'developers__description',
         textContent:
-          "Want to see your game on MiniGames? We're always looking for fun, engaging mini games to add to our platform. Submit your game and reach thousands of players!",
+          "Want to see your game on MiniGames? We're always looking for fun,\nengaging mini games to add to our platform. Submit your game\nand reach thousands of players!",
       }),
       createCtaButton(),
       createElement('p', {

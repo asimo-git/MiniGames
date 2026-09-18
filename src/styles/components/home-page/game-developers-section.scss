@@ -40,12 +40,18 @@
       $tablet: styles.$size-4,
       $laptop: styles.$size-5
     );
+    @include styles.solid-border;
 
     flex: 1 1 auto;
     background-color: styles.$color-white;
-    border: styles.$border-normal solid styles.$color-on-primary;
+    // border: styles.$border-normal solid styles.$color-on-primary;
     border-radius: styles.$radius-extra-large;
     box-shadow: styles.$shadow-soft;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      align-self: stretch;
+      gap: styles.$size-2;
+    }
   }
 
   &__title {
@@ -65,8 +71,7 @@
       styles.$font-size-body-small,
       styles.$font-size-body-large
     );
-
-    max-width: 878px;
+    white-space: pre-line;
     font-weight: styles.$font-weight-regular;
     line-height: 1.5;
   }
@@ -109,7 +114,13 @@
       styles.$font-size-body-large
     );
 
-    font-family: styles.$font-family-heading;
+    @media (min-width: styles.$breakpoint-laptop) {
+      font-family: styles.$font-family-heading;
+    }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      font-family: styles.$font-family-heading;
+    }
   }
 
   &__contact {
