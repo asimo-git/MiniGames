@@ -1,0 +1,41 @@
+@use '../abstracts' as styles;
+
+html:has(.auth-dialog-backdrop--visible) {
+  overflow: hidden;
+}
+
+.auth-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  z-index: 100;
+  display: flex;
+  align-items: safe center;
+  justify-content: center;
+  padding: styles.$size-2;
+  background-color: rgb(17 17 17 / 55%);
+  opacity: 0;
+
+  &--visible {
+    opacity: 1;
+
+    .auth-dialog {
+      opacity: 1;
+    }
+  }
+}
+
+.auth-dialog {
+  @include styles.flex(column, flex-start, flex-start, styles.$size-3);
+
+  position: relative;
+  box-sizing: border-box;
+  width: 420px;
+  max-width: calc(100vw - #{styles.$size-4});
+  margin-block: auto;
+  padding: styles.$size-4;
+  background-color: styles.$color-bg;
+  border-radius: styles.$radius-extra-large;
+
+  opacity: 0;
+}
