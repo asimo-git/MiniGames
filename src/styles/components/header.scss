@@ -3,7 +3,8 @@
 .header {
   @include styles.flex($justify: space-between, $gap: styles.$size-2);
   background-color: styles.$color-bg;
-  border-bottom: styles.$border-width solid styles.$color-on-primary;
+  box-shadow: inset 0 -#{styles.$border-normal} 0 0 styles.$color-on-primary;
+  // border-bottom: styles.$border-normal solid styles.$color-on-primary;
   position: relative;
 
   padding: styles.$size-3 styles.$size-10;
@@ -105,9 +106,10 @@
       $padding-y: styles.$size-1-25,
       $padding-x: styles.$size-1
     );
+    display: none;
 
-    @media (min-width: styles.$breakpoint-tablet) {
-      display: none;
+    @media (max-width: styles.$breakpoint-tablet) {
+      display: inline-flex;
     }
   }
 }

@@ -6,13 +6,13 @@ export function createElement<K extends keyof HTMLElementTagNameMap>(
 ): HTMLElementTagNameMap[K] {
   const element = document.createElement(tagName);
 
-  const { className, textContent, attributes } = options;
+  const { className, textContent, attributes, children } = options;
 
   if (className) {
     element.className = className;
   }
 
-  if (textContent) {
+  if (textContent !== undefined) {
     element.textContent = textContent;
   }
 
@@ -22,5 +22,20 @@ export function createElement<K extends keyof HTMLElementTagNameMap>(
     }
   }
 
+  if (children) {
+    element.append(...children);
+  }
+
   return element;
+}
+
+export function getAvatarLetters(nickname: string): string {
+  const upperLetters = nickname.match(/[A-Z]/g) || [];
+
+  if (upperLetters.length >= 2) {
+    return upperLetters.slice(0, 2).join('').toUpperCase();
+  }
+
+  const firstTwo = nickname.slice(0, 2);
+  return firstTwo.toUpperCase();
 }

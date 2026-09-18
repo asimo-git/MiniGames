@@ -1,0 +1,297 @@
+@use '../../abstracts' as styles;
+
+.top-players {
+  @include styles.flex($direction: column, $align: flex-start, $gap: styles.$size-2);
+  @include styles.responsive-padding;
+
+  @media (min-width: styles.$breakpoint-tablet) {
+    gap: styles.$size-3;
+  }
+
+  @media (min-width: styles.$breakpoint-laptop) {
+    gap: styles.$size-5;
+  }
+
+  &__subtitle-short {
+    display: none;
+  }
+
+  @media (max-width: styles.$breakpoint-mobile) {
+    &__subtitle-full {
+      display: none;
+    }
+
+    &__subtitle-short {
+      display: block;
+    }
+  }
+
+  &__table {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    background-color: styles.$color-white;
+    border: styles.$border-medium solid styles.$color-on-primary;
+    border-radius: styles.$radius-large;
+    border-spacing: 0;
+    border-collapse: collapse;
+    box-shadow: styles.$shadow-level-1;
+    font-family: styles.$font-family-heading;
+    margin-bottom: calc(-1 * #{styles.$border-thick});
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      box-shadow: styles.$shadow-level-2;
+    }
+
+    thead,
+    tbody {
+      display: block;
+      width: 100%;
+    }
+  }
+
+  &__tbody {
+    font-size: styles.$font-size-body-small;
+    font-weight: styles.$font-weight-bold;
+
+    .top-players__row:nth-child(n + 4) {
+      display: none;
+    }
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      font-size: styles.$font-size-body-medium;
+
+      .top-players__row:nth-child(n + 4) {
+        display: flex;
+      }
+    }
+  }
+
+  &__row {
+    @include styles.flex($direction: row, $align: center, $gap: styles.$size-1);
+
+    box-sizing: border-box;
+    width: 100%;
+    padding: styles.$size-2;
+    box-shadow: inset 0 -1px 0 styles.$color-outline;
+
+    @media (min-width: styles.$breakpoint-tablet) {
+      gap: styles.$size-1-5;
+    }
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      padding: styles.$size-2 styles.$size-3;
+      gap: styles.$size-2;
+    }
+
+    &:nth-of-type(odd) {
+      background-color: styles.$color-bg;
+    }
+
+    &:nth-of-type(even) {
+      background-color: styles.$color-white;
+    }
+
+    &--header {
+      background-color: styles.$color-tertiary;
+      box-shadow: inset 0 -1px 0 styles.$color-on-primary;
+      padding: styles.$size-2;
+
+      &:nth-of-type(odd),
+      &:nth-of-type(even) {
+        background-color: styles.$color-tertiary;
+      }
+
+      @media (min-width: styles.$breakpoint-laptop) {
+        padding: styles.$size-3;
+      }
+    }
+  }
+
+  &__cell {
+    @include styles.flex($direction: row, $justify: center, $align: center);
+
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    overflow-wrap: anywhere;
+    color: styles.$color-on-primary;
+
+    &[data-column='games'] {
+      display: none;
+    }
+
+    &[data-column='favorite'] {
+      display: none;
+    }
+
+    @media (min-width: styles.$breakpoint-tablet) {
+      &[data-column='games'] {
+        display: flex;
+      }
+    }
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      &[data-column='favorite'] {
+        display: flex;
+      }
+    }
+
+    &--head {
+      font-size: styles.$font-size-label-extra-large;
+      font-weight: styles.$font-weight-extra-bold;
+      text-transform: uppercase;
+      color: styles.$color-white;
+      white-space: nowrap;
+
+      @media (max-width: styles.$breakpoint-laptop) {
+        font-size: styles.$font-size-label-large;
+        line-height: 16px;
+      }
+    }
+
+    &--rank {
+      flex: none;
+      width: styles.$size-5;
+      font-weight: styles.$font-weight-extra-bold;
+
+      &-top {
+        color: styles.$color-primary;
+      }
+
+      @media (min-width: styles.$breakpoint-tablet) {
+        width: styles.$size-10;
+      }
+    }
+
+    &--player {
+      justify-content: flex-start;
+      gap: styles.$size-075;
+      white-space: nowrap;
+
+      flex: 1 1 0;
+      min-width: max-content;
+
+      @media (min-width: styles.$breakpoint-tablet) {
+        gap: styles.$size-1;
+      }
+      @media (min-width: styles.$breakpoint-laptop) {
+        gap: styles.$font-size-label-medium;
+      }
+    }
+  }
+
+  &__cell-label {
+    &--short {
+      display: none;
+    }
+
+    @media (max-width: styles.$breakpoint-laptop) {
+      &--full {
+        display: none;
+      }
+
+      &--short {
+        display: inline;
+      }
+    }
+  }
+
+  &__avatar {
+    @include styles.flex($justify: center, $align: center);
+    font-size: styles.$font-size-label-small;
+    flex: none;
+    width: styles.$size-3;
+    height: styles.$size-3;
+    border: styles.$border-thin solid styles.$color-on-primary;
+    border-radius: styles.$radius-full;
+    color: styles.$color-on-primary;
+
+    @media (min-width: styles.$breakpoint-tablet) {
+      width: styles.$size-3-5;
+      height: styles.$size-3-5;
+    }
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      font-size: styles.$font-size-label-large;
+      width: styles.$size-5;
+      height: styles.$size-5;
+    }
+
+    background-color: styles.$color-primary;
+
+    &[data-rank='2'] {
+      background-color: styles.$color-avatar-random-2;
+    }
+
+    &[data-rank='3'] {
+      background-color: styles.$color-avatar-random-3;
+    }
+
+    &[data-rank='4'] {
+      background-color: styles.$color-avatar-random-4;
+    }
+
+    &[data-rank='5'] {
+      background-color: styles.$color-avatar-random-5;
+    }
+  }
+
+  &__name {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &__streak {
+    &--full {
+      display: none;
+    }
+
+    &--short {
+      display: inline;
+    }
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      &--short {
+        display: none;
+      }
+
+      &--full {
+        display: inline;
+      }
+    }
+  }
+
+  &__score {
+    &--short {
+      display: inline;
+    }
+
+    &--full {
+      display: none;
+    }
+
+    @media (min-width: styles.$breakpoint-tablet) {
+      &--short {
+        display: none;
+      }
+
+      &--full {
+        display: inline;
+      }
+    }
+  }
+
+  &__badge {
+    @include styles.flex($justify: center, $align: center);
+    @include styles.solid-border($width: styles.$border-thin);
+
+    padding: styles.$size-05 styles.$size-1-5;
+    border-radius: styles.$radius-full;
+    font-size: styles.$font-size-label-medium;
+    white-space: nowrap;
+  }
+}

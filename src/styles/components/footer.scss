@@ -48,11 +48,19 @@
       gap: styles.$size-5;
       width: 100%;
     }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      gap: styles.$size-3 styles.$size-5;
+    }
   }
 
   &__column {
     @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-2);
     white-space: nowrap;
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      flex: 1 1 0;
+    }
   }
 
   &__column-title {
@@ -106,14 +114,20 @@
     @include styles.flex($justify: space-between, $gap: styles.$size-2, $wrap: wrap);
     width: 100%;
     border-top: 1px solid styles.$color-bg-footer-low;
-    padding-top: styles.$size-2;
+    padding-top: styles.$size-3;
     font-size: styles.$font-size-label-large;
     color: styles.$color-on-bg-footer;
     white-space: nowrap;
 
+    @media (max-width: styles.$breakpoint-tablet) {
+      padding-top: styles.$size-2;
+    }
+
     @media (max-width: styles.$breakpoint-mobile) {
       font-size: styles.$font-size-label-medium;
       justify-content: flex-start;
+      padding-top: styles.$size-1;
+      gap: styles.$size-1 styles.$size-2;
 
       > :first-child {
         flex-basis: 100%;

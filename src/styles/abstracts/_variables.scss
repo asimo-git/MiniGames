@@ -1,6 +1,4 @@
 // Color tokens
-// Source: Figma Variables — Collection 1
-
 $color-white: #ffffff;
 $color-black: #111111;
 
@@ -70,11 +68,15 @@ $font-weight-extra-bold: 800;
 
 // Base spacing scale
 $size-05: 4px;
+$size-075: 6px;
 $size-1: 8px;
 $size-1-25: 10px;
+$size-1-5: 12px;
 $size-2: 16px;
+$size-2-25: 18px;
 $size-2-5: 20px;
 $size-3: 24px;
+$size-3-5: 28px;
 $size-4: 32px;
 $size-5: 40px;
 $size-6: 48px;
@@ -117,11 +119,31 @@ $button-icon: 8px;
 $shadow-level-1: 4px 4px $color-on-primary;
 $shadow-level-2: 6px 6px $color-on-primary;
 $shadow-level-3: 8px 8px $color-on-primary;
+$shadow-soft:
+  0 2px 8px -4px rgba(0, 0, 0, 0.0392),
+  0 14px 30px -10px rgba(0, 0, 0, 0.0784);
 
 // Breakpoints
 $breakpoint-desktop: 1920px;
+$breakpoint-laptop: 1100px;
 $breakpoint-tablet: 768px;
-$breakpoint-mobile: 375px;
+$breakpoint-mobile: 376px;
 
 // Border
-$border-width: 2px;
+$border-thin: 1.5px;
+$border-normal: 2px;
+$border-medium: 2.5px;
+$border-thick: 3px;
+
+// Cards
+$card-width-big: 816px;
+$card-width-medium: 448px;
+$card-width-small: 218px;
+$card-width-secondary: 288px;
+$card-height-big: 384px;
+$card-height-medium: 285px;
+$card-height-small: 203px;
+
+$padding-large: $size-5 $size-15;
+$padding-medium: $size-3 $size-5;
+$padding-small: $size-2;
