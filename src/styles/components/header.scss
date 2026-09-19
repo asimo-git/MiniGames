@@ -98,6 +98,10 @@ $nav-bar-width: 409px;
     @media (max-width: styles.$breakpoint-tablet) {
       padding: styles.$size-1 styles.$size-2;
     }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      display: none;
+    }
   }
 
   &__button--burger {
