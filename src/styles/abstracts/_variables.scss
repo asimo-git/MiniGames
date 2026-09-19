@@ -1,0 +1,171 @@
+// Color tokens
+$color-white: #ffffff;
+$color-black: #111111;
+
+$color-bg: #f9f8f3;
+$color-surface: #fff9e5;
+$color-surface-low: #fffcf5;
+
+$color-on-bg: #5f5d75;
+$color-on-bg-low: #737380;
+
+$color-primary: #ffd02b;
+$color-primary-low: #fde047;
+$color-primary-high: #e5bb00;
+$color-on-primary: #242145;
+
+$color-bg-footer: #1e1b3a;
+$color-bg-footer-low: #2a264f;
+$color-bg-footer-lowest: #3c376e;
+$color-on-bg-footer: #b9b5c9;
+
+$color-secondary: #f0eeff;
+$color-tertiary: #3a2ebf;
+
+$color-price-free: #0b8a8f;
+
+$color-outline: #e5e7eb;
+$color-outline-variant: #d2d2d2;
+
+$color-text-placeholder: #969696;
+
+$color-like: #ff4b4b;
+$color-error: #b3261e;
+
+$color-avatar-random-1: #e9eef6;
+$color-avatar-random-2: #a3e2c9;
+$color-avatar-random-3: #bce3ff;
+$color-avatar-random-4: #ffc6ff;
+$color-avatar-random-5: #e8dff5;
+$color-backdrop: rgb(17 17 17 / 70%);
+
+// Font sizes
+$font-size-display-large: 56px;
+$font-size-display-medium: 36px;
+$font-size-display-small: 24px;
+
+$font-size-headline-large: 32px;
+$font-size-headline-medium: 24px;
+$font-size-headline-small: 20px;
+
+$font-size-body-large: 18px;
+$font-size-body-medium: 16px;
+$font-size-body-small: 14px;
+
+$font-size-label-extra-large: 16px;
+$font-size-label-large: 14px;
+$font-size-label-medium: 12px;
+$font-size-label-small: 10px;
+
+// Font families
+$font-family-primary: 'Inter', sans-serif;
+$font-family-heading: 'Roboto', sans-serif;
+
+// Font weights
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semi-bold: 600;
+$font-weight-bold: 700;
+$font-weight-extra-bold: 800;
+
+// Base spacing scale
+$size-05: 4px;
+$size-075: 6px;
+$size-1: 8px;
+$size-1-25: 10px;
+$size-1-5: 12px;
+$size-2: 16px;
+$size-2-25: 18px;
+$size-2-5: 20px;
+$size-3: 24px;
+$size-3-5: 28px;
+$size-4: 32px;
+$size-5: 40px;
+$size-6: 48px;
+$size-7: 56px;
+$size-8: 64px;
+$size-9: 72px;
+$size-10: 80px;
+$size-11: 88px;
+$size-12: 96px;
+$size-13: 104px;
+$size-14: 112px;
+$size-15: 120px;
+
+// radius
+$radius-extra-small: 4px;
+$radius-small: 8px;
+$radius-medium: 12px;
+$radius-large: 16px;
+$radius-extra-large: 24px;
+$radius-full: 9999px;
+
+// Buttons
+// Large button
+$button-large-padding-x: 24px;
+$button-large-padding-y: 16px;
+
+// Medium button
+$button-medium-padding-x: 20px;
+$button-medium-padding-y: 10px;
+
+// Small button
+$button-small-padding-x: 16px;
+$button-small-padding-y: 8px;
+
+// Icon button
+$button-icon: 8px;
+
+// Shadow
+
+$shadow-level-1: 4px 4px $color-on-primary;
+$shadow-level-2: 6px 6px $color-on-primary;
+$shadow-level-3: 8px 8px $color-on-primary;
+$shadow-soft:
+  0 2px 8px -4px rgba(0, 0, 0, 0.0392),
+  0 14px 30px -10px rgba(0, 0, 0, 0.0784);
+
+// Breakpoints
+$breakpoint-desktop: 1920px;
+$breakpoint-laptop: 1100px;
+$breakpoint-tablet: 768px;
+$breakpoint-mobile: 376px;
+
+// Border
+$border-thin: 1.5px;
+$border-normal: 2px;
+$border-medium: 2.5px;
+$border-thick: 3px;
+
+// Cards
+$card-width-big: 816px;
+$card-width-medium: 448px;
+$card-width-small: 218px;
+$card-width-secondary: 288px;
+$card-height-big: 384px;
+$card-height-medium: 285px;
+$card-height-small: 203px;
+
+$padding-large: $size-5 $size-15;
+$padding-medium: $size-3 $size-5;
+$padding-small: $size-2;
+
+// z-index
+$z-index-base: 1;
+$z-index-dropdown: 10;
+$z-index-fixed: 30;
+$z-index-overlay: 100;
+
+//animation
+$duration-slow: 500ms;
+$duration-fast: 150ms;
+
+//line-height
+$line-height-large: 1.5;
+$line-height-medium: 1.4;
+$line-height-title-large: 1.1;
+$line-height-title-medium: 1.15;
+$line-height-title-small: 1.2;
+
+//opacity: 0.2;
+$opacity-low: 0.2;

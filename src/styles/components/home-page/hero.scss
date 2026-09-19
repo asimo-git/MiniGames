@@ -1,0 +1,131 @@
+@use '../../abstracts' as styles;
+
+$hero-background: rgba(30, 27, 58, 0.65);
+$card-max-width-desktop: 640px;
+$card-max-width-tablet: 480px;
+
+.hero {
+  @include styles.flex;
+  position: relative;
+  overflow: hidden;
+  padding: styles.$size-14 styles.$size-15;
+
+  @media (max-width: styles.$breakpoint-tablet) {
+    padding: styles.$size-9 styles.$size-5;
+  }
+
+  @media (max-width: styles.$breakpoint-mobile) {
+    padding: styles.$size-8 styles.$size-2;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('../../../assets/images/hero.png');
+    background-size: cover;
+    background-position: center;
+    opacity: styles.$opacity-low;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: $hero-background;
+  }
+
+  &__card {
+    @include styles.flex($direction: column, $align: flex-start, $gap: styles.$size-3);
+    position: relative;
+    z-index: styles.$z-index-base;
+    max-width: $card-max-width-desktop;
+    padding: styles.$size-6;
+    background-color: styles.$color-bg;
+    border-radius: styles.$radius-extra-large;
+    box-shadow:
+      styles.$shadow-level-3,
+      inset 0 0 0 styles.$border-thick styles.$color-on-primary;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      max-width: $card-max-width-tablet;
+      padding: styles.$size-3;
+      gap: styles.$size-2;
+      border-radius: styles.$radius-large;
+      box-shadow:
+        styles.$shadow-level-2,
+        inset 0 0 0 styles.$border-normal styles.$color-on-primary;
+    }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      border-radius: styles.$radius-medium;
+      box-shadow:
+        styles.$shadow-level-1,
+        inset 0 0 0 styles.$border-normal styles.$color-on-primary;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    width: 100%;
+    font-weight: styles.$font-weight-bold;
+    font-size: styles.$font-size-display-large;
+    line-height: styles.$line-height-title-large;
+    color: styles.$color-on-primary;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      font-size: styles.$font-size-display-medium;
+      line-height: styles.$line-height-title-medium;
+    }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      font-size: styles.$font-size-display-small;
+      line-height: styles.$line-height-title-small;
+    }
+  }
+
+  &__text {
+    margin: 0;
+    width: 100%;
+    font-weight: styles.$font-weight-medium;
+    font-size: styles.$font-size-body-large;
+    line-height: styles.$line-height-large;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      font-size: styles.$font-size-body-small;
+      line-height: styles.$line-height-medium;
+    }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      font-size: styles.$font-size-label-medium;
+    }
+  }
+
+  &__text-short {
+    display: none;
+  }
+
+  @media (max-width: styles.$breakpoint-mobile) {
+    &__text-full {
+      display: none;
+    }
+
+    &__text-short {
+      display: inline;
+    }
+  }
+
+  &__button {
+    @include styles.button-accent($radius: styles.$radius-small);
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      font-size: styles.$font-size-label-large;
+      padding: styles.$button-medium-padding-y styles.$button-medium-padding-x;
+    }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      padding: styles.$button-small-padding-y styles.$button-small-padding-x;
+      font-size: styles.$font-size-label-medium;
+    }
+  }
+}

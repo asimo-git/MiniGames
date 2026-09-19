@@ -1,0 +1,177 @@
+@use '../abstracts' as styles;
+
+$promo-col-width: 400px;
+
+.footer {
+  @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-8);
+  background-color: styles.$color-bg-footer;
+  padding: styles.$size-5 styles.$size-15;
+
+  @media (max-width: styles.$breakpoint-tablet) {
+    flex-direction: column;
+    gap: styles.$size-5;
+    padding: styles.$size-5;
+  }
+
+  @media (max-width: styles.$breakpoint-mobile) {
+    padding: styles.$size-4 styles.$size-2;
+    gap: styles.$size-3;
+  }
+
+  &__top {
+    @include styles.flex($align: flex-start, $justify: space-between, $gap: styles.$size-6);
+    width: 100%;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      flex-direction: column;
+      gap: styles.$size-3;
+    }
+  }
+
+  &__promo-col {
+    @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-3);
+    width: $promo-col-width;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      width: 100%;
+    }
+  }
+
+  &__description {
+    font-size: styles.$font-size-body-small;
+    line-height: styles.$line-height-large;
+    color: styles.$color-on-bg-footer;
+  }
+
+  &__columns {
+    @include styles.flex($align: stretch, $gap: styles.$size-10, $wrap: wrap);
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      gap: styles.$size-5;
+      width: 100%;
+    }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      gap: styles.$size-3 styles.$size-5;
+    }
+  }
+
+  &__column {
+    @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-2);
+    white-space: nowrap;
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      flex: 1 1 0;
+    }
+  }
+
+  &__column-title {
+    margin: 0;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-white;
+  }
+
+  &__link {
+    font-size: styles.$font-size-body-small;
+    color: styles.$color-on-bg-footer;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        color: styles.$color-white;
+      }
+    }
+  }
+
+  &__socials {
+    @include styles.flex($align: stretch, $gap: styles.$size-2);
+  }
+
+  &__social {
+    @include styles.flex($justify: center);
+    width: styles.$size-5;
+    height: styles.$size-5;
+    border-radius: styles.$radius-full;
+    background-color: styles.$color-bg-footer-low;
+    text-decoration: none;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: styles.$color-bg-footer-lowest;
+      }
+    }
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      width: styles.$size-4;
+      height: styles.$size-4;
+    }
+  }
+
+  &__social-icon {
+    width: styles.$size-2-5;
+    height: styles.$size-2-5;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      width: styles.$size-2;
+      height: styles.$size-2;
+    }
+  }
+
+  &__bottom {
+    @include styles.flex($justify: space-between, $gap: styles.$size-2, $wrap: wrap);
+    width: 100%;
+    border-top: 1px solid styles.$color-bg-footer-low;
+    padding-top: styles.$size-3;
+    font-size: styles.$font-size-label-large;
+    color: styles.$color-on-bg-footer;
+    white-space: nowrap;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      padding-top: styles.$size-2;
+    }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      font-size: styles.$font-size-label-medium;
+      justify-content: flex-start;
+      padding-top: styles.$size-1;
+      gap: styles.$size-1 styles.$size-2;
+
+      > :first-child {
+        flex-basis: 100%;
+      }
+    }
+  }
+
+  &__badge-link {
+    @include styles.flex($gap: styles.$size-1);
+    text-decoration: none;
+  }
+
+  &__badge {
+    @include styles.flex($justify: center);
+    width: styles.$size-3;
+    height: styles.$size-3;
+    border-radius: styles.$radius-medium;
+    font-weight: styles.$font-weight-bold;
+    font-size: styles.$font-size-label-small;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      width: styles.$size-2-5;
+      height: styles.$size-2-5;
+    }
+
+    &--rs {
+      background-color: styles.$color-on-primary;
+      color: styles.$color-primary;
+    }
+
+    &--github {
+      background-color: styles.$color-white;
+    }
+  }
+
+  &__designed-with-love {
+    @media (max-width: styles.$breakpoint-mobile) {
+      display: none;
+    }
+  }
+}
