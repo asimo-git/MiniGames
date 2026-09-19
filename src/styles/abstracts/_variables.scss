@@ -37,6 +37,7 @@ $color-avatar-random-2: #a3e2c9;
 $color-avatar-random-3: #bce3ff;
 $color-avatar-random-4: #ffc6ff;
 $color-avatar-random-5: #e8dff5;
+$color-backdrop: rgb(17 17 17 / 70%);
 
 // Font sizes
 $font-size-display-large: 56px;
@@ -147,3 +148,23 @@ $card-height-small: 203px;
 $padding-large: $size-5 $size-15;
 $padding-medium: $size-3 $size-5;
 $padding-small: $size-2;
+
+// z-index
+$z-index-base: 1;
+$z-index-dropdown: 10;
+$z-index-fixed: 30;
+$z-index-overlay: 100;
+
+//animation
+$duration-slow: 500ms;
+$duration-fast: 150ms;
+
+//line-height
+$line-height-large: 1.5;
+$line-height-medium: 1.4;
+$line-height-title-large: 1.1;
+$line-height-title-medium: 1.15;
+$line-height-title-small: 1.2;
+
+//opacity: 0.2;
+$opacity-low: 0.2;

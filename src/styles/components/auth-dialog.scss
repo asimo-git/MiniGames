@@ -1,5 +1,11 @@
 @use '../abstracts' as styles;
 
+$dialog-width: 420px;
+$ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
+$panel-translate-y: 6px;
+$transform-scale: scale(0.94) translateY(12px);
+$shadow-offset-hard: 8px;
+
 html:has(.auth-dialog-backdrop--visible) {
   overflow: hidden;
 }
@@ -8,14 +14,14 @@ html:has(.auth-dialog-backdrop--visible) {
   position: fixed;
   inset: 0;
   overflow-y: auto;
-  z-index: 100;
+  z-index: styles.$z-index-overlay;
   display: flex;
   align-items: safe center;
   justify-content: center;
   padding: styles.$size-2;
-  background-color: rgb(17 17 17 / 55%);
+  background-color: styles.$color-backdrop;
   opacity: 0;
-  transition: opacity 500ms ease;
+  transition: opacity styles.$duration-slow ease;
 
   &--visible {
     opacity: 1;
@@ -32,7 +38,7 @@ html:has(.auth-dialog-backdrop--visible) {
 
   position: relative;
   box-sizing: border-box;
-  width: 420px;
+  width: $dialog-width;
   max-width: calc(100vw - #{styles.$size-4});
   margin-block: auto;
   padding: styles.$size-4;
@@ -40,13 +46,13 @@ html:has(.auth-dialog-backdrop--visible) {
   border-radius: styles.$radius-extra-large;
   box-shadow:
     inset 0 0 0 styles.$border-thick styles.$color-on-primary,
-    8px 8px 0 styles.$color-black;
+    $shadow-offset-hard $shadow-offset-hard 0 styles.$color-black;
 
   opacity: 0;
-  transform: scale(0.94) translateY(12px);
+  transform: $transform-scale;
   transition:
-    opacity 500ms ease,
-    transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity styles.$duration-slow ease,
+    transform styles.$duration-slow $ease-emphasized;
 
   &__tabs-slot {
     width: 100%;
@@ -71,8 +77,8 @@ html:has(.auth-dialog-backdrop--visible) {
     color: styles.$color-on-bg;
     cursor: pointer;
     transition:
-      background-color 150ms ease,
-      color 150ms ease;
+      background-color styles.$duration-fast ease,
+      color styles.$duration-fast ease;
     @include styles.flex(row, center, center);
 
     &--active {
@@ -87,17 +93,17 @@ html:has(.auth-dialog-backdrop--visible) {
     opacity: 1;
     transform: translateY(0);
     transition:
-      opacity 500ms ease,
-      transform 500ms ease;
+      opacity styles.$duration-slow ease,
+      transform styles.$duration-slow ease;
 
     &--leaving {
       opacity: 0;
-      transform: translateY(6px);
+      transform: translateY($panel-translate-y);
     }
 
     &--entering {
       opacity: 0;
-      transform: translateY(-6px);
+      transform: translateY(-$panel-translate-y);
     }
   }
 
@@ -229,7 +235,7 @@ html:has(.auth-dialog-backdrop--visible) {
     flex: 1 1 auto;
     height: 0;
     border-top: styles.$border-thin solid styles.$color-on-primary;
-    opacity: 0.2;
+    opacity: styles.$opacity-low;
   }
 
   &__divider-label {

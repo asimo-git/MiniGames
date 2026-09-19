@@ -1,5 +1,7 @@
 @use '../../abstracts' as styles;
 
+$tablet-row-number: 4;
+
 .top-players {
   @include styles.flex($direction: column, $align: flex-start, $gap: styles.$size-2);
   @include styles.responsive-padding;
@@ -54,14 +56,14 @@
     font-size: styles.$font-size-body-small;
     font-weight: styles.$font-weight-bold;
 
-    .top-players__row:nth-child(n + 4) {
+    .top-players__row:nth-child(n + #{$tablet-row-number}) {
       display: none;
     }
 
     @media (min-width: styles.$breakpoint-laptop) {
       font-size: styles.$font-size-body-medium;
 
-      .top-players__row:nth-child(n + 4) {
+      .top-players__row:nth-child(n + #{$tablet-row-number}) {
         display: flex;
       }
     }

@@ -1,5 +1,7 @@
 @use '../abstracts' as styles;
 
+$promo-col-width: 400px;
+
 .footer {
   @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-8);
   background-color: styles.$color-bg-footer;
@@ -28,7 +30,7 @@
 
   &__promo-col {
     @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-3);
-    width: 400px;
+    width: $promo-col-width;
 
     @media (max-width: styles.$breakpoint-tablet) {
       width: 100%;
@@ -37,7 +39,7 @@
 
   &__description {
     font-size: styles.$font-size-body-small;
-    line-height: 1.5;
+    line-height: styles.$line-height-large;
     color: styles.$color-on-bg-footer;
   }
 
