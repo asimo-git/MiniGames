@@ -1,6 +1,6 @@
 # MiniGames
 
-**Live demo:** [https://asimo-git.github.io/MiniGames/](https://asimo-git.github.io/MiniGames/)
+**Live demo:** [https://mini-games-green-three.vercel.app/](https://mini-games-green-three.vercel.app/)
 
 ## About
 
