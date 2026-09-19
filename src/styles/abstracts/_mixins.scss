@@ -36,8 +36,10 @@
   );
   @include solid-border;
 
-  &:hover {
-    background-color: tokens.$color-surface;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: tokens.$color-surface;
+    }
   }
 }
 
@@ -57,8 +59,10 @@
 
   background-color: tokens.$color-primary;
 
-  &:hover {
-    background-color: tokens.$color-primary-high;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: tokens.$color-primary-high;
+    }
   }
 }
 
@@ -77,8 +81,10 @@
   @include solid-border($color: tokens.$color-white);
   color: tokens.$color-white;
 
-  &:hover {
-    @include solid-border($color: tokens.$color-primary);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @include solid-border($color: tokens.$color-primary);
+    }
   }
 }
 

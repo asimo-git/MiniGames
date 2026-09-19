@@ -73,8 +73,10 @@
     font-size: styles.$font-size-body-small;
     color: styles.$color-on-bg-footer;
 
-    &:hover {
-      color: styles.$color-white;
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        color: styles.$color-white;
+      }
     }
   }
 
@@ -90,8 +92,10 @@
     background-color: styles.$color-bg-footer-low;
     text-decoration: none;
 
-    &:hover {
-      background-color: styles.$color-bg-footer-lowest;
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: styles.$color-bg-footer-lowest;
+      }
     }
 
     @media (max-width: styles.$breakpoint-tablet) {
