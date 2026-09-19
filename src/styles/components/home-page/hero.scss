@@ -1,5 +1,9 @@
 @use '../../abstracts' as styles;
 
+$hero-background: rgba(30, 27, 58, 0.65);
+$card-max-width-desktop: 640px;
+$card-max-width-tablet: 480px;
+
 .hero {
   @include styles.flex;
   position: relative;
@@ -21,21 +25,21 @@
     background-image: url('../../../assets/images/hero.png');
     background-size: cover;
     background-position: center;
-    opacity: 0.2;
+    opacity: styles.$opacity-low;
   }
 
   &::after {
     content: '';
     position: absolute;
     inset: 0;
-    background-color: rgba(30, 27, 58, 0.65);
+    background-color: $hero-background;
   }
 
   &__card {
     @include styles.flex($direction: column, $align: flex-start, $gap: styles.$size-3);
     position: relative;
-    z-index: 1;
-    max-width: 640px;
+    z-index: styles.$z-index-base;
+    max-width: $card-max-width-desktop;
     padding: styles.$size-6;
     background-color: styles.$color-bg;
     border-radius: styles.$radius-extra-large;
@@ -44,7 +48,7 @@
       inset 0 0 0 styles.$border-thick styles.$color-on-primary;
 
     @media (max-width: styles.$breakpoint-tablet) {
-      max-width: 480px;
+      max-width: $card-max-width-tablet;
       padding: styles.$size-3;
       gap: styles.$size-2;
       border-radius: styles.$radius-large;
@@ -66,17 +70,17 @@
     width: 100%;
     font-weight: styles.$font-weight-bold;
     font-size: styles.$font-size-display-large;
-    line-height: 1.1;
+    line-height: styles.$line-height-title-large;
     color: styles.$color-on-primary;
 
     @media (max-width: styles.$breakpoint-tablet) {
       font-size: styles.$font-size-display-medium;
-      line-height: 1.15;
+      line-height: styles.$line-height-title-medium;
     }
 
     @media (max-width: styles.$breakpoint-mobile) {
       font-size: styles.$font-size-display-small;
-      line-height: 1.2;
+      line-height: styles.$line-height-title-small;
     }
   }
 
@@ -85,11 +89,11 @@
     width: 100%;
     font-weight: styles.$font-weight-medium;
     font-size: styles.$font-size-body-large;
-    line-height: 1.5;
+    line-height: styles.$line-height-large;
 
     @media (max-width: styles.$breakpoint-tablet) {
       font-size: styles.$font-size-body-small;
-      line-height: 1.4;
+      line-height: styles.$line-height-medium;
     }
 
     @media (max-width: styles.$breakpoint-mobile) {

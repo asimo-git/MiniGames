@@ -4,7 +4,7 @@ import { createHero } from '../components/home-page/hero';
 import { createLeaderboardSection } from '../components/home-page/leaderboard-section';
 
 export function createHomePage(): HTMLElement {
-  const homePage = document.createElement('main');
+  const homePage = document.createElement('div');
 
   const hero = createHero();
   const carouselSection = createCarouselSection();

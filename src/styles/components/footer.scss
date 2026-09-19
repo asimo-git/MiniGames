@@ -1,5 +1,7 @@
 @use '../abstracts' as styles;
 
+$promo-col-width: 400px;
+
 .footer {
   @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-8);
   background-color: styles.$color-bg-footer;
@@ -28,7 +30,7 @@
 
   &__promo-col {
     @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-3);
-    width: 400px;
+    width: $promo-col-width;
 
     @media (max-width: styles.$breakpoint-tablet) {
       width: 100%;
@@ -37,7 +39,7 @@
 
   &__description {
     font-size: styles.$font-size-body-small;
-    line-height: 1.5;
+    line-height: styles.$line-height-large;
     color: styles.$color-on-bg-footer;
   }
 
@@ -73,8 +75,10 @@
     font-size: styles.$font-size-body-small;
     color: styles.$color-on-bg-footer;
 
-    &:hover {
-      color: styles.$color-white;
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        color: styles.$color-white;
+      }
     }
   }
 
@@ -90,8 +94,10 @@
     background-color: styles.$color-bg-footer-low;
     text-decoration: none;
 
-    &:hover {
-      background-color: styles.$color-bg-footer-lowest;
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: styles.$color-bg-footer-lowest;
+      }
     }
 
     @media (max-width: styles.$breakpoint-tablet) {

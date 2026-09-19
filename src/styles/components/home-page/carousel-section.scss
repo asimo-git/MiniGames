@@ -1,5 +1,12 @@
 @use '../../abstracts' as styles;
 
+$layout-gradient: linear-gradient(
+  to bottom,
+  rgba(0, 0, 0, 0) 0%,
+  rgba(0, 0, 0, 0.4) 17.3%,
+  rgba(0, 0, 0, 0.85) 46.2%
+);
+
 .carousel {
   @include styles.flex($direction: column, $align: flex-start, $gap: styles.$size-2);
   @include styles.responsive-padding;
@@ -93,7 +100,6 @@
   }
 
   &__card {
-    container-type: inline-size;
     flex-shrink: 0;
     height: styles.$card-height-small;
     overflow: hidden;
@@ -145,13 +151,7 @@
     flex-direction: column;
     gap: styles.$size-1;
     padding: styles.$size-2;
-    // one-off layout, not used anywhere else
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0.4) 17.3%,
-      rgba(0, 0, 0, 0.85) 46.2%
-    );
+    background: $layout-gradient;
   }
 
   &__card-title {
@@ -176,8 +176,8 @@
   }
 
   &__card-meta-icon {
-    width: 16px;
-    height: 16px;
+    width: styles.$size-2;
+    height: styles.$size-2;
   }
 
   &__card-meta-text {

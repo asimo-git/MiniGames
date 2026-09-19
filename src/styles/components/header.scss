@@ -1,10 +1,11 @@
 @use '../abstracts' as styles;
 
+$nav-bar-width: 409px;
+
 .header {
   @include styles.flex($justify: space-between, $gap: styles.$size-2);
   background-color: styles.$color-bg;
   box-shadow: inset 0 -#{styles.$border-normal} 0 0 styles.$color-on-primary;
-  // border-bottom: styles.$border-normal solid styles.$color-on-primary;
   position: relative;
 
   padding: styles.$size-3 styles.$size-10;
@@ -47,8 +48,7 @@
 
   &__links {
     @include styles.flex($justify: space-between, $gap: styles.$size-1, $wrap: wrap);
-    // Adaptability based on specific size to make managing container compression easier without an extra breakpoint.
-    flex: 0 1 409px;
+    flex: 0 1 $nav-bar-width;
     min-width: 0;
 
     @media (max-width: styles.$breakpoint-tablet) {
@@ -97,6 +97,10 @@
 
     @media (max-width: styles.$breakpoint-tablet) {
       padding: styles.$size-1 styles.$size-2;
+    }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      display: none;
     }
   }
 

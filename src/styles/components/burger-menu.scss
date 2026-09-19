@@ -3,7 +3,7 @@
 .header__mobile-menu {
   position: fixed;
   inset: 0;
-  z-index: 10;
+  z-index: styles.$z-index-dropdown;
 
   @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-4);
 
@@ -16,14 +16,14 @@
   transform: translateX(100%);
   visibility: hidden;
   transition:
-    transform 0.5s ease,
-    visibility 0s linear 0.5s;
+    transform styles.$duration-slow ease,
+    visibility 0s linear styles.$duration-slow;
 
   &--open {
     transform: translateX(0);
     visibility: visible;
     transition:
-      transform 0.5s ease,
+      transform styles.$duration-slow ease,
       visibility 0s linear 0s;
   }
 
@@ -45,7 +45,7 @@
 
     svg line {
       stroke: currentColor;
-      stroke-width: 2;
+      stroke-width: styles.$border-normal;
     }
   }
 

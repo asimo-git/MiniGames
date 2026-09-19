@@ -1,4 +1,20 @@
+@use 'sass:math';
 @use '../../abstracts' as styles;
+
+$tablet-row-number: 4;
+
+$mobile-score-width: 56px;
+$mobile-streak-width: 70px;
+
+$tablet-row-content-width: 651;
+$tablet-player-width: math.percentage(math.div(160, $tablet-row-content-width));
+$tablet-stat-width: math.percentage(math.div(110, $tablet-row-content-width));
+
+@mixin tablet-only {
+  @media (min-width: styles.$breakpoint-tablet) and (max-width: styles.$breakpoint-laptop) {
+    @content;
+  }
+}
 
 .top-players {
   @include styles.flex($direction: column, $align: flex-start, $gap: styles.$size-2);
@@ -54,14 +70,14 @@
     font-size: styles.$font-size-body-small;
     font-weight: styles.$font-weight-bold;
 
-    .top-players__row:nth-child(n + 4) {
+    .top-players__row:nth-child(n + #{$tablet-row-number}) {
       display: none;
     }
 
     @media (min-width: styles.$breakpoint-laptop) {
       font-size: styles.$font-size-body-medium;
 
-      .top-players__row:nth-child(n + 4) {
+      .top-players__row:nth-child(n + #{$tablet-row-number}) {
         display: flex;
       }
     }
@@ -75,13 +91,20 @@
     padding: styles.$size-2;
     box-shadow: inset 0 -1px 0 styles.$color-outline;
 
+    display: grid;
+    grid-template-columns:
+      styles.$size-5
+      minmax(0, 1fr)
+      $mobile-score-width
+      $mobile-streak-width;
+
     @media (min-width: styles.$breakpoint-tablet) {
-      gap: styles.$size-1-5;
+      display: flex;
+      gap: styles.$size-2;
     }
 
     @media (min-width: styles.$breakpoint-laptop) {
       padding: styles.$size-2 styles.$size-3;
-      gap: styles.$size-2;
     }
 
     &:nth-of-type(odd) {
@@ -100,6 +123,11 @@
       &:nth-of-type(odd),
       &:nth-of-type(even) {
         background-color: styles.$color-tertiary;
+      }
+
+      @include tablet-only {
+        gap: styles.$size-1-5;
+        box-shadow: inset 0 (-1 * styles.$border-thin) 0 styles.$color-on-primary;
       }
 
       @media (min-width: styles.$breakpoint-laptop) {
@@ -139,6 +167,21 @@
       }
     }
 
+    @include tablet-only {
+      &[data-column='player'] {
+        flex: none;
+        width: $tablet-player-width;
+        min-width: 0;
+      }
+
+      &[data-column='games'],
+      &[data-column='score'],
+      &[data-column='streak'] {
+        flex: none;
+        width: $tablet-stat-width;
+      }
+    }
+
     &--head {
       font-size: styles.$font-size-label-extra-large;
       font-weight: styles.$font-weight-extra-bold;
@@ -148,7 +191,7 @@
 
       @media (max-width: styles.$breakpoint-laptop) {
         font-size: styles.$font-size-label-large;
-        line-height: 16px;
+        line-height: styles.$size-2;
       }
     }
 
@@ -159,11 +202,19 @@
 
       &-top {
         color: styles.$color-primary;
+
+        @media (max-width: styles.$breakpoint-tablet) {
+          color: styles.$color-tertiary;
+        }
       }
 
       @media (min-width: styles.$breakpoint-tablet) {
         width: styles.$size-10;
       }
+    }
+
+    &--games {
+      font-weight: styles.$font-weight-semi-bold;
     }
 
     &--player {
@@ -172,10 +223,11 @@
       white-space: nowrap;
 
       flex: 1 1 0;
-      min-width: max-content;
+      min-width: 0;
 
       @media (min-width: styles.$breakpoint-tablet) {
         gap: styles.$size-1;
+        min-width: max-content;
       }
       @media (min-width: styles.$breakpoint-laptop) {
         gap: styles.$font-size-label-medium;
@@ -242,6 +294,7 @@
   &__name {
     min-width: 0;
     overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
 

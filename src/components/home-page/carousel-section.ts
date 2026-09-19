@@ -56,7 +56,7 @@ function createNavButton(icon: string, label: string, className: string): HTMLEl
     attributes: {
       type: 'button',
       'aria-label': label,
-      disabled: 'true',
+      disabled: 'disabled',
     },
   });
 
