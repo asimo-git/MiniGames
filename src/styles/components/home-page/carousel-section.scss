@@ -93,7 +93,6 @@
   }
 
   &__card {
-    container-type: inline-size;
     flex-shrink: 0;
     height: styles.$card-height-small;
     overflow: hidden;
