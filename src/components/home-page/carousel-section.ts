@@ -5,20 +5,9 @@ import arrowForwardIcon from '../../assets/icons/arrow_forward.svg';
 import gamesData from '../../data/all-games-seed.json';
 import { createElement } from '../../utils/helpers';
 import { createSubtitle } from '../subtitle';
+import type { Game } from '../../utils/types';
 
 type CardVariant = 'main' | 'secondary';
-
-interface Game {
-  slug: string;
-  name: string;
-  category: string;
-  price: string;
-  shortDescription: string;
-  rating: number;
-  likesCount: number;
-  cardImage: string;
-  featured: boolean;
-}
 
 const GAMES: Game[] = gamesData.data;
 
