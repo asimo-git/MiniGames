@@ -1,15 +1,16 @@
-// import type { Game } from '../utils/types';
-// import gamesData from '../data/all-games-seed.json';
+import type { Game } from '../utils/types';
+import gamesData from '../data/all-games-seed.json';
 import { FILTER_CATEGORIES } from '../data/filter-sort-config';
 import { createSortDropdown } from '../components/library-page/sort-dropdown';
 import { createElement } from '../utils/helpers';
+import { createGameCard } from '../components/library-page/game-card';
 
-// const GAMES: Game[] = gamesData.data;
+const GAMES: Game[] = gamesData.data;
 
 export function createLibraryPage(): HTMLElement {
   return createElement('div', {
     className: 'library-page',
-    children: [createHeader(), createToolbar()],
+    children: [createHeader(), createToolbar(), createGamesList()],
   });
 }
 
@@ -47,4 +48,16 @@ function createToolbar(): HTMLElement {
       createSortDropdown(),
     ],
   });
+}
+
+function createGamesList(): HTMLElement {
+  // const items = GAMES.map((game) =>
+  //   createElement('li', {
+  //     className: 'library-page__item',
+  //     children: [createGameCard(game)],
+  //   }),
+  // );
+  const items = GAMES.map((game) => createGameCard(game));
+
+  return createElement('ul', { className: 'library-page__games', children: items });
 }
