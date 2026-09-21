@@ -1,8 +1,8 @@
 import { ICONS } from '../utils/icons';
-import { NAV_LINKS } from '../data/nav-links';
 import { createElement } from '../utils/helpers';
 import { createLogoLink } from './logo-link';
 import { createAuthButtons } from './auth-buttons';
+import { getCurrentPath, handleLinkClick, routes, type RoutePath } from '../router/router';
 
 const OPEN_CLASS = 'header__mobile-menu--open';
 
@@ -54,14 +54,19 @@ function createCloseButton(onClose: () => void): HTMLElement {
 function createMobileMenuLinks(onNavigate: () => void): HTMLElement {
   const nav = createElement('nav', { className: 'header__mobile-menu-links' });
 
-  for (const { label, active, href } of NAV_LINKS) {
+  for (const [href, { label }] of Object.entries(routes) as [RoutePath, { label: string }][]) {
+    const isActive = href === getCurrentPath();
+
     const link = createElement('a', {
-      className: `header__mobile-menu-link${active ? ' header__mobile-menu-link--active' : ''}`,
+      className: `header__mobile-menu-link${isActive ? ' header__mobile-menu-link--active' : ''}`,
       textContent: label,
       attributes: { href },
     });
 
-    link.addEventListener('click', onNavigate);
+    link.addEventListener('click', (event: MouseEvent) => {
+      handleLinkClick(event, href);
+      onNavigate();
+    });
     nav.append(link);
   }
 

@@ -1,5 +1,5 @@
 import { createMainLayout } from './layouts/main-layout';
-import { createHomePage } from './pages/home-page';
+import { initRouter } from './router/router';
 import './styles/main.scss';
 
 function createRoot(): HTMLElement {
@@ -9,11 +9,12 @@ function createRoot(): HTMLElement {
   return root;
 }
 
-function renderApp(root: HTMLElement) {
-  const page = createHomePage();
-  const layout = createMainLayout(page);
+function renderApp(root: HTMLElement): void {
+  const { layout, main } = createMainLayout();
 
   root.append(layout);
+
+  initRouter(main);
 }
 
 const root = createRoot();
