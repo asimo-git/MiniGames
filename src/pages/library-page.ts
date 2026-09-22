@@ -4,13 +4,28 @@ import { FILTER_CATEGORIES } from '../data/filter-sort-config';
 import { createSortDropdown } from '../components/library-page/sort-dropdown';
 import { createElement } from '../utils/helpers';
 import { createGameCard } from '../components/library-page/game-card';
+import { createPagination } from '../components/pagination';
 
 const GAMES: Game[] = gamesData.data;
 
+const GAMES_PER_PAGE = 6;
+const TOTAL_PAGES = Math.max(Math.ceil(GAMES.length / GAMES_PER_PAGE), 1);
+
 export function createLibraryPage(): HTMLElement {
+  const gamesList = createGamesList();
+
+  function showPage(pageNumber: number): void {
+    gamesList.replaceChildren(...createGameItems(pageNumber));
+  }
+
+  const pagination = createPagination({
+    totalPages: TOTAL_PAGES,
+    onPageChange: showPage,
+  });
+
   return createElement('div', {
     className: 'library-page',
-    children: [createHeader(), createToolbar(), createGamesList()],
+    children: [createHeader(), createToolbar(), gamesList, pagination],
   });
 }
 
@@ -50,14 +65,21 @@ function createToolbar(): HTMLElement {
   });
 }
 
-function createGamesList(): HTMLElement {
-  // const items = GAMES.map((game) =>
-  //   createElement('li', {
-  //     className: 'library-page__item',
-  //     children: [createGameCard(game)],
-  //   }),
-  // );
-  const items = GAMES.map((game) => createGameCard(game));
+function createGameItems(pageNumber: number): HTMLElement[] {
+  const startIndex = (pageNumber - 1) * GAMES_PER_PAGE;
+  const pageGames = GAMES.slice(startIndex, startIndex + GAMES_PER_PAGE);
 
-  return createElement('ul', { className: 'library-page__games', children: items });
+  return pageGames.map((game) =>
+    createElement('li', {
+      className: 'library-page__item',
+      children: [createGameCard(game)],
+    }),
+  );
+}
+
+function createGamesList(): HTMLElement {
+  return createElement('ul', {
+    className: 'library-page__games',
+    children: createGameItems(1),
+  });
 }

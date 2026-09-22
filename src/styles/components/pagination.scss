@@ -1,0 +1,41 @@
+@use '../abstracts' as styles;
+
+.pagination {
+  @include styles.flex($justify: center, $gap: styles.$size-2, $wrap: wrap);
+  @include styles.responsive-padding(
+    styles.$size-3 0 styles.$size-1,
+    styles.$size-5 0 0,
+    styles.$size-5 0 0
+  );
+
+  &__button {
+    @include styles.button-base(
+      $radius: styles.$radius-full,
+      $padding-y: 0,
+      $padding-x: 0,
+      $font-size: styles.$font-size-body-small
+    );
+
+    width: styles.$size-5;
+    height: styles.$size-5;
+    background-color: styles.$color-white;
+
+    &--active {
+      color: styles.$color-white;
+      background-color: styles.$color-bg-footer-low;
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          background-color: styles.$color-bg-footer-low;
+        }
+      }
+    }
+
+    &:disabled {
+      @include styles.solid-border($color: styles.$color-outline-variant);
+
+      background-color: styles.$color-bg;
+      opacity: 0.5;
+    }
+  }
+}
