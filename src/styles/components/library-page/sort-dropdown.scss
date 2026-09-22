@@ -1,0 +1,111 @@
+@use '../../abstracts' as styles;
+
+$desktop-width: 190px;
+$tablet-width: 182px;
+$menu-width: 200px;
+
+.sort-dropdown {
+  position: relative;
+  width: 100%;
+
+  @media (min-width: styles.$breakpoint-tablet) {
+    width: $tablet-width;
+  }
+
+  @media (min-width: styles.$breakpoint-laptop) {
+    width: $desktop-width;
+  }
+
+  &__trigger {
+    background-color: styles.$color-white;
+    width: 100%;
+    @include styles.button-base(
+      $radius: styles.$radius-extra-large,
+      $padding-y: styles.$size-1-5,
+      $padding-x: styles.$size-2
+    );
+    @include styles.responsive-font-size(
+      styles.$font-size-label-medium,
+      styles.$font-size-label-large,
+      styles.$font-size-label-large
+    );
+
+    justify-content: start;
+
+    &[aria-expanded='true'] {
+      background-color: styles.$color-surface;
+    }
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      padding: styles.$size-1-5 styles.$button-medium-padding-x;
+      height: styles.$size-5-5;
+    }
+  }
+
+  &__menu {
+    position: absolute;
+    top: calc(100% + styles.$size-05);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: styles.$z-index-dropdown;
+    width: $menu-width;
+    overflow: hidden;
+    background-color: styles.$color-white;
+    border: styles.$border-normal solid styles.$color-on-primary;
+    border-radius: styles.$radius-medium;
+    box-shadow: styles.$size-05 styles.$size-05 0 styles.$color-black;
+  }
+
+  &__item + &__item {
+    border-top: styles.$border-extra-thin solid styles.$color-outline;
+  }
+
+  &__option {
+    @include styles.flex($gap: styles.$size-1);
+
+    width: 100%;
+    padding: styles.$size-2;
+    font-size: styles.$font-size-body-small;
+    font-weight: styles.$font-weight-medium;
+    line-height: styles.$line-height-title-small;
+    color: styles.$color-on-primary;
+    text-align: left;
+    background-color: styles.$color-white;
+    border-block: styles.$border-extra-thin solid transparent;
+
+    &:focus-visible {
+      outline: styles.$border-normal solid styles.$color-tertiary;
+      outline-offset: styles.$border-normal * -1;
+    }
+
+    &:not([aria-pressed='true']) {
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          background-color: styles.$color-surface;
+        }
+      }
+    }
+
+    &[aria-pressed='true'] {
+      font-weight: styles.$font-weight-extra-bold;
+      background-color: styles.$color-primary-low;
+      border-block-color: styles.$color-on-primary;
+    }
+  }
+
+  &__check {
+    flex-shrink: 0;
+    width: styles.$size-1-75;
+    height: styles.$size-1-75;
+    color: styles.$color-tertiary;
+    visibility: hidden;
+  }
+
+  &__option[aria-pressed='true'] &__check {
+    visibility: visible;
+  }
+
+  &__label {
+    flex: 1;
+  }
+}

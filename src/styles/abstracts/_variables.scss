@@ -74,6 +74,7 @@ $size-075: 6px;
 $size-1: 8px;
 $size-1-25: 10px;
 $size-1-5: 12px;
+$size-1-75: 14px;
 $size-2: 16px;
 $size-2-25: 18px;
 $size-2-5: 20px;
@@ -81,6 +82,7 @@ $size-3: 24px;
 $size-3-5: 28px;
 $size-4: 32px;
 $size-5: 40px;
+$size-5-5: 44px;
 $size-6: 48px;
 $size-7: 56px;
 $size-8: 64px;
@@ -129,9 +131,10 @@ $shadow-soft:
 $breakpoint-desktop: 1920px;
 $breakpoint-laptop: 1100px;
 $breakpoint-tablet: 768px;
-$breakpoint-mobile: 376px;
+$breakpoint-mobile: 480px;
 
 // Border
+$border-extra-thin: 1px;
 $border-thin: 1.5px;
 $border-normal: 2px;
 $border-medium: 2.5px;

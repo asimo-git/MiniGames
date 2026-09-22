@@ -3,22 +3,11 @@ import favoriteIcon from '../../assets/icons/heart.svg';
 import arrowBackIcon from '../../assets/icons/arrow_back.svg';
 import arrowForwardIcon from '../../assets/icons/arrow_forward.svg';
 import gamesData from '../../data/all-games-seed.json';
-import { createElement } from '../../utils/helpers';
+import { createElement, formatCount } from '../../utils/helpers';
 import { createSubtitle } from '../subtitle';
+import type { Game } from '../../utils/types';
 
 type CardVariant = 'main' | 'secondary';
-
-interface Game {
-  slug: string;
-  name: string;
-  category: string;
-  price: string;
-  shortDescription: string;
-  rating: number;
-  likesCount: number;
-  cardImage: string;
-  featured: boolean;
-}
 
 const GAMES: Game[] = gamesData.data;
 
@@ -152,7 +141,7 @@ function createCardOverlay(title: string, rating: number, likesCount: number): H
     className: 'carousel__card-meta',
     children: [
       createMetaItem(starIcon, rating.toFixed(1), 'carousel__card-rating'),
-      createMetaItem(favoriteIcon, formatLikesCount(likesCount), 'carousel__card-likes'),
+      createMetaItem(favoriteIcon, formatCount(likesCount), 'carousel__card-likes'),
     ],
   });
 
@@ -173,12 +162,4 @@ function createMetaItem(icon: string, value: string, className: string): HTMLEle
       createElement('span', { className: 'carousel__card-meta-text', textContent: value }),
     ],
   });
-}
-
-function formatLikesCount(likesCount: number): string {
-  if (likesCount >= 1000) {
-    return `${(likesCount / 1000).toFixed(1)}K`;
-  }
-
-  return String(likesCount);
 }

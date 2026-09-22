@@ -1,9 +1,9 @@
 import { ICONS } from '../utils/icons';
-import { NAV_LINKS } from '../data/nav-links';
 import { createElement } from '../utils/helpers';
 import { createBurgerMenu } from './burger-menu';
 import { createLogoLink } from './logo-link';
 import { createAuthButtons } from './auth-buttons';
+import { getCurrentPath, handleLinkClick, routes, type RoutePath } from '../router/router';
 
 export function createHeader(): HTMLElement {
   const header = createElement('header', { className: 'header' });
@@ -20,12 +20,16 @@ function createNavActions(): HTMLElement {
 function createNavLinks(): HTMLElement {
   const nav = createElement('nav', { className: 'header__links' });
 
-  for (const { label, href, active } of NAV_LINKS) {
+  for (const [href, { label }] of Object.entries(routes) as [RoutePath, { label: string }][]) {
+    const isActive = href === getCurrentPath();
+
     const link = createElement('a', {
-      className: `header__link${active ? ' header__link--active' : ''}`,
+      className: `header__link${isActive ? ' header__link--active' : ''}`,
       textContent: label,
       attributes: { href },
     });
+
+    link.addEventListener('click', (event: MouseEvent) => handleLinkClick(event, href));
     nav.append(link);
   }
 

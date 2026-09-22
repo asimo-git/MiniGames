@@ -1,0 +1,87 @@
+@use '../abstracts' as styles;
+
+.library-page {
+  @include styles.responsive-padding;
+
+  &__header {
+    @include styles.responsive-padding(0 0 styles.$size-2, 0 0 styles.$size-3, 0 0 styles.$size-5);
+  }
+
+  &__title {
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+    margin-bottom: styles.$size-1;
+
+    @include styles.responsive-font-size(
+      styles.$font-size-display-small,
+      styles.$font-size-display-medium,
+      styles.$font-size-display-large
+    );
+  }
+
+  &__subtitle {
+    font-weight: styles.$font-weight-medium;
+    @include styles.responsive-font-size;
+  }
+
+  &__toolbar {
+    @include styles.flex($justify: space-between, $gap: styles.$size-2, $wrap: wrap);
+    padding: styles.$size-2 0;
+  }
+
+  &__filters {
+    @include styles.flex($gap: styles.$size-1);
+
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      gap: styles.$size-2;
+    }
+  }
+
+  &__chip {
+    @include styles.button-base(
+      $radius: styles.$radius-extra-large,
+      $padding-y: styles.$size-1,
+      $padding-x: styles.$size-2,
+      $font-size: styles.$font-size-body-small
+    );
+    @include styles.responsive-font-size(
+      styles.$font-size-label-medium,
+      styles.$font-size-label-large,
+      styles.$font-size-label-large
+    );
+    background-color: styles.$color-white;
+
+    &--active {
+      background-color: styles.$color-primary;
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          background-color: styles.$color-primary-high;
+        }
+      }
+    }
+  }
+
+  &__games {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: styles.$size-3;
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      gap: styles.$size-2;
+    }
+  }
+}
