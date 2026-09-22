@@ -4,7 +4,7 @@
   @include styles.responsive-padding;
 
   &__header {
-    @include styles.responsive-padding(0 0 styles.$size-5, 0 0 styles.$size-3, 0 0 styles.$size-2);
+    @include styles.responsive-padding(0 0 styles.$size-2, 0 0 styles.$size-3, 0 0 styles.$size-5);
   }
 
   &__title {
@@ -13,7 +13,7 @@
     margin-bottom: styles.$size-1;
 
     @include styles.responsive-font-size(
-      styles.$font-size-display-medium,
+      styles.$font-size-display-small,
       styles.$font-size-display-medium,
       styles.$font-size-display-large
     );
@@ -21,12 +21,7 @@
 
   &__subtitle {
     font-weight: styles.$font-weight-medium;
-
-    @include styles.responsive-font-size(
-      styles.$font-size-body-medium,
-      styles.$font-size-body-medium,
-      styles.$font-size-body-large
-    );
+    @include styles.responsive-font-size;
   }
 
   &__toolbar {
@@ -46,7 +41,7 @@
       display: none;
     }
 
-    @media (min-width: styles.$breakpoint-tablet) {
+    @media (min-width: styles.$breakpoint-laptop) {
       gap: styles.$size-2;
     }
   }

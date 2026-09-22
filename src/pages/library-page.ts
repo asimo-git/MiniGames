@@ -69,12 +69,7 @@ function createGameItems(pageNumber: number): HTMLElement[] {
   const startIndex = (pageNumber - 1) * GAMES_PER_PAGE;
   const pageGames = GAMES.slice(startIndex, startIndex + GAMES_PER_PAGE);
 
-  return pageGames.map((game) =>
-    createElement('li', {
-      className: 'library-page__item',
-      children: [createGameCard(game)],
-    }),
-  );
+  return pageGames.map((game) => createGameCard(game));
 }
 
 function createGamesList(): HTMLElement {

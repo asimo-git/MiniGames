@@ -30,12 +30,15 @@ $menu-width: 200px;
       styles.$font-size-label-large
     );
 
+    justify-content: start;
+
     &[aria-expanded='true'] {
       background-color: styles.$color-surface;
     }
 
     @media (min-width: styles.$breakpoint-laptop) {
       padding: styles.$size-1-5 styles.$button-medium-padding-x;
+      height: styles.$size-5-5;
     }
   }
 

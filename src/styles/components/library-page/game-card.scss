@@ -3,6 +3,7 @@
 $media-width-desktop: 320px;
 $media-width-tablet: 270px;
 $card-min-height: 198px;
+$card-mobile-height: 392px;
 $image-min-height-tablet: 152px;
 $image-min-height-mobile: 160px;
 
@@ -15,9 +16,11 @@ $image-min-height-mobile: 160px;
   border-radius: styles.$radius-large;
   border: styles.$border-medium solid styles.$color-on-primary;
   box-shadow: styles.$shadow-level-1;
+  height: $card-mobile-height;
 
   @media (min-width: styles.$breakpoint-mobile) {
     flex-direction: row;
+    height: auto;
   }
 
   @media (min-width: styles.$breakpoint-tablet) {
@@ -61,12 +64,17 @@ $image-min-height-mobile: 160px;
       $direction: column,
       $align: stretch,
       $justify: space-between,
-      $gap: styles.$size-2
+      $gap: styles.$size-2-25
     );
 
     flex: 1;
     min-width: 0;
-    padding: styles.$size-2;
+    padding: styles.$size-1-75;
+
+    @media (max-width: styles.$breakpoint-tablet) {
+      padding: styles.$size-1-5;
+      gap: styles.$size-1-5;
+    }
 
     @media (max-width: styles.$breakpoint-mobile) {
       display: grid;
@@ -137,9 +145,12 @@ $image-min-height-mobile: 160px;
     line-height: styles.$line-height-title-small;
     color: styles.$color-on-primary;
 
+    @media (max-width: styles.$breakpoint-tablet) {
+      font-size: styles.$font-size-headline-small;
+    }
+
     @media (max-width: styles.$breakpoint-mobile) {
       grid-area: price;
-      font-size: styles.$font-size-headline-small;
     }
 
     &--free {
@@ -148,9 +159,15 @@ $image-min-height-mobile: 160px;
   }
 
   &__description {
+    @include styles.responsive-font-size(
+      styles.$font-size-body-small,
+      styles.$font-size-body-small,
+      styles.$font-size-body-medium
+    );
+
     display: -webkit-box;
     overflow: hidden;
-    font-size: styles.$font-size-body-medium;
+
     font-weight: styles.$font-weight-medium;
     line-height: styles.$line-height-medium;
     color: styles.$color-on-bg;
@@ -158,11 +175,13 @@ $image-min-height-mobile: 160px;
     -webkit-line-clamp: 3;
     line-clamp: 3;
 
-    @media (max-width: styles.$breakpoint-mobile) {
-      grid-area: description;
-      font-size: styles.$font-size-body-small;
+    @media (max-width: styles.$breakpoint-tablet) {
       -webkit-line-clamp: 2;
       line-clamp: 2;
+    }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      grid-area: description;
     }
   }
 
@@ -177,9 +196,12 @@ $image-min-height-mobile: 160px;
   &__stats {
     @include styles.flex($gap: styles.$size-3);
 
+    @media (max-width: styles.$breakpoint-tablet) {
+      gap: styles.$size-2;
+    }
+
     @media (max-width: styles.$breakpoint-mobile) {
       grid-area: stats;
-      gap: styles.$size-2;
     }
   }
 
@@ -190,9 +212,14 @@ $image-min-height-mobile: 160px;
     font-weight: styles.$font-weight-bold;
     color: styles.$color-on-primary;
 
-    @media (max-width: styles.$breakpoint-mobile) {
+    @media (max-width: styles.$breakpoint-tablet) {
       font-size: styles.$font-size-label-medium;
     }
+  }
+
+  &__icon {
+    width: styles.$size-3;
+    height: styles.$size-2-25;
   }
 
   &__button {
@@ -203,8 +230,13 @@ $image-min-height-mobile: 160px;
       $font-size: styles.$font-size-body-small
     );
 
+    @media (max-width: styles.$breakpoint-tablet) {
+      padding: styles.$button-small-padding-y styles.$button-small-padding-x;
+    }
+
     @media (max-width: styles.$breakpoint-mobile) {
       grid-area: button;
+      padding: styles.$button-medium-padding-y styles.$button-medium-padding-x;
     }
   }
 }
