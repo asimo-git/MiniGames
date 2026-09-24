@@ -2,11 +2,12 @@ import { createElement, formatCount } from '../../utils/helpers';
 import type { Game } from '../../utils/types';
 import starIcon from '../../assets/icons/star.svg';
 import favoriteIcon from '../../assets/icons/heart.svg';
+import { openGameDetailDialog } from '../dialogs/game-detail-dialog';
 
 const FREE_PRICE_LABEL = 'free';
 
 export function createGameCard(game: Game): HTMLElement {
-  return createElement('li', {
+  const card = createElement('li', {
     className: `game-card`,
     children: [
       createMedia(game),
@@ -23,6 +24,12 @@ export function createGameCard(game: Game): HTMLElement {
       }),
     ],
   });
+
+  card.addEventListener('click', () => {
+    openGameDetailDialog();
+  });
+
+  return card;
 }
 
 function createMedia(game: Game): HTMLElement {

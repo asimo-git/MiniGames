@@ -1,0 +1,16 @@
+@use '../../abstracts' as styles;
+
+$panel-width: 600px;
+$max-panel-height: calc(100vh - #{styles.$size-10});
+
+.game-detail-dialog {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  width: $panel-width;
+  max-height: $max-panel-height;
+  background-color: styles.$color-bg;
+  border: styles.$border-thin solid styles.$color-outline-variant;
+  border-radius: styles.$radius-extra-large;
+  box-shadow: styles.$shadow-level-3;
+}

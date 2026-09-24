@@ -1,20 +1,15 @@
-import { createElement } from '../utils/helpers';
-import eyeIcon from '../assets/icons/auth/visibility.svg';
-import googleIcon from '../assets/icons/google.svg';
+import { createElement } from '../../utils/helpers';
+import eyeIcon from '../../assets/icons/auth/visibility.svg';
+import googleIcon from '../../assets/icons/google.svg';
 import {
   ICONS,
   REGISTER_FIELDS,
   LOGIN_FIELDS,
   type FieldConfig,
-} from '../data/auth-fields-config.ts';
+} from '../../data/auth-fields-config.ts';
+import { hideDialog, showDialog } from './dialog-backdrop.ts';
 
 export type AuthMode = 'login' | 'register';
-
-interface AuthDialogInstance {
-  backdrop: HTMLElement;
-  open: (mode?: AuthMode) => void;
-  close: () => void;
-}
 
 function buildTabClassName(isActive: boolean): string {
   return isActive ? `auth-dialog__tab auth-dialog__tab--active` : `auth-dialog__tab`;
@@ -229,22 +224,11 @@ function animatePanelSwap(
   );
 }
 
-function createAuthDialog(initialMode: AuthMode = 'login'): AuthDialogInstance {
+function createAuthDialogContent(initialMode: AuthMode): HTMLElement {
   let mode: AuthMode = initialMode;
 
-  const tabsSlot = createElement('div', { className: `auth-dialog__tabs-slot` });
-  const panel = createElement('div', { className: `auth-dialog__panel` });
-
-  const dialog = createElement('div', {
-    className: 'auth-dialog',
-    attributes: { role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Authentication' },
-    children: [tabsSlot, panel],
-  });
-
-  const backdrop = createElement('div', {
-    className: `auth-dialog-backdrop`,
-    children: [dialog],
-  });
+  const tabsSlot = createElement('div', { className: 'auth-dialog__tabs-slot' });
+  const panel = createElement('div', { className: 'auth-dialog__panel' });
 
   function switchMode(nextMode: AuthMode): void {
     if (nextMode === mode) {
@@ -256,77 +240,18 @@ function createAuthDialog(initialMode: AuthMode = 'login'): AuthDialogInstance {
     animatePanelSwap(panel, mode, switchMode);
   }
 
-  function renderAll(): void {
-    tabsSlot.replaceChildren(createTabs(mode, switchMode));
-    panel.replaceChildren(...createPanelContent(mode, switchMode));
-  }
+  tabsSlot.replaceChildren(createTabs(mode, switchMode));
+  panel.replaceChildren(...createPanelContent(mode, switchMode));
 
-  function handleKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Escape') {
-      close();
-    }
-  }
-
-  function handleBackdropClick(event: MouseEvent): void {
-    if (event.target === backdrop) {
-      close();
-    }
-  }
-
-  function open(openMode?: AuthMode): void {
-    if (openMode) {
-      mode = openMode;
-    }
-
-    renderAll();
-    document.body.append(backdrop);
-    document.addEventListener('keydown', handleKeydown);
-    backdrop.addEventListener('click', handleBackdropClick);
-
-    requestAnimationFrame(() => {
-      backdrop.classList.add(`auth-dialog-backdrop--visible`);
-    });
-  }
-
-  function close(): void {
-    backdrop.classList.remove(`auth-dialog-backdrop--visible`);
-    document.removeEventListener('keydown', handleKeydown);
-    backdrop.removeEventListener('click', handleBackdropClick);
-
-    backdrop.addEventListener(
-      'transitionend',
-      () => {
-        backdrop.remove();
-      },
-      { once: true },
-    );
-  }
-
-  return { backdrop, open, close };
+  return createElement('div', { className: 'auth-dialog', children: [tabsSlot, panel] });
 }
 
-const authDialogStore = (() => {
-  let dialog: AuthDialogInstance | undefined;
+export function openAuthDialog(mode: AuthMode = 'login'): void {
+  const content = createAuthDialogContent(mode);
 
-  return {
-    get(): AuthDialogInstance {
-      if (!dialog) {
-        dialog = createAuthDialog('login');
-      }
-
-      return dialog;
-    },
-
-    close(): void {
-      dialog?.close();
-    },
-  };
-})();
-
-export function openAuthDialog(mode: AuthMode): void {
-  authDialogStore.get().open(mode);
+  showDialog(content, { ariaLabel: 'Log in' });
 }
 
 export function closeAuthDialog(): void {
-  authDialogStore.close();
+  hideDialog();
 }
