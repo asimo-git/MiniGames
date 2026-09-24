@@ -49,3 +49,7 @@ const COUNT_FORMATTER = new Intl.NumberFormat('en-US', {
 export function formatCount(count: number): string {
   return COUNT_FORMATTER.format(count);
 }
+
+export function getPositiveModule(n: number, m: number): number {
+  return ((n % m) + m) % m;
+}
