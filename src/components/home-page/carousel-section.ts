@@ -8,10 +8,14 @@ import { createSubtitle } from '../subtitle';
 import type { Game } from '../../utils/types';
 
 type CardVariant = 'main' | 'secondary';
+type Direction = -1 | 1;
 
 const GAMES: Game[] = gamesData.data;
 
-const RING_BUFFER_SIZE = 2;
+const RING_BUFFER_SIZE = 3;
+const FALLBACK_TIMEOUT_MS = 700;
+const AUTOPLAY_INTERVAL_MS = 4000;
+const SWIPE_THRESHOLD_PX = 40;
 
 interface CardReferences {
   root: HTMLElement;
@@ -30,23 +34,34 @@ export function createCarouselSection(): HTMLElement {
   const featuredGames = GAMES.filter((game) => game.featured);
   const state: CarouselState = { centerRealIndex: 0, isAnimating: false };
 
-  const slider = createCarouselSlider(featuredGames, state.centerRealIndex);
-  const { viewport, track, cards } = slider;
+  const { viewport, track, cards } = createCarouselSlider(featuredGames, state.centerRealIndex);
 
-  const movePrevious = (): void => {
-    goToSlide(viewport, track, cards, featuredGames, state, -1);
+  const go = (direction: Direction): void => {
+    goToSlide(viewport, track, cards, featuredGames, state, direction);
   };
 
-  const moveNext = (): void => {
-    goToSlide(viewport, track, cards, featuredGames, state, 1);
+  const autoplay = createAutoplay(() => go(1));
+
+  const navigate = (direction: Direction): void => {
+    go(direction);
+    autoplay.reset();
   };
 
-  const header = createCarouselHeader(movePrevious, moveNext);
+  enableSwipe(viewport, navigate);
 
-  return createElement('section', {
+  const header = createCarouselHeader(
+    () => navigate(-1),
+    () => navigate(1),
+  );
+
+  const section = createElement('section', {
     className: 'carousel',
     children: [header, viewport],
   });
+
+  autoplay.attach(section);
+
+  return section;
 }
 
 function createCarouselHeader(onPrevious: () => void, onNext: () => void): HTMLElement {
@@ -119,12 +134,13 @@ function createCarouselSlider(
     children: cards.map((card) => card.root),
   });
 
+  track.style.setProperty('--ring', String(RING_BUFFER_SIZE));
+  track.style.setProperty('--shift', '0');
+
   const viewport = createElement('div', {
     className: 'carousel__viewport',
     children: [track],
   });
-
-  scrollToCard(track, RING_BUFFER_SIZE, false);
 
   return { viewport, track, cards };
 }
@@ -139,15 +155,14 @@ function goToSlide(
   cards: CardReferences[],
   featuredGames: Game[],
   state: CarouselState,
-  direction: number,
+  direction: Direction,
 ): void {
   if (state.isAnimating) return;
 
-  const windowSize = cards.length;
   const centerPosition = RING_BUFFER_SIZE;
   const targetPosition = centerPosition + direction;
 
-  if (targetPosition < 0 || targetPosition >= windowSize) return;
+  if (targetPosition < 0 || targetPosition >= cards.length) return;
 
   state.isAnimating = true;
 
@@ -156,60 +171,77 @@ function goToSlide(
   cards[targetPosition]!.root.classList.remove('carousel__card--secondary');
   cards[targetPosition]!.root.classList.add('carousel__card--main');
 
-  scrollToCard(track, targetPosition, true);
+  track.getBoundingClientRect();
+  track.style.setProperty('--shift', String(direction));
 
-  onScrollEnd(viewport, () => {
+  onTransitionEnd(track, () => {
     state.centerRealIndex = getPositiveModule(
       state.centerRealIndex + direction,
       featuredGames.length,
     );
 
-    for (let position = 0; position < windowSize; position += 1) {
-      const realIndex = getPositiveModule(
-        state.centerRealIndex - RING_BUFFER_SIZE + position,
-        featuredGames.length,
-      );
-      const variant: CardVariant = position === centerPosition ? 'main' : 'secondary';
-      updateGameCard(cards[position]!, featuredGames[realIndex]!, variant);
-    }
-
-    scrollToCard(track, centerPosition, false);
+    withoutTransitions(viewport, () => {
+      rotateCards(track, cards, featuredGames, state.centerRealIndex, direction);
+      track.style.setProperty('--shift', '0');
+    });
 
     state.isAnimating = false;
   });
 }
 
-function scrollToCard(track: HTMLElement, index: number, isSmooth: boolean): void {
-  const scroll = (): void => {
-    const card = track.children[index] as HTMLElement | undefined;
+function rotateCards(
+  track: HTMLElement,
+  cards: CardReferences[],
+  featuredGames: Game[],
+  centerRealIndex: number,
+  direction: Direction,
+): void {
+  let moved: CardReferences;
+  let realIndex: number;
 
-    if (!card) return;
-
-    card.scrollIntoView({
-      behavior: isSmooth ? 'smooth' : 'auto',
-      block: 'nearest',
-      inline: 'center',
-    });
-  };
-
-  requestAnimationFrame(scroll);
-}
-
-function onScrollEnd(viewport: HTMLElement, callback: () => void): void {
-  let isSettled = false;
-
-  const finish = (): void => {
-    if (isSettled) return;
-    isSettled = true;
-    viewport.removeEventListener('scrollend', finish);
-    callback();
-  };
-
-  if ('onscrollend' in window) {
-    viewport.addEventListener('scrollend', finish, { once: true });
+  if (direction > 0) {
+    moved = cards.shift()!;
+    cards.push(moved);
+    track.append(moved.root);
+    realIndex = getPositiveModule(centerRealIndex + RING_BUFFER_SIZE, featuredGames.length);
+  } else {
+    moved = cards.pop()!;
+    cards.unshift(moved);
+    track.prepend(moved.root);
+    realIndex = getPositiveModule(centerRealIndex - RING_BUFFER_SIZE, featuredGames.length);
   }
 
-  globalThis.setTimeout(finish, 450);
+  updateGameCard(moved, featuredGames[realIndex]!, 'secondary');
+}
+
+function withoutTransitions(viewport: HTMLElement, action: () => void): void {
+  viewport.classList.add('carousel__viewport--static');
+  action();
+  viewport.getBoundingClientRect();
+  viewport.classList.remove('carousel__viewport--static');
+}
+
+function onTransitionEnd(track: HTMLElement, callback: () => void): void {
+  let isSettled = false;
+
+  function handleTransitionEnd(event: TransitionEvent): void {
+    if (event.target === track && event.propertyName === 'transform') finish();
+  }
+
+  function finish(): void {
+    if (isSettled) return;
+    isSettled = true;
+    track.removeEventListener('transitionend', handleTransitionEnd);
+    clearTimeout(timeoutId);
+    callback();
+  }
+
+  const timeoutId: ReturnType<typeof setTimeout> = globalThis.setTimeout(
+    finish,
+    FALLBACK_TIMEOUT_MS,
+  );
+
+  track.addEventListener('transitionend', handleTransitionEnd);
 }
 
 function createGameCard(game: Game, variant: CardVariant): CardReferences {
@@ -219,7 +251,7 @@ function createGameCard(game: Game, variant: CardVariant): CardReferences {
       src: game.cardImage,
       alt: game.name,
     },
-  }) as HTMLImageElement;
+  });
 
   const title = createElement('p', {
     className: 'carousel__card-title',
@@ -298,4 +330,130 @@ function createMetaItem(
   });
 
   return { root, text };
+}
+
+function enableSwipe(viewport: HTMLElement, onSwipe: (direction: Direction) => void): void {
+  let startX = 0;
+  let startY = 0;
+  let isTracking = false;
+
+  viewport.addEventListener('pointerdown', (event) => {
+    if (event.pointerType === 'mouse') return;
+
+    isTracking = true;
+    startX = event.clientX;
+    startY = event.clientY;
+  });
+
+  viewport.addEventListener('pointerup', (event) => {
+    if (!isTracking) return;
+    isTracking = false;
+
+    const deltaX = event.clientX - startX;
+    const deltaY = event.clientY - startY;
+
+    if (Math.abs(deltaX) < SWIPE_THRESHOLD_PX || Math.abs(deltaX) < Math.abs(deltaY)) return;
+
+    onSwipe(deltaX < 0 ? 1 : -1);
+  });
+
+  viewport.addEventListener('pointercancel', () => {
+    isTracking = false;
+  });
+}
+
+type PauseReason = 'focus' | 'press' | 'offscreen' | 'hidden';
+
+function createAutoplay(onTick: () => void): {
+  reset: () => void;
+  attach: (target: HTMLElement) => void;
+} {
+  if (globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return { reset: () => {}, attach: () => {} };
+  }
+
+  const paused: Record<PauseReason, boolean> = {
+    focus: false,
+    press: false,
+    offscreen: true,
+    hidden: document.hidden,
+  };
+
+  let remainingMs = AUTOPLAY_INTERVAL_MS;
+  let startedAt = 0;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+  const isPaused = (): boolean => Object.values(paused).some(Boolean);
+
+  const schedule = (): void => {
+    if (timeoutId !== undefined || isPaused()) return;
+
+    startedAt = performance.now();
+    timeoutId = globalThis.setTimeout(() => {
+      timeoutId = undefined;
+      remainingMs = AUTOPLAY_INTERVAL_MS;
+      onTick();
+      schedule();
+    }, remainingMs);
+  };
+
+  const freeze = (): void => {
+    if (timeoutId === undefined) return;
+
+    clearTimeout(timeoutId);
+    timeoutId = undefined;
+    remainingMs = Math.max(0, remainingMs - (performance.now() - startedAt));
+  };
+
+  const reset = (): void => {
+    clearTimeout(timeoutId);
+    timeoutId = undefined;
+    remainingMs = AUTOPLAY_INTERVAL_MS;
+    schedule();
+  };
+
+  const setPaused = (reason: PauseReason, isActive: boolean): void => {
+    paused[reason] = isActive;
+
+    if (isPaused()) {
+      freeze();
+    } else {
+      schedule();
+    }
+  };
+
+  const attach = (target: HTMLElement): void => {
+    const activePointers = new Set<number>();
+
+    target.addEventListener('pointerdown', (event) => {
+      activePointers.add(event.pointerId);
+      setPaused('press', true);
+    });
+
+    const release = (event: PointerEvent): void => {
+      activePointers.delete(event.pointerId);
+      if (activePointers.size === 0) setPaused('press', false);
+    };
+
+    document.addEventListener('pointerup', release);
+    document.addEventListener('pointercancel', release);
+
+    target.addEventListener('focusin', (event) => {
+      setPaused('focus', (event.target as HTMLElement).matches(':focus-visible'));
+    });
+
+    target.addEventListener('focusout', () => {
+      setPaused('focus', false);
+    });
+
+    new IntersectionObserver(([entry]) => {
+      setPaused('offscreen', !entry?.isIntersecting);
+    }).observe(target);
+
+    document.addEventListener('visibilitychange', () => {
+      setPaused('hidden', document.hidden);
+    });
+  };
+
+  return { reset, attach };
 }
