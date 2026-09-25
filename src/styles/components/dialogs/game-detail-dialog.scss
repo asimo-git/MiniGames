@@ -8,14 +8,16 @@ $hero-height: 220px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  width: $panel-width;
+  max-width: $panel-width;
   background-color: styles.$color-bg;
-  border: styles.$border-thin solid styles.$color-outline-variant;
   border-radius: styles.$radius-extra-large;
-  box-shadow: styles.$shadow-level-3;
+  box-shadow:
+    styles.$shadow-level-3,
+    inset 0 0 0 styles.$border-thin styles.$color-outline-variant;
 
   &__hero {
     height: $hero-height;
+    object-fit: cover;
   }
 
   &__close {
@@ -38,6 +40,11 @@ $hero-height: 220px;
         background-color: styles.$color-surface;
       }
     }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      width: styles.$size-4;
+      height: styles.$size-4;
+    }
   }
 
   &__body {
@@ -47,7 +54,7 @@ $hero-height: 220px;
   }
 
   &__title-row {
-    @include styles.flex($justify: space-between, $gap: styles.$size-1);
+    @include styles.flex($justify: space-between, $gap: styles.$size-1, $wrap: wrap);
   }
 
   &__title {
@@ -61,7 +68,7 @@ $hero-height: 220px;
   }
 
   &__description {
-    line-height: styles.$line-height-title-small;
+    line-height: styles.$line-height-title-extra-small;
     color: styles.$color-on-bg;
   }
 
@@ -69,6 +76,10 @@ $hero-height: 220px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: styles.$size-2;
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   &__widget {
@@ -122,6 +133,15 @@ $hero-height: 220px;
     font-weight: styles.$font-weight-bold;
     border: styles.$border-thin solid styles.$color-outline-variant;
     box-shadow: styles.$shadow-level-1;
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      flex: 0;
+      padding: styles.$size-1-5;
+
+      span:nth-child(2) {
+        display: none;
+      }
+    }
   }
 
   &__favorite-icon {
@@ -131,11 +151,19 @@ $hero-height: 220px;
     -webkit-mask: url('../../../assets/icons/heart.svg') no-repeat center / contain;
     mask: url('../../../assets/icons/heart.svg') no-repeat center / contain;
     margin-right: styles.$size-1;
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      margin-right: 0;
+    }
   }
 
   &__favorite-icon--active {
     color: styles.$color-like;
   }
+
+  /////////////////////////////////////
+  // records
+  ////////////////////////////////////
 
   &__records {
     @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-2);
@@ -144,8 +172,14 @@ $hero-height: 220px;
   &__section-title {
     @include styles.flex($gap: styles.$size-1);
 
+    font-size: styles.$font-size-body-medium;
     font-weight: styles.$font-weight-bold;
     color: styles.$color-on-primary;
+
+    span:first-child {
+      font-size: styles.$font-size-body-large;
+      line-height: 1;
+    }
   }
 
   &__record-list {
@@ -158,6 +192,7 @@ $hero-height: 220px;
     padding: styles.$size-2;
     background-color: styles.$color-white;
     border-radius: styles.$radius-small;
+    line-height: styles.$line-height-title-small;
   }
 
   &__record-player {
@@ -166,6 +201,10 @@ $hero-height: 220px;
     font-size: styles.$font-size-body-small;
     font-weight: styles.$font-weight-bold;
     color: styles.$color-on-primary;
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      gap: styles.$size-1;
+    }
   }
 
   &__record-result {
@@ -174,6 +213,10 @@ $hero-height: 220px;
     font-size: styles.$font-size-body-small;
     font-weight: styles.$font-weight-bold;
     color: styles.$color-on-primary;
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      gap: styles.$size-1;
+    }
   }
 
   &__record-time {
@@ -339,7 +382,7 @@ $hero-height: 220px;
   &__comment-text {
     font-size: styles.$font-size-body-small;
     font-weight: styles.$font-weight-regular;
-    line-height: styles.$line-height-medium;
+    line-height: styles.$size-2-25;
     color: styles.$color-on-primary;
   }
 
