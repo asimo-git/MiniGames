@@ -1,5 +1,4 @@
 import closeIcon from '../../assets/icons/close.svg';
-
 import {
   COMMENTS,
   GAME_DESCRIPTION,
@@ -102,6 +101,22 @@ function createInfoWidget(widget: InfoWidget): HTMLElement {
 }
 
 function createActions(): HTMLElement {
+  let isFavorite = false;
+
+  const labelSpan = createElement('span', { textContent: 'Add to Favorites' });
+  const buttonIcon = createElement('span', { className: 'game-detail-dialog__favorite-icon' });
+  const AddToFavoritesButton = createElement('button', {
+    className: 'game-detail-dialog__favorite-button',
+    attributes: { type: 'button' },
+    children: [buttonIcon, labelSpan],
+  });
+
+  AddToFavoritesButton.addEventListener('click', () => {
+    isFavorite = !isFavorite;
+    buttonIcon.classList.toggle('game-detail-dialog__favorite-icon--active', isFavorite);
+    labelSpan.textContent = isFavorite ? 'Remove from Favorites' : 'Add to Favorites';
+  });
+
   return createElement('div', {
     className: 'game-detail-dialog__actions',
     children: [
@@ -110,14 +125,7 @@ function createActions(): HTMLElement {
         textContent: 'Play Now',
         attributes: { type: 'button' },
       }),
-      createElement('button', {
-        className: 'game-detail-dialog__favorite-button',
-        attributes: { type: 'button' },
-        children: [
-          createElement('span', { className: 'game-detail-dialog__favorite-icon' }),
-          createElement('span', { textContent: 'Add to Favorites' }),
-        ],
-      }),
+      AddToFavoritesButton,
     ],
   });
 }
@@ -249,15 +257,22 @@ function createCommentHeader(comment: Comment): HTMLElement {
 }
 
 function createCommentLikes(comment: Comment): HTMLElement {
+  const commentLikeButton = createElement('button', {
+    className: `game-detail-dialog__comment-like-button ${comment.isLiked ? 'game-detail-dialog__comment-like-button--active' : ''}`,
+    attributes: { type: 'button' },
+  });
+  const likesCounter = createElement('span', { textContent: String(comment.likesCount) });
+
+  commentLikeButton.addEventListener('click', () => {
+    comment.isLiked = !comment.isLiked;
+    comment.likesCount += comment.isLiked ? 1 : -1;
+    commentLikeButton.classList.toggle('game-detail-dialog__comment-like-button--active');
+    likesCounter.textContent = String(comment.likesCount);
+  });
+
   return createElement('div', {
     className: 'game-detail-dialog__comment-likes',
-    children: [
-      createElement('button', {
-        className: `game-detail-dialog__comment-like-button ${comment.isLiked ? 'game-detail-dialog__comment-like-button--active' : ''}`,
-        attributes: { type: 'button' },
-      }),
-      createElement('span', { textContent: String(comment.likesCount) }),
-    ],
+    children: [commentLikeButton, likesCounter],
   });
 }
 

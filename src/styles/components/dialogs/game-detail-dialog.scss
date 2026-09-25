@@ -61,7 +61,7 @@ $hero-height: 220px;
   }
 
   &__description {
-    line-height: styles.$line-height-medium;
+    line-height: styles.$line-height-title-small;
     color: styles.$color-on-bg;
   }
 
@@ -131,6 +131,10 @@ $hero-height: 220px;
     -webkit-mask: url('../../../assets/icons/heart.svg') no-repeat center / contain;
     mask: url('../../../assets/icons/heart.svg') no-repeat center / contain;
     margin-right: styles.$size-1;
+  }
+
+  &__favorite-icon--active {
+    color: styles.$color-like;
   }
 
   &__records {
@@ -353,6 +357,10 @@ $hero-height: 220px;
     background-color: currentColor;
     mask: url('../../../assets/icons/heart.svg') no-repeat center / contain;
     -webkit-mask: url('../../../assets/icons/heart.svg') no-repeat center / contain;
+  }
+
+  &__comment-like-button--active {
+    color: styles.$color-like;
   }
 
   &__comment-like-button--active {
