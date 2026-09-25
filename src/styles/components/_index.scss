@@ -7,7 +7,10 @@
 @forward 'home-page/carousel-section.scss';
 @forward 'home-page/leaderboard-section.scss';
 @forward 'home-page/game-developers-section.scss';
-@forward 'auth-dialog';
+@forward 'dialogs/auth-dialog';
 @forward 'pagination';
 @forward 'library-page/sort-dropdown.scss';
 @forward 'library-page/game-card.scss';
+@forward 'library-page/stats-badges.scss';
+@forward 'dialogs/dialog-backdrop.scss';
+@forward 'dialogs/game-detail-dialog.scss';
