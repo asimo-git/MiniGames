@@ -11,6 +11,7 @@ html:has(dialog.dialog-backdrop[open]) {
   max-height: none;
   background: transparent;
   border: none;
+  padding: styles.$size-1;
 
   &[open] {
     @include styles.flex($direction: column, $align: safe center, $justify: safe center);

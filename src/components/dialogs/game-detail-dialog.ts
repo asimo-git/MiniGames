@@ -1,7 +1,4 @@
 import closeIcon from '../../assets/icons/close.svg';
-import favoriteIcon from '../../assets/icons/heart.svg';
-import sendIcon from '../../assets/icons/send.svg';
-import starIcon from '../../assets/icons/star.svg';
 
 import {
   COMMENTS,
@@ -15,10 +12,12 @@ import {
 } from '../../data/game-detail-dialog';
 import type { Comment, InfoWidget, TopRecord } from '../../data/game-detail-dialog';
 import { createElement } from '../../utils/helpers';
+import { createStatsBadges } from '../library-page/stats-badges';
 import { hideDialog, showDialog } from './dialog-backdrop';
 
+// TODO: Change to real author initial
 const NEW_COMMENT_AUTHOR_INITIAL = 'U';
-const COMMENT_PLACEHOLDER = 'Write a comment...';
+const TEXTAREA_MAX_HEIGHT_PX = 76;
 
 export function openGameDetailDialog(): void {
   const panel = createContent(() => {
@@ -36,9 +35,9 @@ function createContent(onClose: () => void): HTMLElement {
 }
 
 function createHero(): HTMLElement {
-  return createElement('div', {
+  return createElement('img', {
     className: 'game-detail-dialog__hero',
-    attributes: { style: `background-image: url(${GAME_HERO_IMAGE})` },
+    attributes: { src: GAME_HERO_IMAGE, alt: GAME_TITLE },
   });
 }
 
@@ -75,29 +74,7 @@ function createTitleRow(): HTMLElement {
     className: 'game-detail-dialog__title-row',
     children: [
       createElement('h2', { className: 'game-detail-dialog__title', textContent: GAME_TITLE }),
-      createRatings(),
-    ],
-  });
-}
-
-function createRatings(): HTMLElement {
-  return createElement('div', {
-    className: 'game-detail-dialog__ratings',
-    children: [
-      createElement('span', {
-        className: 'game-detail-dialog__rating-item',
-        children: [
-          createElement('img', { attributes: { src: starIcon, alt: '' } }),
-          createElement('span', { textContent: GAME_RATING }),
-        ],
-      }),
-      createElement('span', {
-        className: 'game-detail-dialog__rating-item',
-        children: [
-          createElement('img', { attributes: { src: favoriteIcon, alt: '' } }),
-          createElement('span', { textContent: GAME_LIKES }),
-        ],
-      }),
+      createStatsBadges(GAME_RATING, GAME_LIKES),
     ],
   });
 }
@@ -137,7 +114,7 @@ function createActions(): HTMLElement {
         className: 'game-detail-dialog__favorite-button',
         attributes: { type: 'button' },
         children: [
-          createElement('img', { attributes: { src: favoriteIcon, alt: '' } }),
+          createElement('span', { className: 'game-detail-dialog__favorite-icon' }),
           createElement('span', { textContent: 'Add to Favorites' }),
         ],
       }),
@@ -211,6 +188,28 @@ function createCommentsSection(): HTMLElement {
 }
 
 function createNewCommentRow(): HTMLElement {
+  const commentInput = createElement('textarea', {
+    className: 'game-detail-dialog__comment-input',
+    attributes: { rows: '1', placeholder: 'Write a comment...' },
+  });
+
+  const inputWrapper = createElement('div', {
+    className: 'game-detail-dialog__input-wrapper',
+    children: [commentInput],
+  });
+
+  const sendButton = createElement('button', {
+    className: 'game-detail-dialog__send-button',
+    attributes: { type: 'button', 'aria-label': 'Send comment', disabled: '' },
+    children: [createElement('span', { className: 'game-detail-dialog__send-icon' })],
+  });
+
+  commentInput.addEventListener('input', () => {
+    commentInput.style.height = 'auto';
+    commentInput.style.height = `${Math.min(commentInput.scrollHeight, TEXTAREA_MAX_HEIGHT_PX)}px`;
+    sendButton.disabled = commentInput.value.trim().length === 0;
+  });
+
   return createElement('div', {
     className: 'game-detail-dialog__new-comment',
     children: [
@@ -218,15 +217,8 @@ function createNewCommentRow(): HTMLElement {
         className: 'game-detail-dialog__avatar',
         textContent: NEW_COMMENT_AUTHOR_INITIAL,
       }),
-      createElement('input', {
-        className: 'game-detail-dialog__comment-input',
-        attributes: { type: 'text', placeholder: COMMENT_PLACEHOLDER },
-      }),
-      createElement('button', {
-        className: 'game-detail-dialog__send-button',
-        attributes: { type: 'button', 'aria-label': 'Send comment' },
-        children: [createElement('img', { attributes: { src: sendIcon, alt: '' } })],
-      }),
+      inputWrapper,
+      sendButton,
     ],
   });
 }
@@ -257,12 +249,13 @@ function createCommentHeader(comment: Comment): HTMLElement {
 }
 
 function createCommentLikes(comment: Comment): HTMLElement {
-  const iconUrl = comment.isLiked ? favoriteIcon : favoriteIcon;
-
-  return createElement('span', {
+  return createElement('div', {
     className: 'game-detail-dialog__comment-likes',
     children: [
-      createElement('img', { attributes: { src: iconUrl, alt: '' } }),
+      createElement('button', {
+        className: `game-detail-dialog__comment-like-button ${comment.isLiked ? 'game-detail-dialog__comment-like-button--active' : ''}`,
+        attributes: { type: 'button' },
+      }),
       createElement('span', { textContent: String(comment.likesCount) }),
     ],
   });

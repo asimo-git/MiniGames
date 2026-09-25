@@ -1,0 +1,30 @@
+@use '../../abstracts' as styles;
+
+.card__stats {
+  @include styles.flex($gap: styles.$size-3);
+
+  @media (max-width: styles.$breakpoint-tablet) {
+    gap: styles.$size-2;
+  }
+
+  @media (max-width: styles.$breakpoint-mobile) {
+    grid-area: stats;
+  }
+}
+
+.card__stat {
+  @include styles.flex($gap: styles.$size-05);
+
+  font-size: styles.$font-size-body-small;
+  font-weight: styles.$font-weight-bold;
+  color: styles.$color-on-primary;
+
+  @media (max-width: styles.$breakpoint-tablet) {
+    font-size: styles.$font-size-label-medium;
+  }
+}
+
+.card__icon {
+  width: styles.$size-3;
+  height: styles.$size-2-25;
+}

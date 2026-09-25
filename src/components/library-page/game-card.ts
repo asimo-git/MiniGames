@@ -1,8 +1,7 @@
-import { createElement, formatCount } from '../../utils/helpers';
+import { createElement } from '../../utils/helpers';
 import type { Game } from '../../utils/types';
-import starIcon from '../../assets/icons/star.svg';
-import favoriteIcon from '../../assets/icons/heart.svg';
 import { openGameDetailDialog } from '../dialogs/game-detail-dialog';
+import { createStatsBadges } from './stats-badges';
 
 const FREE_PRICE_LABEL = 'free';
 
@@ -65,31 +64,11 @@ function createHeader(game: Game): HTMLElement {
   });
 }
 
-function createStats(game: Game): HTMLElement {
-  const createStat = (iconName: string, value: string): HTMLElement => {
-    return createElement('div', {
-      className: 'game-card__stat',
-      children: [
-        createElement('img', {
-          className: 'game-card__icon',
-          attributes: { src: iconName, alt: '' },
-        }),
-        createElement('span', { textContent: value }),
-      ],
-    });
-  };
-
-  const rating = createStat(starIcon, game.rating.toFixed(1));
-  const likes = createStat(favoriteIcon, formatCount(game.likesCount));
-
-  return createElement('div', { className: 'game-card__stats', children: [rating, likes] });
-}
-
 function createFooter(game: Game): HTMLElement {
   return createElement('div', {
     className: 'game-card__footer',
     children: [
-      createStats(game),
+      createStatsBadges(game.rating, game.likesCount),
       createElement('a', {
         className: 'game-card__button',
         textContent: 'Details',

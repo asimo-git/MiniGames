@@ -23,8 +23,8 @@ export interface Comment {
 }
 
 export const GAME_TITLE = 'Tukoni: Forest Keepers';
-export const GAME_RATING = '4.9';
-export const GAME_LIKES = '31.2K';
+export const GAME_RATING = 4.9;
+export const GAME_LIKES = 31_200;
 export const GAME_HERO_IMAGE = '/assets/images/hero-detail-dialog.png';
 
 export const GAME_DESCRIPTION =
