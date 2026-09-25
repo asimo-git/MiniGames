@@ -24,10 +24,6 @@ export function createGameCard(game: Game): HTMLElement {
     ],
   });
 
-  card.addEventListener('click', () => {
-    openGameDetailDialog();
-  });
-
   return card;
 }
 
@@ -65,15 +61,26 @@ function createHeader(game: Game): HTMLElement {
 }
 
 function createFooter(game: Game): HTMLElement {
+  const detailsButton = createElement('button', {
+    className: 'game-card__button',
+    textContent: 'Details',
+    attributes: { type: 'button', 'aria-label': `Details of ${game.name}` },
+  });
+
+  detailsButton.addEventListener('click', () => {
+    openGameDetailDialog();
+  });
+
   return createElement('div', {
     className: 'game-card__footer',
     children: [
       createStatsBadges(game.rating, game.likesCount),
-      createElement('a', {
-        className: 'game-card__button',
-        textContent: 'Details',
-        attributes: { href: `/games/${game.slug}`, 'aria-label': `Details of ${game.name}` },
-      }),
+      // createElement('a', {
+      //   className: 'game-card__button',
+      //   textContent: 'Details',
+      //   attributes: { href: `/games/${game.slug}`, 'aria-label': `Details of ${game.name}` },
+      // }),
+      detailsButton,
     ],
   });
 }

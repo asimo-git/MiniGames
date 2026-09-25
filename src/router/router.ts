@@ -26,11 +26,16 @@ export function getCurrentPath(): string {
 
 const state: { main: HTMLElement | undefined } = { main: undefined };
 
+export const ROUTE_CHANGE_EVENT = 'route-change';
+
 function renderRoute(): void {
   if (!state.main) return;
+
   const path = getCurrentPath();
   const route = routes[path as RoutePath];
   state.main.replaceChildren(route ? route.render() : createNotFoundPage());
+
+  globalThis.dispatchEvent(new CustomEvent(ROUTE_CHANGE_EVENT));
 }
 
 export function initRouter(main: HTMLElement): void {
@@ -46,8 +51,9 @@ export function navigate(path: string): void {
 }
 
 export function handleLinkClick(event: MouseEvent, href: RoutePath): void {
-  if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey)
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
     return;
+
   event.preventDefault();
   navigate(href);
 }

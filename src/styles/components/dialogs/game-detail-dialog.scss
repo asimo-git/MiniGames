@@ -148,8 +148,15 @@ $hero-height: 220px;
     width: styles.$size-3;
     height: styles.$size-3;
     background-color: currentColor;
-    -webkit-mask: url('../../../assets/icons/heart.svg') no-repeat center / contain;
-    mask: url('../../../assets/icons/heart.svg') no-repeat center / contain;
+    -webkit-mask-image: url('../../../assets/icons/heart.svg');
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+
+    mask-image: url('../../../assets/icons/heart.svg');
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
     margin-right: styles.$size-1;
 
     @media (max-width: styles.$breakpoint-mobile) {
@@ -336,8 +343,15 @@ $hero-height: 220px;
     width: styles.$size-3;
     height: styles.$size-3;
     background-color: currentColor;
-    mask: url('../../../assets/icons/send.svg') no-repeat center / contain;
-    -webkit-mask: url('../../../assets/icons/send.svg') no-repeat center / contain;
+    mask-image: url('../../../assets/icons/send.svg');
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+
+    -webkit-mask-image: url('../../../assets/icons/send.svg');
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
   }
 
   &__comment-list {
@@ -398,8 +412,15 @@ $hero-height: 220px;
     width: styles.$size-2;
     height: styles.$size-2;
     background-color: currentColor;
-    mask: url('../../../assets/icons/heart.svg') no-repeat center / contain;
-    -webkit-mask: url('../../../assets/icons/heart.svg') no-repeat center / contain;
+    mask-image: url('../../../assets/icons/heart.svg');
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+
+    -webkit-mask-image: url('../../../assets/icons/heart.svg');
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
   }
 
   &__comment-like-button--active {
