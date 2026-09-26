@@ -1,0 +1,429 @@
+@use '../../abstracts' as styles;
+
+$panel-width: 600px;
+$hero-height: 220px;
+
+.game-detail-dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-width: $panel-width;
+  background-color: styles.$color-bg;
+  border-radius: styles.$radius-extra-large;
+  box-shadow:
+    styles.$shadow-level-3,
+    inset 0 0 0 styles.$border-thin styles.$color-outline-variant;
+
+  &__hero {
+    height: $hero-height;
+    object-fit: cover;
+  }
+
+  &__close {
+    position: absolute;
+    top: styles.$size-2;
+    right: styles.$size-2;
+
+    @include styles.flex($justify: center);
+
+    width: styles.$size-5;
+    height: styles.$size-5;
+    background-color: styles.$color-white;
+    border-radius: styles.$radius-full;
+    box-shadow: styles.$size-05 styles.$size-05 0 styles.$color-black;
+
+    @include styles.solid-border;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: styles.$color-surface;
+      }
+    }
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      width: styles.$size-4;
+      height: styles.$size-4;
+    }
+  }
+
+  &__body {
+    @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-3);
+
+    padding: styles.$size-3;
+  }
+
+  &__title-row {
+    @include styles.flex($justify: space-between, $gap: styles.$size-1, $wrap: wrap);
+  }
+
+  &__title {
+    font-size: styles.$font-size-display-medium;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+  }
+
+  & .card__stats {
+    gap: styles.$size-2;
+  }
+
+  &__description {
+    line-height: styles.$line-height-title-extra-small;
+    color: styles.$color-on-bg;
+  }
+
+  &__widgets {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: styles.$size-2;
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__widget {
+    @include styles.flex($direction: column, $align: flex-start, $gap: styles.$size-1);
+
+    padding: styles.$size-1 styles.$size-2;
+    background-color: styles.$color-white;
+    border: styles.$border-thin solid styles.$color-outline-variant;
+    border-radius: styles.$radius-small;
+    box-shadow: styles.$size-075 styles.$size-075 0 styles.$color-on-primary;
+  }
+
+  &__widget-label {
+    font-size: styles.$font-size-label-medium;
+    font-weight: styles.$font-weight-regular;
+    color: styles.$color-on-bg;
+  }
+
+  &__widget-value {
+    font-size: styles.$font-size-body-small;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+  }
+
+  &__actions {
+    @include styles.flex($gap: styles.$size-2);
+  }
+
+  &__play-button {
+    @include styles.button-accent(
+      $radius: styles.$radius-medium,
+      $font-size: styles.$font-size-body-medium
+    );
+
+    height: styles.$size-6;
+    flex: 1;
+    box-shadow:
+      styles.$shadow-level-1,
+      inset 0 0 0 styles.$border-normal styles.$color-on-primary;
+  }
+
+  &__favorite-button {
+    @include styles.button-base(
+      $radius: styles.$radius-medium,
+      $padding-y: styles.$size-1-5,
+      $font-size: styles.$font-size-body-medium
+    );
+
+    flex: 1;
+    height: styles.$size-6;
+    font-weight: styles.$font-weight-bold;
+    border: styles.$border-thin solid styles.$color-outline-variant;
+    box-shadow: styles.$shadow-level-1;
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      flex: 0;
+      padding: styles.$size-1-5;
+
+      span:nth-child(2) {
+        display: none;
+      }
+    }
+  }
+
+  &__favorite-icon {
+    width: styles.$size-3;
+    height: styles.$size-3;
+    background-color: currentColor;
+    -webkit-mask-image: url('../../../assets/icons/heart.svg');
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+
+    mask-image: url('../../../assets/icons/heart.svg');
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+    margin-right: styles.$size-1;
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      margin-right: 0;
+    }
+  }
+
+  &__favorite-icon--active {
+    color: styles.$color-like;
+  }
+
+  /////////////////////////////////////
+  // records
+  ////////////////////////////////////
+
+  &__records {
+    @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-2);
+  }
+
+  &__section-title {
+    @include styles.flex($gap: styles.$size-1);
+
+    font-size: styles.$font-size-body-medium;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+
+    span:first-child {
+      font-size: styles.$font-size-body-large;
+      line-height: 1;
+    }
+  }
+
+  &__record-list {
+    @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-1);
+  }
+
+  &__record {
+    @include styles.flex($justify: space-between, $gap: styles.$size-2);
+
+    padding: styles.$size-2;
+    background-color: styles.$color-white;
+    border-radius: styles.$radius-small;
+    line-height: styles.$line-height-title-small;
+  }
+
+  &__record-player {
+    @include styles.flex($gap: styles.$size-2);
+
+    font-size: styles.$font-size-body-small;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      gap: styles.$size-1;
+    }
+  }
+
+  &__record-result {
+    @include styles.flex($gap: styles.$size-2);
+
+    font-size: styles.$font-size-body-small;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      gap: styles.$size-1;
+    }
+  }
+
+  &__record-time {
+    font-size: styles.$font-size-label-medium;
+    font-weight: styles.$font-weight-regular;
+    color: styles.$color-on-bg;
+  }
+
+  /////////////////////////////////////
+  // Comments
+  ////////////////////////////////////
+
+  &__comments {
+    @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-2);
+  }
+
+  &__new-comment {
+    @include styles.flex($gap: styles.$size-2);
+  }
+
+  &__avatar {
+    flex-shrink: 0;
+    width: styles.$size-5;
+    height: styles.$size-5;
+
+    @include styles.flex($justify: center);
+
+    font-size: styles.$font-size-body-small;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+    background-color: styles.$color-primary;
+    border-radius: styles.$radius-full;
+
+    @include styles.solid-border($width: styles.$border-thin);
+
+    &--random-1 {
+      background-color: styles.$color-avatar-random-1;
+    }
+
+    &--random-3 {
+      background-color: styles.$color-avatar-random-3;
+    }
+  }
+
+  &__input-wrapper {
+    flex: 1;
+    min-height: styles.$size-6;
+    max-height: styles.$size-11;
+    padding: styles.$size-1 styles.$size-2 0;
+    color: styles.$color-on-primary;
+    background-color: styles.$color-white;
+    border-radius: styles.$radius-small;
+    @include styles.solid-border($width: styles.$border-thin);
+
+    &:focus-within {
+      @include styles.solid-border($width: styles.$border-normal, $color: styles.$color-on-primary);
+    }
+  }
+
+  &__comment-input {
+    overflow-y: auto;
+    font-size: styles.$font-size-body-small;
+    width: 100%;
+    resize: none;
+    padding-right: styles.$size-1;
+
+    &::placeholder {
+      color: styles.$color-text-placeholder;
+    }
+
+    @supports not selector(::-webkit-scrollbar) {
+      scrollbar-color: styles.$color-scrollbar-thumb styles.$color-scrollbar-track;
+      scrollbar-width: thin;
+    }
+
+    &::-webkit-scrollbar {
+      width: styles.$size-05;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: styles.$color-scrollbar-track;
+      border-radius: styles.$radius-extra-small;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: styles.$color-scrollbar-thumb;
+      border-radius: styles.$radius-extra-small;
+    }
+  }
+
+  &__send-button {
+    flex-shrink: 0;
+    width: styles.$size-5;
+    height: styles.$size-5;
+    color: styles.$color-white;
+    background-color: styles.$color-bg-footer-low;
+    border-radius: styles.$radius-small;
+
+    @include styles.flex($justify: center);
+
+    &:not(:disabled) {
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          background-color: styles.$color-tertiary;
+        }
+      }
+    }
+
+    &:disabled {
+      color: styles.$color-on-bg;
+      background-color: styles.$color-outline-variant;
+      opacity: 0.5;
+    }
+  }
+
+  &__send-icon {
+    width: styles.$size-3;
+    height: styles.$size-3;
+    background-color: currentColor;
+    mask-image: url('../../../assets/icons/send.svg');
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+
+    -webkit-mask-image: url('../../../assets/icons/send.svg');
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+  }
+
+  &__comment-list {
+    @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-2);
+  }
+
+  &__comment {
+    @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-1);
+
+    padding: styles.$size-2;
+    background-color: styles.$color-white;
+    border-radius: styles.$radius-medium;
+    box-shadow: styles.$size-075 styles.$size-075 0 styles.$color-on-primary;
+  }
+
+  &__comment-header {
+    @include styles.flex($justify: space-between, $gap: styles.$size-2);
+  }
+
+  &__comment-author {
+    @include styles.flex($gap: styles.$size-1);
+
+    .game-detail-dialog__avatar {
+      width: styles.$size-3-5;
+      height: styles.$size-3-5;
+      font-size: styles.$font-size-label-medium;
+    }
+  }
+
+  &__comment-username {
+    font-size: styles.$font-size-body-small;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+  }
+
+  &__comment-time {
+    flex-shrink: 0;
+    font-size: styles.$font-size-label-medium;
+    color: styles.$color-on-bg;
+  }
+
+  &__comment-text {
+    font-size: styles.$font-size-body-small;
+    font-weight: styles.$font-weight-regular;
+    line-height: styles.$size-2-25;
+    color: styles.$color-on-primary;
+  }
+
+  &__comment-likes {
+    @include styles.flex($gap: styles.$size-05);
+
+    font-size: styles.$font-size-label-medium;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+  }
+
+  &__comment-like-button {
+    width: styles.$size-2;
+    height: styles.$size-2;
+    background-color: currentColor;
+    mask-image: url('../../../assets/icons/heart.svg');
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+
+    -webkit-mask-image: url('../../../assets/icons/heart.svg');
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+  }
+
+  &__comment-likes--active {
+    color: styles.$color-like;
+  }
+}

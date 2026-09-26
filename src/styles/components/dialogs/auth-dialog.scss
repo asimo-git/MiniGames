@@ -1,4 +1,4 @@
-@use '../abstracts' as styles;
+@use '../../abstracts' as styles;
 
 $dialog-width: 420px;
 $ease-emphasized: cubic-bezier(0.22, 1, 0.36, 1);
@@ -6,53 +6,19 @@ $panel-translate-y: 6px;
 $transform-scale: scale(0.94) translateY(12px);
 $shadow-offset-hard: 8px;
 
-html:has(.auth-dialog-backdrop--visible) {
-  overflow: hidden;
-}
-
-.auth-dialog-backdrop {
-  position: fixed;
-  inset: 0;
-  overflow-y: auto;
-  z-index: styles.$z-index-overlay;
-  display: flex;
-  align-items: safe center;
-  justify-content: center;
-  padding: styles.$size-2;
-  background-color: styles.$color-backdrop;
-  opacity: 0;
-  transition: opacity styles.$duration-slow ease;
-
-  &--visible {
-    opacity: 1;
-
-    .auth-dialog {
-      transform: scale(1) translateY(0);
-      opacity: 1;
-    }
-  }
-}
-
 .auth-dialog {
   @include styles.flex(column, flex-start, flex-start, styles.$size-3);
 
   position: relative;
   box-sizing: border-box;
   width: $dialog-width;
-  max-width: calc(100vw - #{styles.$size-4});
-  margin-block: auto;
+  max-width: 100%;
   padding: styles.$size-4;
   background-color: styles.$color-bg;
   border-radius: styles.$radius-extra-large;
   box-shadow:
     inset 0 0 0 styles.$border-thick styles.$color-on-primary,
     $shadow-offset-hard $shadow-offset-hard 0 styles.$color-black;
-
-  opacity: 0;
-  transform: $transform-scale;
-  transition:
-    opacity styles.$duration-slow ease,
-    transform styles.$duration-slow $ease-emphasized;
 
   &__tabs-slot {
     width: 100%;

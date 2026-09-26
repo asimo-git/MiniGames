@@ -39,3 +39,17 @@ export function getAvatarLetters(nickname: string): string {
   const firstTwo = nickname.slice(0, 2);
   return firstTwo.toUpperCase();
 }
+
+const COUNT_FORMATTER = new Intl.NumberFormat('en-US', {
+  notation: 'compact',
+  maximumFractionDigits: 1,
+});
+
+// 1500 → 1.5K
+export function formatCount(count: number): string {
+  return COUNT_FORMATTER.format(count);
+}
+
+export function getPositiveModule(n: number, m: number): number {
+  return ((n % m) + m) % m;
+}

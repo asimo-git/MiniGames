@@ -1,9 +1,9 @@
 import { ICONS } from '../utils/icons';
-import { NAV_LINKS } from '../data/nav-links';
 import { createElement } from '../utils/helpers';
 import { createBurgerMenu } from './burger-menu';
 import { createLogoLink } from './logo-link';
 import { createAuthButtons } from './auth-buttons';
+import { createNavLinksComponent } from './nav-links-component';
 
 export function createHeader(): HTMLElement {
   const header = createElement('header', { className: 'header' });
@@ -20,14 +20,10 @@ function createNavActions(): HTMLElement {
 function createNavLinks(): HTMLElement {
   const nav = createElement('nav', { className: 'header__links' });
 
-  for (const { label, href, active } of NAV_LINKS) {
-    const link = createElement('a', {
-      className: `header__link${active ? ' header__link--active' : ''}`,
-      textContent: label,
-      attributes: { href },
-    });
-    nav.append(link);
-  }
+  createNavLinksComponent(nav, {
+    linkClassName: 'header__link',
+    activeLinkClassName: 'header__link--active',
+  });
 
   return nav;
 }

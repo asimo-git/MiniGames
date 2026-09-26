@@ -4,9 +4,9 @@ import rssIcon from '../assets/icons/rss_feed.svg';
 import codeIcon from '../assets/icons/code.svg';
 import { createElement } from '../utils/helpers';
 import { createLogoLink } from './logo-link';
+import { createNavLinksComponent } from './nav-links-component';
 
 const NAV_COLUMNS: { title: string; links: string[] }[] = [
-  { title: 'Explore', links: ['Home', 'Library', 'Categories', 'Tournaments'] },
   { title: 'Company', links: ['About Us', 'Contact', 'Privacy Policy', 'Terms of Service'] },
 ];
 
@@ -51,6 +51,8 @@ function createTextColumn(): HTMLElement {
 function createLinkColumns(): HTMLElement {
   const columns = createElement('div', { className: 'footer__columns' });
 
+  columns.append(createRoutesLinkColumn('Explore'));
+
   for (const { title, links } of NAV_COLUMNS) {
     columns.append(createLinkColumn(title, links));
   }
@@ -58,6 +60,22 @@ function createLinkColumns(): HTMLElement {
   columns.append(createCommunityColumn());
 
   return columns;
+}
+
+function createRoutesLinkColumn(title: string): HTMLElement {
+  const column = createElement('div', { className: 'footer__column' });
+
+  const heading = createElement('p', { className: 'footer__column-title', textContent: title });
+  const nav = createElement('nav', { className: 'footer__column-links' });
+
+  createNavLinksComponent(nav, {
+    linkClassName: 'footer__link',
+    activeLinkClassName: 'footer__link--active',
+  });
+
+  column.append(heading, nav);
+
+  return column;
 }
 
 function createLinkColumn(title: string, links: string[]): HTMLElement {

@@ -119,7 +119,11 @@
   }
 }
 
-@mixin responsive-font-size($mobile, $tablet, $laptop) {
+@mixin responsive-font-size(
+  $mobile: tokens.$font-size-body-small,
+  $tablet: tokens.$font-size-body-medium,
+  $laptop: tokens.$font-size-body-large
+) {
   font-size: $mobile;
 
   @media (min-width: tokens.$breakpoint-tablet) {
