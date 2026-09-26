@@ -2,6 +2,7 @@ import starIcon from '../../assets/icons/star.svg';
 import favoriteIcon from '../../assets/icons/heart.svg';
 import { createElement, formatCount } from '../../utils/helpers';
 import type { Game } from '../../utils/types';
+import { openGameDetailDialog } from '../dialogs/game-detail-dialog';
 
 export type CardVariant = 'main' | 'secondary';
 
@@ -47,6 +48,10 @@ export function createGameCard(game: Game, variant: CardVariant): CardReferences
   const imageWrapper = createElement('div', {
     className: 'carousel__card-image-wrapper',
     children: [image, overlay],
+  });
+
+  imageWrapper.addEventListener('click', () => {
+    openGameDetailDialog();
   });
 
   const root = createElement('div', {
