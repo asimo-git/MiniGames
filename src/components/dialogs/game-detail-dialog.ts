@@ -258,22 +258,24 @@ function createCommentHeader(comment: Comment): HTMLElement {
 
 function createCommentLikes(comment: Comment): HTMLElement {
   const commentLikeButton = createElement('button', {
-    className: `game-detail-dialog__comment-like-button ${comment.isLiked ? 'game-detail-dialog__comment-like-button--active' : ''}`,
+    className: `game-detail-dialog__comment-like-button`,
     attributes: { type: 'button' },
   });
   const likesCounter = createElement('span', { textContent: String(comment.likesCount) });
 
+  const commentLikesContainer = createElement('div', {
+    className: `game-detail-dialog__comment-likes ${comment.isLiked ? 'game-detail-dialog__comment-likes--active' : ''}`,
+    children: [commentLikeButton, likesCounter],
+  });
+
   commentLikeButton.addEventListener('click', () => {
     comment.isLiked = !comment.isLiked;
     comment.likesCount += comment.isLiked ? 1 : -1;
-    commentLikeButton.classList.toggle('game-detail-dialog__comment-like-button--active');
+    commentLikesContainer.classList.toggle('game-detail-dialog__comment-likes--active');
     likesCounter.textContent = String(comment.likesCount);
   });
 
-  return createElement('div', {
-    className: 'game-detail-dialog__comment-likes',
-    children: [commentLikeButton, likesCounter],
-  });
+  return commentLikesContainer;
 }
 
 function createCommentCard(comment: Comment): HTMLElement {

@@ -65,7 +65,8 @@
 
       @media (hover: hover) and (pointer: fine) {
         &:hover {
-          background-color: styles.$color-primary-high;
+          background-color: styles.$color-primary;
+          cursor: default;
         }
       }
     }

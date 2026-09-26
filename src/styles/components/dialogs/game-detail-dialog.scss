@@ -423,11 +423,7 @@ $hero-height: 220px;
     -webkit-mask-size: contain;
   }
 
-  &__comment-like-button--active {
-    color: styles.$color-like;
-  }
-
-  &__comment-like-button--active {
+  &__comment-likes--active {
     color: styles.$color-like;
   }
 }

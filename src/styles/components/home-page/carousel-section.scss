@@ -57,6 +57,16 @@ $carousel-easing: cubic-bezier(0.65, 0, 0.35, 1);
       width: styles.$size-5;
       height: styles.$size-5;
     }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: styles.$color-surface;
+      }
+
+      &--next:hover {
+        background-color: styles.$color-primary-high;
+      }
+    }
   }
 
   &__nav-icon {

@@ -35,6 +35,7 @@ function renderRoute(): void {
   const route = routes[path as RoutePath];
   state.main.replaceChildren(route ? route.render() : createNotFoundPage());
 
+  globalThis.scrollTo(0, 0);
   globalThis.dispatchEvent(new CustomEvent(ROUTE_CHANGE_EVENT));
 }
 

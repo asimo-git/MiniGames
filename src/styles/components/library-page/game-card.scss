@@ -35,15 +35,17 @@ $image-min-height-mobile: 160px;
 
   &__media {
     position: relative;
-    flex-grow: 1;
+    // flex-grow: 1;
     max-width: 100%;
-    min-height: $image-min-height-mobile;
+    height: $image-min-height-mobile;
     aspect-ratio: auto;
 
     @media (min-width: styles.$breakpoint-mobile) {
       max-width: $media-width-tablet;
       min-height: $image-min-height-tablet;
+      height: auto;
       flex-direction: row;
+      flex-grow: 1;
     }
 
     @media (min-width: styles.$breakpoint-laptop) {
@@ -71,7 +73,7 @@ $image-min-height-mobile: 160px;
     min-width: 0;
     padding: styles.$size-1-75;
 
-    @media (max-width: styles.$breakpoint-tablet) {
+    @media (max-width: styles.$breakpoint-laptop) {
       padding: styles.$size-1-5;
       gap: styles.$size-1-5;
     }
@@ -175,7 +177,7 @@ $image-min-height-mobile: 160px;
     -webkit-line-clamp: 3;
     line-clamp: 3;
 
-    @media (max-width: styles.$breakpoint-tablet) {
+    @media (max-width: styles.$breakpoint-laptop) {
       -webkit-line-clamp: 2;
       line-clamp: 2;
     }
@@ -196,7 +198,7 @@ $image-min-height-mobile: 160px;
   &__stats {
     @include styles.flex($gap: styles.$size-3);
 
-    @media (max-width: styles.$breakpoint-tablet) {
+    @media (max-width: styles.$breakpoint-laptop) {
       gap: styles.$size-2;
     }
 
@@ -212,7 +214,7 @@ $image-min-height-mobile: 160px;
     font-weight: styles.$font-weight-bold;
     color: styles.$color-on-primary;
 
-    @media (max-width: styles.$breakpoint-tablet) {
+    @media (max-width: styles.$breakpoint-laptop) {
       font-size: styles.$font-size-label-medium;
     }
   }
@@ -230,7 +232,7 @@ $image-min-height-mobile: 160px;
       $font-size: styles.$font-size-body-small
     );
 
-    @media (max-width: styles.$breakpoint-tablet) {
+    @media (max-width: styles.$breakpoint-laptop) {
       padding: styles.$button-small-padding-y styles.$button-small-padding-x;
     }
 

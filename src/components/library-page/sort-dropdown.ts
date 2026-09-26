@@ -20,7 +20,7 @@ function createTrigger(): HTMLButtonElement {
 function createOption(label: string, isSelected: boolean): HTMLButtonElement {
   return createElement('button', {
     className: 'sort-dropdown__option',
-    attributes: { type: 'button', 'aria-pressed': String(isSelected) },
+    attributes: { type: 'button', 'aria-pressed': String(isSelected), 'data-label': label },
     children: [
       createElement('img', {
         className: 'sort-dropdown__check',
@@ -97,7 +97,11 @@ export function createSortDropdown(): HTMLElement {
   });
 
   for (const option of options) {
-    option.addEventListener('click', () => selectOption(options, option));
+    option.addEventListener('click', () => {
+      selectOption(options, option);
+      trigger.textContent = `Sort by: ${option.dataset.label}`;
+      closeMenu();
+    });
   }
 
   return root;

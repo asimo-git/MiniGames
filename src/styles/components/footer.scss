@@ -1,6 +1,7 @@
 @use '../abstracts' as styles;
 
 $promo-col-width: 400px;
+$column-width: 87px;
 
 .footer {
   @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-8);
@@ -58,11 +59,14 @@ $promo-col-width: 400px;
 
   &__column {
     @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-2);
-    white-space: nowrap;
 
     @media (max-width: styles.$breakpoint-mobile) {
       flex: 1 1 0;
     }
+  }
+
+  &__column-links {
+    @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-2);
   }
 
   &__column-title {
@@ -74,12 +78,21 @@ $promo-col-width: 400px;
   &__link {
     font-size: styles.$font-size-body-small;
     color: styles.$color-on-bg-footer;
+    white-space: nowrap;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        color: styles.$color-white;
+        color: styles.$color-primary;
+        text-decoration: underline;
+        text-shadow:
+          0.35px 0 0 currentColor,
+          -0.35px 0 0 currentColor;
       }
     }
+  }
+
+  &__link--active {
+    font-weight: styles.$font-weight-bold;
   }
 
   &__socials {
@@ -96,7 +109,7 @@ $promo-col-width: 400px;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: styles.$color-bg-footer-lowest;
+        @include styles.solid-border($color: styles.$color-primary);
       }
     }
 
