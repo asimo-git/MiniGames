@@ -59,14 +59,14 @@ $column-width: 87px;
 
   &__column {
     @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-2);
-    // flex: 0 0 $column-width;
-    // width: $column-width;
-    // white-space: nowrap;
 
     @media (max-width: styles.$breakpoint-mobile) {
       flex: 1 1 0;
-      // width: auto;
     }
+  }
+
+  &__column-links {
+    @include styles.flex($direction: column, $align: stretch, $gap: styles.$size-2);
   }
 
   &__column-title {
@@ -78,14 +78,15 @@ $column-width: 87px;
   &__link {
     font-size: styles.$font-size-body-small;
     color: styles.$color-on-bg-footer;
-    width: $column-width;
     white-space: nowrap;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        font-weight: styles.$font-weight-bold;
         color: styles.$color-primary;
         text-decoration: underline;
+        text-shadow:
+          0.35px 0 0 currentColor,
+          -0.35px 0 0 currentColor;
       }
     }
   }

@@ -4,13 +4,7 @@ import rssIcon from '../assets/icons/rss_feed.svg';
 import codeIcon from '../assets/icons/code.svg';
 import { createElement } from '../utils/helpers';
 import { createLogoLink } from './logo-link';
-import {
-  getCurrentPath,
-  handleLinkClick,
-  ROUTE_CHANGE_EVENT,
-  routes,
-  type RoutePath,
-} from '../router/router';
+import { createNavLinksComponent } from './nav-links-component';
 
 const NAV_COLUMNS: { title: string; links: string[] }[] = [
   { title: 'Company', links: ['About Us', 'Contact', 'Privacy Policy', 'Terms of Service'] },
@@ -54,36 +48,6 @@ function createTextColumn(): HTMLElement {
   return column;
 }
 
-// function createLinkColumns(): HTMLElement {
-//   const columns = createElement('div', { className: 'footer__columns' });
-
-//   for (const { title, links } of NAV_COLUMNS) {
-//     columns.append(createLinkColumn(title, links));
-//   }
-
-//   columns.append(createCommunityColumn());
-
-//   return columns;
-// }
-
-// function createLinkColumn(title: string, links: string[]): HTMLElement {
-//   const column = createElement('div', { className: 'footer__column' });
-
-//   const heading = createElement('p', { className: 'footer__column-title', textContent: title });
-//   column.append(heading);
-
-//   for (const label of links) {
-//     const link = createElement('a', {
-//       className: 'footer__link',
-//       textContent: label,
-//       attributes: { href: '#' },
-//     });
-//     column.append(link);
-//   }
-
-//   return column;
-// }
-
 function createLinkColumns(): HTMLElement {
   const columns = createElement('div', { className: 'footer__columns' });
 
@@ -102,31 +66,14 @@ function createRoutesLinkColumn(title: string): HTMLElement {
   const column = createElement('div', { className: 'footer__column' });
 
   const heading = createElement('p', { className: 'footer__column-title', textContent: title });
-  column.append(heading);
+  const nav = createElement('nav', { className: 'footer__column-links' });
 
-  for (const [href, { label }] of Object.entries(routes) as [RoutePath, { label: string }][]) {
-    const isActive = href === getCurrentPath();
+  createNavLinksComponent(nav, {
+    linkClassName: 'footer__link',
+    activeLinkClassName: 'footer__link--active',
+  });
 
-    const link = createElement('a', {
-      className: `footer__link${isActive ? ' footer__link--active' : ''}`,
-      textContent: label,
-      attributes: { href },
-    });
-
-    link.addEventListener('click', (event: MouseEvent) => handleLinkClick(event, href));
-    column.append(link);
-  }
-
-  const updateActiveLink = (): void => {
-    const currentPath = getCurrentPath();
-    for (const link of column.children) {
-      if (!(link instanceof HTMLAnchorElement)) continue;
-      const href = link.getAttribute('href');
-      link.classList.toggle('footer__link--active', href === currentPath);
-    }
-  };
-
-  globalThis.addEventListener(ROUTE_CHANGE_EVENT, updateActiveLink);
+  column.append(heading, nav);
 
   return column;
 }
