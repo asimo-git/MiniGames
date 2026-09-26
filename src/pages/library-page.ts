@@ -43,10 +43,23 @@ function createHeader(): HTMLElement {
 }
 
 function createFilterChip(label: string, isActive: boolean): HTMLButtonElement {
-  return createElement('button', {
+  const filterButton = createElement('button', {
     className: isActive ? 'library-page__chip library-page__chip--active' : 'library-page__chip',
     textContent: label,
   });
+
+  filterButton.addEventListener('click', () => {
+    const group = filterButton.parentElement;
+    if (!group) return;
+
+    for (const chip of group.children) {
+      chip.classList.remove('library-page__chip--active');
+    }
+
+    filterButton.classList.add('library-page__chip--active');
+  });
+
+  return filterButton;
 }
 
 function createToolbar(): HTMLElement {
