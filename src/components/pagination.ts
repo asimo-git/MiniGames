@@ -1,14 +1,35 @@
 import { createElement } from '../utils/helpers';
 import backwardIcon from '../assets/icons/chevron_backward.svg';
 import forwardIcon from '../assets/icons/chevron_forward.svg';
+import { updateQuery } from '../router/router';
 
 interface PaginationOptions {
+  currentPage: number;
   totalPages: number;
-  onPageChange: (pageNumber: number) => void;
 }
+
+const PAGINATION_CLASS = 'pagination';
 const DESKTOP_VISIBLE_PAGES = 4;
 const MOBILE_VISIBLE_PAGES = 3;
 const mobileQuery = globalThis.matchMedia('(max-width: 480px)');
+
+const renderers = new WeakMap<HTMLElement, () => void>();
+const subscription = { isActive: false };
+
+function renderAttachedPaginations(): void {
+  for (const navigation of document.querySelectorAll<HTMLElement>(`.${PAGINATION_CLASS}`)) {
+    renderers.get(navigation)?.();
+  }
+}
+
+function subscribeToViewportChanges(): void {
+  if (subscription.isActive) {
+    return;
+  }
+
+  subscription.isActive = true;
+  mobileQuery.addEventListener('change', renderAttachedPaginations);
+}
 
 function createPageButton(onSelect: (pageNumber: number) => void): HTMLButtonElement {
   const button = createElement('button', {
@@ -64,19 +85,26 @@ function getVisibleCount(totalPages: number): number {
   return Math.min(maxForViewport, totalPages);
 }
 
-export function createPagination({ totalPages, onPageChange }: PaginationOptions): HTMLElement {
-  let currentPage = 1;
+export function createPagination({ currentPage, totalPages }: PaginationOptions): HTMLElement {
   let pageButtons: HTMLButtonElement[] = [];
 
+  function selectPage(pageNumber: number): void {
+    if (!currentPage || pageNumber === currentPage || pageNumber < 1 || pageNumber > totalPages) {
+      return;
+    }
+
+    updateQuery({ page: pageNumber });
+  }
+
   const previousButton = createArrowButton('Previous page', backwardIcon, () => {
-    goToPage(currentPage - 1);
+    selectPage(currentPage - 1);
   });
   const nextButton = createArrowButton('Next page', forwardIcon, () => {
-    goToPage(currentPage + 1);
+    selectPage(currentPage + 1);
   });
 
   const navigation = createElement('nav', {
-    className: 'pagination',
+    className: PAGINATION_CLASS,
     attributes: { 'aria-label': 'Pagination' },
     children: [previousButton, nextButton],
   });
@@ -85,7 +113,7 @@ export function createPagination({ totalPages, onPageChange }: PaginationOptions
     const visibleCount = getVisibleCount(totalPages);
 
     if (visibleCount !== pageButtons.length) {
-      pageButtons = Array.from({ length: visibleCount }, () => createPageButton(goToPage));
+      pageButtons = Array.from({ length: visibleCount }, () => createPageButton(selectPage));
       navigation.replaceChildren(previousButton, ...pageButtons, nextButton);
     }
 
@@ -101,19 +129,8 @@ export function createPagination({ totalPages, onPageChange }: PaginationOptions
     nextButton.disabled = currentPage >= totalPages;
   }
 
-  function goToPage(pageNumber: number): void {
-    const targetPage = Math.min(Math.max(pageNumber, 1), totalPages);
-
-    if (targetPage === currentPage) {
-      return;
-    }
-
-    currentPage = targetPage;
-    render();
-    onPageChange(currentPage);
-  }
-
-  mobileQuery.addEventListener('change', render);
+  subscribeToViewportChanges();
+  renderers.set(navigation, render);
   render();
 
   return navigation;

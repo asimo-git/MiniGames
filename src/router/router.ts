@@ -32,7 +32,7 @@ export const routes: Record<RoutePath, RouteConfig> = {
 
   [ROUTE_PATHS.library]: {
     label: 'Library',
-    render: createLibraryPage,
+    render: (RouteState) => createLibraryPage(RouteState),
   },
 
   [ROUTE_PATHS.tournaments]: {

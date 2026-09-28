@@ -5,27 +5,25 @@ import { createSortDropdown } from '../components/library-page/sort-dropdown';
 import { createElement } from '../utils/helpers';
 import { createGameCard } from '../components/library-page/game-card';
 import { createPagination } from '../components/pagination';
+import { updateQuery, type RouteState } from '../router/router';
 
 const GAMES: Game[] = gamesData.data;
 
 const GAMES_PER_PAGE = 6;
 const TOTAL_PAGES = Math.max(Math.ceil(GAMES.length / GAMES_PER_PAGE), 1);
 
-export function createLibraryPage(): HTMLElement {
-  const gamesList = createGamesList();
-
-  function showPage(pageNumber: number): void {
-    gamesList.replaceChildren(...createGameItems(pageNumber));
-  }
+export function createLibraryPage(routeState: RouteState): HTMLElement {
+  const currentPage = Math.min(routeState.page ?? 1, TOTAL_PAGES);
+  console.log(GAMES.length);
 
   const pagination = createPagination({
     totalPages: TOTAL_PAGES,
-    onPageChange: showPage,
+    currentPage,
   });
 
   return createElement('div', {
     className: 'library-page',
-    children: [createHeader(), createToolbar(), gamesList, pagination],
+    children: [createHeader(), createToolbar(routeState), createGamesList(currentPage), pagination],
   });
 }
 
@@ -49,21 +47,20 @@ function createFilterChip(label: string, isActive: boolean): HTMLButtonElement {
   });
 
   filterButton.addEventListener('click', () => {
-    const group = filterButton.parentElement;
-    if (!group) return;
-
-    for (const chip of group.children) {
-      chip.classList.remove('library-page__chip--active');
-    }
-
-    filterButton.classList.add('library-page__chip--active');
+    updateQuery({
+      category: label === 'All Games' ? undefined : label,
+      page: 1,
+    });
   });
 
   return filterButton;
 }
 
-function createToolbar(): HTMLElement {
-  const chips = FILTER_CATEGORIES.map((category, index) => createFilterChip(category, index === 0));
+function createToolbar(routeState: RouteState): HTMLElement {
+  const activeCategory = routeState.category ?? 'All Games';
+  const chips = FILTER_CATEGORIES.map((category) =>
+    createFilterChip(category, category === activeCategory),
+  );
 
   return createElement('div', {
     className: 'library-page__toolbar',
@@ -73,7 +70,7 @@ function createToolbar(): HTMLElement {
         attributes: { role: 'group', 'aria-label': 'Filter by category' },
         children: chips,
       }),
-      createSortDropdown(),
+      createSortDropdown(routeState.sort),
     ],
   });
 }
@@ -85,9 +82,9 @@ function createGameItems(pageNumber: number): HTMLElement[] {
   return pageGames.map((game) => createGameCard(game));
 }
 
-function createGamesList(): HTMLElement {
+function createGamesList(page: number): HTMLElement {
   return createElement('ul', {
     className: 'library-page__games',
-    children: createGameItems(1),
+    children: createGameItems(page),
   });
 }
