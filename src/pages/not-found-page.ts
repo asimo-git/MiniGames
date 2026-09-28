@@ -1,5 +1,5 @@
 import { createElement } from '../utils/helpers';
-import { handleLinkClick } from '../router/router';
+import { handleLinkClick, ROUTE_PATHS } from '../router/router';
 
 export function createNotFoundPage(): HTMLElement {
   return createElement('div', {
@@ -23,16 +23,15 @@ function createContent(): HTMLElement[] {
   ];
 }
 
-//TODO: change the path to the home page
 function createHomeLink(): HTMLAnchorElement {
   const link = createElement('a', {
     className: 'not-found-page__button',
     textContent: 'Return to Home Page',
-    attributes: { href: '/' },
+    attributes: { href: ROUTE_PATHS.home },
   });
 
   link.addEventListener('click', (event) => {
-    handleLinkClick(event, '/');
+    handleLinkClick(event, ROUTE_PATHS.home);
   });
 
   return link;

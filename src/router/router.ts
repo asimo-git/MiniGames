@@ -2,42 +2,53 @@ import { createNotFoundPage } from '../pages/not-found-page';
 import { createHomePage } from '../pages/home-page';
 import { createLibraryPage } from '../pages/library-page';
 
-export type RoutePath = '/' | '/library' | '/tournaments' | '/community';
+export const ROUTE_PATHS = {
+  home: '/',
+  library: '/library',
+  tournaments: '/tournaments',
+  community: '/community',
+} as const;
+
+export type RoutePath = (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
 
 interface RouteConfig {
   label: string;
-  render: () => HTMLElement;
+  render: (routeState: RouteState) => HTMLElement;
+}
+
+export interface RouteState {
+  path: RoutePath;
+  category?: string;
+  sort?: string;
+  page?: number;
+  gameId?: string;
 }
 
 export const routes: Record<RoutePath, RouteConfig> = {
-  '/': { label: 'Home', render: createHomePage },
-  '/library': { label: 'Library', render: createLibraryPage },
-  '/tournaments': { label: 'Tournaments', render: createHomePage },
-  '/community': { label: 'Community', render: createHomePage },
+  [ROUTE_PATHS.home]: {
+    label: 'Home',
+    render: createHomePage,
+  },
+
+  [ROUTE_PATHS.library]: {
+    label: 'Library',
+    render: createLibraryPage,
+  },
+
+  [ROUTE_PATHS.tournaments]: {
+    label: 'Tournaments',
+    render: createHomePage,
+  },
+
+  [ROUTE_PATHS.community]: {
+    label: 'Community',
+    render: createHomePage,
+  },
 };
-
-//"/about/" → "/about"
-//"/about" → "/about"
-export function getCurrentPath(): string {
-  const path = globalThis.location.pathname;
-
-  return path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
-}
 
 const state: { main: HTMLElement | undefined } = { main: undefined };
 
 export const ROUTE_CHANGE_EVENT = 'route-change';
-
-function renderRoute(): void {
-  if (!state.main) return;
-
-  const path = getCurrentPath();
-  const route = routes[path as RoutePath];
-  state.main.replaceChildren(route ? route.render() : createNotFoundPage());
-
-  globalThis.scrollTo(0, 0);
-  globalThis.dispatchEvent(new CustomEvent(ROUTE_CHANGE_EVENT));
-}
 
 export function initRouter(main: HTMLElement): void {
   state.main = main;
@@ -45,9 +56,52 @@ export function initRouter(main: HTMLElement): void {
   renderRoute();
 }
 
-export function navigate(path: string): void {
-  if (getCurrentPath() === path) return;
+function renderRoute(): void {
+  if (!state.main) return;
+
+  const routeState = getRouteState();
+  const route = routes[routeState.path];
+  state.main.replaceChildren(route ? route.render(routeState) : createNotFoundPage());
+
+  globalThis.scrollTo(0, 0);
+  globalThis.dispatchEvent(new CustomEvent(ROUTE_CHANGE_EVENT));
+}
+
+export function getRouteState(): RouteState {
+  const url = new URL(globalThis.location.href);
+
+  //"/about/" → "/about"
+  //"/about" → "/about"
+  const path =
+    url.pathname !== '/' && url.pathname.endsWith('/') ? url.pathname.slice(0, -1) : url.pathname;
+
+  return {
+    path: path as RoutePath,
+    category: url.searchParams.get('category') ?? undefined,
+    sort: url.searchParams.get('sort') ?? undefined,
+    page: getPage(url),
+    gameId: url.searchParams.get('game') ?? undefined,
+  };
+}
+
+export function navigate(path: RoutePath): void {
+  if (getRouteState().path === path) return;
   globalThis.history.pushState(undefined, '', path);
+  renderRoute();
+}
+
+export function updateQuery(changes: Record<string, string | number | undefined>): void {
+  const url = new URL(globalThis.location.href);
+
+  for (const [key, value] of Object.entries(changes)) {
+    if (value === undefined) {
+      url.searchParams.delete(key);
+    } else {
+      url.searchParams.set(key, String(value));
+    }
+  }
+
+  globalThis.history.pushState(undefined, '', url);
   renderRoute();
 }
 
@@ -57,4 +111,13 @@ export function handleLinkClick(event: MouseEvent, href: RoutePath): void {
 
   event.preventDefault();
   navigate(href);
+}
+
+function getPage(url: URL): number | undefined {
+  const value = url.searchParams.get('page');
+
+  if (!value) return undefined;
+  const page = Number(value);
+
+  return Number.isSafeInteger(page) && page > 0 ? page : undefined;
 }
