@@ -1,6 +1,6 @@
 import { createElement } from '../utils/helpers';
 import {
-  getCurrentPath,
+  getRouteState,
   handleLinkClick,
   ROUTE_CHANGE_EVENT,
   routes,
@@ -17,8 +17,10 @@ export function createNavLinksComponent(
   nav: HTMLElement,
   { linkClassName, activeLinkClassName, onNavigate }: NavLinksOptions,
 ): void {
+  const routeState = getRouteState();
+
   for (const [href, { label }] of Object.entries(routes) as [RoutePath, { label: string }][]) {
-    const isActive = href === getCurrentPath();
+    const isActive = href === routeState.path;
 
     const link = createElement('a', {
       className: `${linkClassName}${isActive ? ` ${activeLinkClassName}` : ''}`,
@@ -35,7 +37,8 @@ export function createNavLinksComponent(
   }
 
   const updateActiveLink = (): void => {
-    const currentPath = getCurrentPath();
+    const currentPath = getRouteState().path;
+
     for (const link of nav.children) {
       const href = link.getAttribute('href');
       link.classList.toggle(activeLinkClassName, href === currentPath);
