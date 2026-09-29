@@ -1,5 +1,5 @@
+import { openDialog } from '../router/dialog-router';
 import { createElement } from '../utils/helpers';
-import { openAuthDialog } from './dialogs/auth-dialog';
 
 export function createAuthButtons(classPrefix: string, onClick?: () => void): HTMLElement {
   const wrapper = createElement('div', { className: `${classPrefix}s` });
@@ -16,8 +16,8 @@ export function createAuthButtons(classPrefix: string, onClick?: () => void): HT
     attributes: { type: 'button' },
   });
 
-  logIn.addEventListener('click', () => openAuthDialog('login'));
-  signUp.addEventListener('click', () => openAuthDialog('register'));
+  logIn.addEventListener('click', () => openDialog({ auth: 'login' }));
+  signUp.addEventListener('click', () => openDialog({ auth: 'register' }));
 
   if (onClick) {
     logIn.addEventListener('click', onClick);

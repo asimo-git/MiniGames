@@ -10,6 +10,8 @@ export const ROUTE_PATHS = {
 } as const;
 
 export type RoutePath = (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS];
+export type AuthMode = 'login' | 'register';
+export type DialogParametrs = { game: string } | { auth: AuthMode };
 
 interface RouteConfig {
   label: string;
@@ -22,6 +24,12 @@ export interface RouteState {
   sort?: string;
   page?: number;
   gameId?: string;
+  auth?: AuthMode;
+}
+
+interface UpdateQueryOptions {
+  replace?: boolean;
+  state?: unknown;
 }
 
 export const routes: Record<RoutePath, RouteConfig> = {
@@ -46,7 +54,13 @@ export const routes: Record<RoutePath, RouteConfig> = {
   },
 };
 
-const state: { main: HTMLElement | undefined } = { main: undefined };
+const state: {
+  main: HTMLElement | undefined;
+  pageKey: string | undefined;
+} = {
+  main: undefined,
+  pageKey: undefined,
+};
 
 export const ROUTE_CHANGE_EVENT = 'route-change';
 
@@ -60,10 +74,19 @@ function renderRoute(): void {
   if (!state.main) return;
 
   const routeState = getRouteState();
-  const route = routes[routeState.path];
-  state.main.replaceChildren(route ? route.render(routeState) : createNotFoundPage());
+  const { path, category, sort, page } = routeState;
 
-  globalThis.scrollTo(0, 0);
+  // параметры диалога (game, auth) в ключ не входят: страница под диалогом не перерисовывается
+  const pageKey = JSON.stringify([path, category, sort, page]);
+
+  if (pageKey !== state.pageKey) {
+    state.pageKey = pageKey;
+
+    const route = routes[path];
+    state.main.replaceChildren(route ? route.render(routeState) : createNotFoundPage());
+    globalThis.scrollTo(0, 0);
+  }
+
   globalThis.dispatchEvent(new CustomEvent(ROUTE_CHANGE_EVENT));
 }
 
@@ -75,12 +98,15 @@ export function getRouteState(): RouteState {
   const path =
     url.pathname !== '/' && url.pathname.endsWith('/') ? url.pathname.slice(0, -1) : url.pathname;
 
+  const auth = url.searchParams.get('auth');
+
   return {
     path: path as RoutePath,
     category: url.searchParams.get('category') ?? undefined,
     sort: url.searchParams.get('sort') ?? undefined,
     page: getPage(url),
     gameId: url.searchParams.get('game') ?? undefined,
+    auth: auth === 'login' || auth === 'register' ? auth : undefined,
   };
 }
 
@@ -90,7 +116,10 @@ export function navigate(path: RoutePath): void {
   renderRoute();
 }
 
-export function updateQuery(changes: Record<string, string | number | undefined>): void {
+export function updateQuery(
+  changes: Record<string, string | number | undefined>,
+  { replace = false, state: historyState }: UpdateQueryOptions = {},
+): void {
   const url = new URL(globalThis.location.href);
 
   for (const [key, value] of Object.entries(changes)) {
@@ -101,7 +130,12 @@ export function updateQuery(changes: Record<string, string | number | undefined>
     }
   }
 
-  globalThis.history.pushState(undefined, '', url);
+  if (replace) {
+    globalThis.history.replaceState(globalThis.history.state, '', url);
+  } else {
+    globalThis.history.pushState(historyState, '', url);
+  }
+
   renderRoute();
 }
 

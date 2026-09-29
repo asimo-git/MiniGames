@@ -1,3 +1,4 @@
+import { closeDialog } from '../../router/dialog-router';
 import { createElement } from '../../utils/helpers';
 
 interface ShowDialogOptions {
@@ -14,12 +15,12 @@ const dialogElementStore = (() => {
 
     dialog.addEventListener('cancel', (event) => {
       event.preventDefault();
-      hideDialog();
+      closeDialog();
     });
 
     dialog.addEventListener('click', (event) => {
       if (event.target === dialog) {
-        hideDialog();
+        closeDialog();
       }
     });
 
@@ -62,6 +63,7 @@ export function hideDialog(): void {
   element.addEventListener(
     'transitionend',
     () => {
+      if (element.classList.contains('dialog-backdrop--visible')) return;
       element.close();
       element.replaceChildren();
     },

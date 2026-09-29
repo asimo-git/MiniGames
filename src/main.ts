@@ -1,4 +1,5 @@
 import { createMainLayout } from './layouts/main-layout';
+import { initDialogRouter } from './router/dialog-router';
 import { initRouter } from './router/router';
 import './styles/main.scss';
 
@@ -15,6 +16,7 @@ function renderApp(root: HTMLElement): void {
   root.append(layout);
 
   initRouter(main);
+  initDialogRouter();
 }
 
 const root = createRoot();

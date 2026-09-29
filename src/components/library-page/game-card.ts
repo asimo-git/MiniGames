@@ -1,6 +1,6 @@
+import { openDialog } from '../../router/dialog-router';
 import { createElement } from '../../utils/helpers';
 import type { Game } from '../../utils/types';
-import { openGameDetailDialog } from '../dialogs/game-detail-dialog';
 import { createStatsBadges } from './stats-badges';
 
 const FREE_PRICE_LABEL = 'free';
@@ -68,7 +68,7 @@ function createFooter(game: Game): HTMLElement {
   });
 
   detailsButton.addEventListener('click', () => {
-    openGameDetailDialog();
+    openDialog({ game: '1' });
   });
 
   return createElement('div', {
