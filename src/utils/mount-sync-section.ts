@@ -22,7 +22,6 @@ export async function mountAsyncSection<T>(
     if (!container.isConnected) return;
 
     container.replaceChildren(...render(data));
-    throw new Error('Mounted');
   } catch (error) {
     if (!container.isConnected) return;
     const message = error instanceof ApiError ? error.message : 'Something went wrong';

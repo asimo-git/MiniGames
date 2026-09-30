@@ -109,7 +109,6 @@ function renderFilters(categories: Category[], routeState: RouteState): HTMLElem
     : undefined;
 
   const active = fromRoute ?? categories.find((category) => category.isDefault);
-  console.log('active', active);
   return categories.map((category) => createFilterChip(category, category.slug === active?.slug));
 }
 
