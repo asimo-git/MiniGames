@@ -25,7 +25,8 @@ export interface LeaderboardEntry {
 }
 
 // ---------- Games ----------
-export type GamesSort = 'rating-desc' | 'rating-asc' | 'name-asc' | 'name-desc';
+export const GAMES_SORTS = ['rating-desc', 'rating-asc', 'name-asc', 'name-desc'] as const;
+export type GamesSort = (typeof GAMES_SORTS)[number];
 
 export interface GamesListParameters {
   featured?: boolean;
@@ -34,6 +35,8 @@ export interface GamesListParameters {
   category?: string; // all | puzzle | card | match | farm | strategy | arcade
   sort?: GamesSort;
 }
+
+export const FREE_PRICE_LABEL = 'Free';
 
 export interface GameSummary {
   slug: string;

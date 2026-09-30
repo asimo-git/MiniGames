@@ -58,7 +58,7 @@ export async function makeRequest<T>(path: string, options: RequestOptions = {})
     });
   } catch (error) {
     if (isAbortError(error)) throw error;
-    throw new ApiError(0, 'Нет соединения с сервером');
+    throw new ApiError(0, 'No connection to the server');
   }
 
   let payload;

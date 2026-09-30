@@ -1,6 +1,7 @@
 import { createNotFoundPage } from '../pages/not-found-page';
 import { createHomePage } from '../pages/home-page';
 import { createLibraryPage } from '../pages/library-page';
+import type { GamesSort } from '../api/types';
 
 export const ROUTE_PATHS = {
   home: '/',
@@ -21,7 +22,7 @@ interface RouteConfig {
 export interface RouteState {
   path: RoutePath;
   category?: string;
-  sort?: string;
+  sort?: GamesSort;
   page?: number;
   gameId?: string;
   auth?: AuthMode;
@@ -103,7 +104,7 @@ export function getRouteState(): RouteState {
   return {
     path: path as RoutePath,
     category: url.searchParams.get('category') ?? undefined,
-    sort: url.searchParams.get('sort') ?? undefined,
+    sort: (url.searchParams.get('sort') as GamesSort) ?? undefined,
     page: getPage(url),
     gameId: url.searchParams.get('game') ?? undefined,
     auth: auth === 'login' || auth === 'register' ? auth : undefined,

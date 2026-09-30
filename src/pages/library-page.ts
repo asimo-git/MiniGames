@@ -1,29 +1,38 @@
-import type { Game } from '../utils/types';
-import gamesData from '../data/all-games-seed.json';
-import { FILTER_CATEGORIES } from '../data/filter-sort-config';
 import { createSortDropdown } from '../components/library-page/sort-dropdown';
 import { createElement } from '../utils/helpers';
 import { createGameCard } from '../components/library-page/game-card';
 import { createPagination } from '../components/pagination';
 import { updateQuery, type RouteState } from '../router/router';
-
-const GAMES: Game[] = gamesData.data;
+import type { Category, GamesListMeta, GameSummary } from '../api/types';
+import { api } from '../api/endpoints';
+import { mountAsyncSection } from '../utils/mount-sync-section';
 
 const GAMES_PER_PAGE = 6;
-const TOTAL_PAGES = Math.max(Math.ceil(GAMES.length / GAMES_PER_PAGE), 1);
+
+interface GamesData {
+  games: GameSummary[];
+  meta: GamesListMeta;
+}
 
 export function createLibraryPage(routeState: RouteState): HTMLElement {
-  const currentPage = Math.min(routeState.page ?? 1, TOTAL_PAGES);
-  console.log(GAMES.length);
+  const filters = createFiltersContainer();
+  const content = createElement('div', { className: 'library-page__content' });
 
-  const pagination = createPagination({
-    totalPages: TOTAL_PAGES,
-    currentPage,
+  void mountAsyncSection(filters, {
+    load: () => api.getCategories(),
+    render: (categories) => renderFilters(categories, routeState),
+    placeholder: () => [createLoading()],
+  });
+
+  void mountAsyncSection(content, {
+    load: () => loadGames(routeState),
+    render: (data) => renderGames(data, routeState),
+    placeholder: () => [createLoading()],
   });
 
   return createElement('div', {
     className: 'library-page',
-    children: [createHeader(), createToolbar(routeState), createGamesList(currentPage), pagination],
+    children: [createHeader(), createToolbar(filters, routeState.sort), content],
   });
 }
 
@@ -40,15 +49,29 @@ function createHeader(): HTMLElement {
   });
 }
 
-function createFilterChip(label: string, isActive: boolean): HTMLButtonElement {
+function createFiltersContainer(): HTMLElement {
+  return createElement('div', {
+    className: 'library-page__filters',
+    attributes: { role: 'group', 'aria-label': 'Filter by category' },
+  });
+}
+
+function createToolbar(filters: HTMLElement, sort: RouteState['sort']): HTMLElement {
+  return createElement('div', {
+    className: 'library-page__toolbar',
+    children: [filters, createSortDropdown(sort)],
+  });
+}
+
+function createFilterChip(category: Category, isActive: boolean): HTMLButtonElement {
   const filterButton = createElement('button', {
     className: isActive ? 'library-page__chip library-page__chip--active' : 'library-page__chip',
-    textContent: label,
+    textContent: category.label, // на кнопке label
   });
 
   filterButton.addEventListener('click', () => {
     updateQuery({
-      category: label === 'All Games' ? undefined : label,
+      category: category.isDefault ? undefined : category.slug, // в URL slug
       page: 1,
     });
   });
@@ -56,35 +79,54 @@ function createFilterChip(label: string, isActive: boolean): HTMLButtonElement {
   return filterButton;
 }
 
-function createToolbar(routeState: RouteState): HTMLElement {
-  const activeCategory = routeState.category ?? 'All Games';
-  const chips = FILTER_CATEGORIES.map((category) =>
-    createFilterChip(category, category === activeCategory),
-  );
-
-  return createElement('div', {
-    className: 'library-page__toolbar',
-    children: [
-      createElement('div', {
-        className: 'library-page__filters',
-        attributes: { role: 'group', 'aria-label': 'Filter by category' },
-        children: chips,
-      }),
-      createSortDropdown(routeState.sort),
-    ],
-  });
-}
-
-function createGameItems(pageNumber: number): HTMLElement[] {
-  const startIndex = (pageNumber - 1) * GAMES_PER_PAGE;
-  const pageGames = GAMES.slice(startIndex, startIndex + GAMES_PER_PAGE);
-
-  return pageGames.map((game) => createGameCard(game));
-}
-
-function createGamesList(page: number): HTMLElement {
+function createGamesList(games: GameSummary[]): HTMLElement {
   return createElement('ul', {
     className: 'library-page__games',
-    children: createGameItems(page),
+    children: games.map((game) => createGameCard(game)),
   });
+}
+
+function createLoading(): HTMLElement {
+  return createElement('p', { className: 'library-page__status', textContent: 'Loading…' });
+}
+
+/////////////////////// async processes //////////////////////
+
+async function loadGames(routeState: RouteState): Promise<GamesData> {
+  const { data, meta } = await api.getGames({
+    page: routeState.page ?? 1,
+    limit: GAMES_PER_PAGE,
+    category: routeState.category,
+    sort: routeState.sort,
+  });
+
+  return { games: data, meta };
+}
+
+function renderFilters(categories: Category[], routeState: RouteState): HTMLElement[] {
+  const fromRoute = routeState.category
+    ? categories.find((category) => category.slug === routeState.category)
+    : undefined;
+
+  const active = fromRoute ?? categories.find((category) => category.isDefault);
+  console.log('active', active);
+  return categories.map((category) => createFilterChip(category, category.slug === active?.slug));
+}
+
+function renderGames({ games, meta }: GamesData, routeState: RouteState): Node[] {
+  if (meta.totalPages > 0 && (routeState.page ?? 1) > meta.totalPages) {
+    updateQuery({ page: meta.totalPages }, { replace: true });
+    return [];
+  }
+
+  if (games.length === 0) {
+    return [
+      createElement('p', { className: 'library-page__status', textContent: 'No games found' }),
+    ];
+  }
+
+  return [
+    createGamesList(games),
+    createPagination({ totalPages: meta.totalPages, currentPage: meta.page }),
+  ];
 }
