@@ -16,6 +16,7 @@
   animation: skeleton-breathe 1.8s ease-in-out infinite;
   height: 100%;
   min-height: inherit;
+  border-radius: inherit;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
