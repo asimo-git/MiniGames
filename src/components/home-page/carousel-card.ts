@@ -1,8 +1,8 @@
 import starIcon from '../../assets/icons/star.svg';
 import favoriteIcon from '../../assets/icons/heart.svg';
 import { createElement, formatCount } from '../../utils/helpers';
-import type { Game } from '../../utils/types';
 import { openDialog } from '../../router/dialog-router';
+import type { GameSummary } from '../../api/types';
 
 export type CardVariant = 'main' | 'secondary';
 
@@ -14,7 +14,7 @@ export interface CardReferences {
   likesText: HTMLElement;
 }
 
-export function createGameCard(game: Game, variant: CardVariant): CardReferences {
+export function createGameCard(game: GameSummary, variant: CardVariant): CardReferences {
   const image = createElement('img', {
     className: 'carousel__card-image',
     attributes: {
@@ -68,7 +68,11 @@ export function createGameCard(game: Game, variant: CardVariant): CardReferences
   };
 }
 
-export function updateGameCard(card: CardReferences, game: Game, variant: CardVariant): void {
+export function updateGameCard(
+  card: CardReferences,
+  game: GameSummary,
+  variant: CardVariant,
+): void {
   card.image.src = game.cardImage;
   card.image.alt = game.name;
   card.title.textContent = game.name;
