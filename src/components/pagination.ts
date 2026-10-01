@@ -14,7 +14,6 @@ const MOBILE_VISIBLE_PAGES = 3;
 const mobileQuery = globalThis.matchMedia('(max-width: 480px)');
 
 const renderers = new WeakMap<HTMLElement, () => void>();
-const subscription = { isActive: false };
 
 function renderAttachedPaginations(): void {
   for (const navigation of document.querySelectorAll<HTMLElement>(`.${PAGINATION_CLASS}`)) {
@@ -22,12 +21,14 @@ function renderAttachedPaginations(): void {
   }
 }
 
+const viewportSubscription = { isActive: false };
+
 function subscribeToViewportChanges(): void {
-  if (subscription.isActive) {
+  if (viewportSubscription.isActive) {
     return;
   }
 
-  subscription.isActive = true;
+  viewportSubscription.isActive = true;
   mobileQuery.addEventListener('change', renderAttachedPaginations);
 }
 
@@ -65,8 +66,13 @@ function updatePageButton(button: HTMLButtonElement, pageNumber: number, isCurre
   button.dataset.page = String(pageNumber);
   button.textContent = String(pageNumber);
   button.setAttribute('aria-label', `Page ${pageNumber}`);
-  button.setAttribute('aria-current', isCurrent ? 'page' : 'false');
   button.classList.toggle('pagination__button--active', isCurrent);
+
+  button.toggleAttribute('aria-current', isCurrent);
+
+  if (isCurrent) {
+    button.setAttribute('aria-current', 'page');
+  }
 }
 
 function getFirstVisiblePage(
@@ -86,10 +92,20 @@ function getVisibleCount(totalPages: number): number {
 }
 
 export function createPagination({ currentPage, totalPages }: PaginationOptions): HTMLElement {
+  const navigation = createElement('nav', {
+    className: PAGINATION_CLASS,
+    attributes: { 'aria-label': 'Pagination' },
+  });
+
+  if (totalPages <= 1) {
+    navigation.hidden = true;
+    return navigation;
+  }
+
   let pageButtons: HTMLButtonElement[] = [];
 
   function selectPage(pageNumber: number): void {
-    if (!currentPage || pageNumber === currentPage || pageNumber < 1 || pageNumber > totalPages) {
+    if (pageNumber === currentPage || pageNumber < 1 || pageNumber > totalPages) {
       return;
     }
 
@@ -103,11 +119,7 @@ export function createPagination({ currentPage, totalPages }: PaginationOptions)
     selectPage(currentPage + 1);
   });
 
-  const navigation = createElement('nav', {
-    className: PAGINATION_CLASS,
-    attributes: { 'aria-label': 'Pagination' },
-    children: [previousButton, nextButton],
-  });
+  navigation.append(previousButton, nextButton);
 
   function render(): void {
     const visibleCount = getVisibleCount(totalPages);

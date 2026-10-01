@@ -1,0 +1,21 @@
+@use '../abstracts/variables' as styles;
+
+@keyframes skeleton-breathe {
+  0%,
+  100% {
+    background-color: styles.$color-outline;
+  }
+  50% {
+    background-color: styles.$color-outline-variant;
+  }
+}
+
+.skeleton {
+  display: inline-block;
+  background-color: styles.$color-outline;
+  animation: skeleton-breathe 1.8s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}

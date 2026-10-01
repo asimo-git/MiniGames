@@ -1,13 +1,12 @@
+import type { GameSummary } from '../../api/types';
+import { FREE_PRICE_LABEL } from '../../api/types';
 import { openDialog } from '../../router/dialog-router';
 import { createElement } from '../../utils/helpers';
-import type { Game } from '../../utils/types';
 import { createStatsBadges } from './stats-badges';
 
-const FREE_PRICE_LABEL = 'free';
-
-export function createGameCard(game: Game): HTMLElement {
+export function createGameCard(game: GameSummary): HTMLElement {
   const card = createElement('li', {
-    className: `game-card`,
+    className: `game-card game-card-geometry`,
     children: [
       createMedia(game),
       createElement('div', {
@@ -27,7 +26,7 @@ export function createGameCard(game: Game): HTMLElement {
   return card;
 }
 
-function createMedia(game: Game): HTMLElement {
+function createMedia(game: GameSummary): HTMLElement {
   return createElement('div', {
     className: 'game-card__media',
     children: [
@@ -39,7 +38,7 @@ function createMedia(game: Game): HTMLElement {
   });
 }
 
-function createHeader(game: Game): HTMLElement {
+function createHeader(game: GameSummary): HTMLElement {
   const isFree = game.price.toLowerCase() === FREE_PRICE_LABEL;
 
   return createElement('div', {
@@ -60,7 +59,7 @@ function createHeader(game: Game): HTMLElement {
   });
 }
 
-function createFooter(game: Game): HTMLElement {
+function createFooter(game: GameSummary): HTMLElement {
   const detailsButton = createElement('button', {
     className: 'game-card__button',
     textContent: 'Details',
