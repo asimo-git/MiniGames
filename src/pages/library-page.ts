@@ -6,6 +6,7 @@ import { updateQuery, type RouteState } from '../router/router';
 import type { Category, GamesListMeta, GameSummary } from '../api/types';
 import { api } from '../api/endpoints';
 import { mountAsyncSection } from '../utils/mount-sync-section';
+import { createSkeleton } from '../components/skeleton';
 
 const GAMES_PER_PAGE = 6;
 
@@ -19,15 +20,35 @@ export function createLibraryPage(routeState: RouteState): HTMLElement {
   const content = createElement('div', { className: 'library-page__content' });
 
   void mountAsyncSection(filters, {
+    // check a sceleton code
+    // load: () => new Promise(() => {}),
     load: () => api.getCategories(),
     render: (categories) => renderFilters(categories, routeState),
-    placeholder: () => [createLoading()],
+    errorSize: 'compact',
+    skeleton: () =>
+      createSkeleton({
+        tag: 'span',
+        width: '96px',
+        count: 7,
+        className: 'library-page__chip-geometry',
+      }),
   });
 
   void mountAsyncSection(content, {
+    // load: () => new Promise(() => {}),
     load: () => loadGames(routeState),
     render: (data) => renderGames(data, routeState),
-    placeholder: () => [createLoading()],
+    skeleton: () => [
+      createElement('ul', {
+        className: 'library-page__games',
+        children: createSkeleton({
+          tag: 'li',
+          width: '100%',
+          count: GAMES_PER_PAGE,
+          className: 'game-card-geometry',
+        }),
+      }),
+    ],
   });
 
   return createElement('div', {
@@ -65,7 +86,7 @@ function createToolbar(filters: HTMLElement, sort: RouteState['sort']): HTMLElem
 
 function createFilterChip(category: Category, isActive: boolean): HTMLButtonElement {
   const filterButton = createElement('button', {
-    className: isActive ? 'library-page__chip library-page__chip--active' : 'library-page__chip',
+    className: `library-page__chip library-page__chip-geometry${isActive ? ' library-page__chip--active' : ''}`,
     textContent: category.label, // на кнопке label
   });
 
@@ -84,10 +105,6 @@ function createGamesList(games: GameSummary[]): HTMLElement {
     className: 'library-page__games',
     children: games.map((game) => createGameCard(game)),
   });
-}
-
-function createLoading(): HTMLElement {
-  return createElement('p', { className: 'library-page__status', textContent: 'Loading…' });
 }
 
 /////////////////////// async processes //////////////////////

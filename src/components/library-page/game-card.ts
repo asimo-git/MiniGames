@@ -6,7 +6,7 @@ import { createStatsBadges } from './stats-badges';
 
 export function createGameCard(game: GameSummary): HTMLElement {
   const card = createElement('li', {
-    className: `game-card`,
+    className: `game-card game-card-geometry`,
     children: [
       createMedia(game),
       createElement('div', {

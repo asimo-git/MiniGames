@@ -46,9 +46,18 @@
     }
   }
 
+  &__chip-geometry {
+    border-radius: styles.$radius-extra-large;
+    height: 31px;
+    flex-shrink: 0;
+
+    @media (min-width: styles.$breakpoint-mobile) {
+      height: 33px;
+    }
+  }
+
   &__chip {
     @include styles.button-base(
-      $radius: styles.$radius-extra-large,
       $padding-y: styles.$size-1,
       $padding-x: styles.$size-2,
       $font-size: styles.$font-size-body-small
