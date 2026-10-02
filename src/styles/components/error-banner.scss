@@ -27,13 +27,13 @@
     }
   }
 
-  &__message {
-    flex: 1;
-    min-width: 0;
-    font-size: tokens.$font-size-body-small;
-    line-height: 1.4;
-    color: tokens.$color-on-bg;
-  }
+  // &__message {
+  //   flex: 1;
+  //   min-width: 0;
+  //   font-size: tokens.$font-size-body-small;
+  //   line-height: 1.4;
+  //   color: tokens.$color-on-bg;
+  // }
 
   &__retry {
     flex-shrink: 0;

@@ -7,6 +7,7 @@ import type { Category, GamesListMeta, GameSummary } from '../api/types';
 import { api } from '../api/endpoints';
 import { mountAsyncSection } from '../utils/mount-sync-section';
 import { createArraySkeletons } from '../components/skeleton';
+import { createEmptyState } from '../components/empty-state';
 
 const GAMES_PER_PAGE = 6;
 
@@ -23,6 +24,7 @@ export function createLibraryPage(routeState: RouteState): HTMLElement {
     // check a sceleton code
     // load: () => new Promise(() => {}),
     load: () => api.getCategories(),
+    // load: () => Promise.resolve([]),
     render: (categories) => renderFilters(categories, routeState),
     errorSize: 'compact',
     skeleton: () =>
@@ -135,14 +137,11 @@ function renderGames({ games, meta }: GamesData, routeState: RouteState): Node[]
     return [];
   }
 
-  if (games.length === 0) {
-    return [
-      createElement('p', { className: 'library-page__status', textContent: 'No games found' }),
-    ];
-  }
+  const gameListContent =
+    meta.totalItems === 0 ? createEmptyState('No games found') : createGamesList(games);
 
   return [
-    createGamesList(games),
+    gameListContent,
     createPagination({ totalPages: meta.totalPages, currentPage: meta.page }),
   ];
 }

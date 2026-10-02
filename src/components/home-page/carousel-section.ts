@@ -9,6 +9,7 @@ import { createCarouselSlider, type Direction } from './carousel-slider';
 import { api } from '../../api/endpoints';
 import { mountAsyncSection } from '../../utils/mount-sync-section';
 import { createSkeleton } from '../skeleton';
+import { createEmptyState } from '../empty-state';
 
 export function createCarouselSection(): HTMLElement {
   // let navigate: (direction: Direction) => void = () => {};
@@ -27,9 +28,15 @@ export function createCarouselSection(): HTMLElement {
 
   void mountAsyncSection(viewport, {
     // load: () => new Promise(() => {}),
+    // load: () => Promise.reject(new Error('Error')),
+    // load: () => Promise.resolve([]),
     load: () => api.getFeaturedGames(),
     skeleton: () => [createSkeleton({ width: '100%' })],
     render: (games) => {
+      if (games.length === 0) {
+        return [createEmptyState('No new games found')];
+      }
+
       const slider = createCarouselSlider(games, viewport);
       const autoplay = createAutoplay(() => slider.moveSlide(1));
 

@@ -4,6 +4,7 @@ import { api } from '../../api/endpoints';
 import type { LeaderboardEntry } from '../../api/types';
 import { mountAsyncSection } from '../../utils/mount-sync-section';
 import { createSkeleton } from '../skeleton';
+import { createEmptyState } from '../empty-state';
 
 type ColumnId = 'rank' | 'player' | 'games' | 'score' | 'streak' | 'favorite';
 
@@ -21,9 +22,15 @@ export function createLeaderboardSection(): HTMLElement {
 
   void mountAsyncSection(tableContainer, {
     // load: () => new Promise(() => {}),
+    // load: () => Promise.resolve([]),
     load: () => api.getLeaderboard(),
     skeleton: () => [createSkeleton({})],
-    render: (players) => [createTable(players)],
+    render: (players) => {
+      if (players.length === 0) {
+        return [createEmptyState('No Top Players found')];
+      }
+      return [createTable(players)];
+    },
   });
 
   return createElement('section', {
