@@ -3,20 +3,31 @@ import { createElement } from '../utils/helpers';
 interface SkeletonOptions {
   tag?: keyof HTMLElementTagNameMap;
   width?: string;
-  count?: number;
+  height?: string;
   className?: string;
 }
 
-export function createSkeleton(options: SkeletonOptions): HTMLElement[] {
-  const { tag = 'div', width, count = 1, className } = options;
+interface SkeletonsOptions extends SkeletonOptions {
+  count?: number;
+}
 
-  return Array.from({ length: count }, () =>
-    createElement(tag, {
-      className: `skeleton ${className || ''}`,
-      attributes: {
-        'aria-hidden': 'true',
-        ...(width && { style: `width: ${width}` }),
-      },
-    }),
-  );
+export function createSkeleton(options: SkeletonOptions): HTMLElement {
+  const { tag = 'div', width, height, className } = options;
+
+  const style = [width && `width: ${width}`, height && `height: ${height}`]
+    .filter(Boolean)
+    .join('; ');
+
+  return createElement(tag, {
+    className: ['skeleton', className].filter(Boolean).join(' '),
+    attributes: {
+      'aria-hidden': 'true',
+      ...(style && { style }),
+    },
+  });
+}
+
+export function createArraySkeletons(options: SkeletonsOptions = {}): HTMLElement[] {
+  const { count = 1, ...skeletonOptions } = options;
+  return Array.from({ length: count }, () => createSkeleton(skeletonOptions));
 }

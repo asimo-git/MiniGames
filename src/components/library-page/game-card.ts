@@ -67,7 +67,7 @@ function createFooter(game: GameSummary): HTMLElement {
   });
 
   detailsButton.addEventListener('click', () => {
-    openDialog({ game: '1' });
+    openDialog({ game: game.slug });
   });
 
   return createElement('div', {

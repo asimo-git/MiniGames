@@ -51,7 +51,7 @@ export function createGameCard(game: GameSummary, variant: CardVariant): CardRef
   });
 
   imageWrapper.addEventListener('click', () => {
-    openDialog({ game: '1' });
+    openDialog({ game: game.slug });
   });
 
   const root = createElement('div', {

@@ -30,7 +30,7 @@ function syncDialog(): void {
 
   switch (key) {
     case 'game': {
-      openGameDetailDialog();
+      openGameDetailDialog(routeState.gameId);
       break;
     }
     case 'login': {

@@ -22,7 +22,7 @@ export function createLeaderboardSection(): HTMLElement {
   void mountAsyncSection(tableContainer, {
     // load: () => new Promise(() => {}),
     load: () => api.getLeaderboard(),
-    skeleton: () => createSkeleton({}),
+    skeleton: () => [createSkeleton({})],
     render: (players) => [createTable(players)],
   });
 

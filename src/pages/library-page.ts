@@ -6,7 +6,7 @@ import { updateQuery, type RouteState } from '../router/router';
 import type { Category, GamesListMeta, GameSummary } from '../api/types';
 import { api } from '../api/endpoints';
 import { mountAsyncSection } from '../utils/mount-sync-section';
-import { createSkeleton } from '../components/skeleton';
+import { createArraySkeletons } from '../components/skeleton';
 
 const GAMES_PER_PAGE = 6;
 
@@ -26,7 +26,7 @@ export function createLibraryPage(routeState: RouteState): HTMLElement {
     render: (categories) => renderFilters(categories, routeState),
     errorSize: 'compact',
     skeleton: () =>
-      createSkeleton({
+      createArraySkeletons({
         tag: 'span',
         width: '96px',
         count: 7,
@@ -41,7 +41,7 @@ export function createLibraryPage(routeState: RouteState): HTMLElement {
     skeleton: () => [
       createElement('ul', {
         className: 'library-page__games',
-        children: createSkeleton({
+        children: createArraySkeletons({
           tag: 'li',
           width: '100%',
           count: GAMES_PER_PAGE,

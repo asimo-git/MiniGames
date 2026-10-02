@@ -28,7 +28,7 @@ export function createCarouselSection(): HTMLElement {
   void mountAsyncSection(viewport, {
     // load: () => new Promise(() => {}),
     load: () => api.getFeaturedGames(),
-    skeleton: () => createSkeleton({ width: '100%' }),
+    skeleton: () => [createSkeleton({ width: '100%' })],
     render: (games) => {
       const slider = createCarouselSlider(games, viewport);
       const autoplay = createAutoplay(() => slider.moveSlide(1));
