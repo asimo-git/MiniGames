@@ -1,13 +1,32 @@
 import { createElement } from '../../utils/helpers';
 import checkIcon from '../../assets/icons/check.svg';
-import { SORT_OPTIONS, DEFAULT_SORT_OPTION } from '../../data/filter-sort-config';
+import { updateQuery } from '../../router/router';
 
 const MENU_ID = 'sort-dropdown-menu';
 
-function createTrigger(): HTMLButtonElement {
+interface SortOption {
+  value: string;
+  label: string;
+}
+
+export const DEFAULT_SORT_OPTION: SortOption = { value: 'rating-desc', label: 'Rating ↓' };
+
+export const SORT_OPTIONS: SortOption[] = [
+  { value: 'rating-asc', label: 'Rating ↑' },
+  DEFAULT_SORT_OPTION,
+  { value: 'name-asc', label: 'Name A→Z' },
+  { value: 'name-desc', label: 'Name Z→A' },
+];
+
+// Неизвестное или отсутствующее значение из URL заменяется сортировкой по умолчанию
+export function findSortOption(value: string | undefined): SortOption {
+  return SORT_OPTIONS.find((option) => option.value === value) ?? DEFAULT_SORT_OPTION;
+}
+
+function createTrigger(label: string): HTMLButtonElement {
   return createElement('button', {
     className: 'sort-dropdown__trigger',
-    textContent: `Sort by: ${DEFAULT_SORT_OPTION}`,
+    textContent: `Sort by: ${label}`,
     attributes: {
       type: 'button',
       'aria-haspopup': 'true',
@@ -17,19 +36,29 @@ function createTrigger(): HTMLButtonElement {
   });
 }
 
-function createOption(label: string, isSelected: boolean): HTMLButtonElement {
-  return createElement('button', {
+function createOption(
+  option: SortOption,
+  isSelected: boolean,
+  onSelect: (sortValue: string) => void,
+): HTMLButtonElement {
+  const button = createElement('button', {
     className: 'sort-dropdown__option',
-    attributes: { type: 'button', 'aria-pressed': String(isSelected), 'data-label': label },
+    attributes: { type: 'button', 'aria-pressed': String(isSelected) },
     children: [
       createElement('img', {
         className: 'sort-dropdown__check',
         attributes: { src: checkIcon, alt: '' },
       }),
 
-      createElement('span', { className: 'sort-dropdown__label', textContent: label }),
+      createElement('span', { className: 'sort-dropdown__label', textContent: option.label }),
     ],
   });
+
+  button.addEventListener('click', () => {
+    onSelect(option.value);
+  });
+
+  return button;
 }
 
 function createMenu(options: HTMLButtonElement[]): HTMLElement {
@@ -47,15 +76,21 @@ function createMenu(options: HTMLButtonElement[]): HTMLElement {
   return menu;
 }
 
-function selectOption(options: HTMLButtonElement[], selectedOption: HTMLButtonElement): void {
-  for (const option of options) {
-    option.setAttribute('aria-pressed', String(option === selectedOption));
-  }
-}
+export function createSortDropdown(currentSort: string | undefined): HTMLElement {
+  const selectedOption = findSortOption(currentSort);
+  const trigger = createTrigger(selectedOption.label);
 
-export function createSortDropdown(): HTMLElement {
-  const trigger = createTrigger();
-  const options = SORT_OPTIONS.map((label) => createOption(label, label === DEFAULT_SORT_OPTION));
+  function selectOption(sortValue: string): void {
+    closeMenu();
+
+    if (sortValue !== selectedOption.value) {
+      updateQuery({ sort: sortValue, page: 1 });
+    }
+  }
+
+  const options = SORT_OPTIONS.map((option) =>
+    createOption(option, option.value === selectedOption.value, selectOption),
+  );
   const menu = createMenu(options);
   const root = createElement('div', { className: 'sort-dropdown', children: [trigger, menu] });
 
@@ -95,14 +130,6 @@ export function createSortDropdown(): HTMLElement {
       closeMenu();
     }
   });
-
-  for (const option of options) {
-    option.addEventListener('click', () => {
-      selectOption(options, option);
-      trigger.textContent = `Sort by: ${option.dataset.label}`;
-      closeMenu();
-    });
-  }
 
   return root;
 }

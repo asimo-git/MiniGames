@@ -1,14 +1,36 @@
 import { createElement } from '../utils/helpers';
 import backwardIcon from '../assets/icons/chevron_backward.svg';
 import forwardIcon from '../assets/icons/chevron_forward.svg';
+import { updateQuery } from '../router/router';
 
 interface PaginationOptions {
+  currentPage: number;
   totalPages: number;
-  onPageChange: (pageNumber: number) => void;
 }
+
+const PAGINATION_CLASS = 'pagination';
 const DESKTOP_VISIBLE_PAGES = 4;
 const MOBILE_VISIBLE_PAGES = 3;
 const mobileQuery = globalThis.matchMedia('(max-width: 480px)');
+
+const renderers = new WeakMap<HTMLElement, () => void>();
+
+function renderAttachedPaginations(): void {
+  for (const navigation of document.querySelectorAll<HTMLElement>(`.${PAGINATION_CLASS}`)) {
+    renderers.get(navigation)?.();
+  }
+}
+
+const viewportSubscription = { isActive: false };
+
+function subscribeToViewportChanges(): void {
+  if (viewportSubscription.isActive) {
+    return;
+  }
+
+  viewportSubscription.isActive = true;
+  mobileQuery.addEventListener('change', renderAttachedPaginations);
+}
 
 function createPageButton(onSelect: (pageNumber: number) => void): HTMLButtonElement {
   const button = createElement('button', {
@@ -44,8 +66,13 @@ function updatePageButton(button: HTMLButtonElement, pageNumber: number, isCurre
   button.dataset.page = String(pageNumber);
   button.textContent = String(pageNumber);
   button.setAttribute('aria-label', `Page ${pageNumber}`);
-  button.setAttribute('aria-current', isCurrent ? 'page' : 'false');
   button.classList.toggle('pagination__button--active', isCurrent);
+
+  button.toggleAttribute('aria-current', isCurrent);
+
+  if (isCurrent) {
+    button.setAttribute('aria-current', 'page');
+  }
 }
 
 function getFirstVisiblePage(
@@ -64,28 +91,41 @@ function getVisibleCount(totalPages: number): number {
   return Math.min(maxForViewport, totalPages);
 }
 
-export function createPagination({ totalPages, onPageChange }: PaginationOptions): HTMLElement {
-  let currentPage = 1;
+export function createPagination({ currentPage, totalPages }: PaginationOptions): HTMLElement {
+  const navigation = createElement('nav', {
+    className: PAGINATION_CLASS,
+    attributes: { 'aria-label': 'Pagination' },
+  });
+
+  if (totalPages <= 1) {
+    navigation.hidden = true;
+    return navigation;
+  }
+
   let pageButtons: HTMLButtonElement[] = [];
 
+  function selectPage(pageNumber: number): void {
+    if (pageNumber === currentPage || pageNumber < 1 || pageNumber > totalPages) {
+      return;
+    }
+
+    updateQuery({ page: pageNumber });
+  }
+
   const previousButton = createArrowButton('Previous page', backwardIcon, () => {
-    goToPage(currentPage - 1);
+    selectPage(currentPage - 1);
   });
   const nextButton = createArrowButton('Next page', forwardIcon, () => {
-    goToPage(currentPage + 1);
+    selectPage(currentPage + 1);
   });
 
-  const navigation = createElement('nav', {
-    className: 'pagination',
-    attributes: { 'aria-label': 'Pagination' },
-    children: [previousButton, nextButton],
-  });
+  navigation.append(previousButton, nextButton);
 
   function render(): void {
     const visibleCount = getVisibleCount(totalPages);
 
     if (visibleCount !== pageButtons.length) {
-      pageButtons = Array.from({ length: visibleCount }, () => createPageButton(goToPage));
+      pageButtons = Array.from({ length: visibleCount }, () => createPageButton(selectPage));
       navigation.replaceChildren(previousButton, ...pageButtons, nextButton);
     }
 
@@ -101,19 +141,8 @@ export function createPagination({ totalPages, onPageChange }: PaginationOptions
     nextButton.disabled = currentPage >= totalPages;
   }
 
-  function goToPage(pageNumber: number): void {
-    const targetPage = Math.min(Math.max(pageNumber, 1), totalPages);
-
-    if (targetPage === currentPage) {
-      return;
-    }
-
-    currentPage = targetPage;
-    render();
-    onPageChange(currentPage);
-  }
-
-  mobileQuery.addEventListener('change', render);
+  subscribeToViewportChanges();
+  renderers.set(navigation, render);
   render();
 
   return navigation;

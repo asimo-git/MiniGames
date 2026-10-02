@@ -7,13 +7,16 @@ $card-mobile-height: 392px;
 $image-min-height-tablet: 152px;
 $image-min-height-mobile: 160px;
 
+.game-card-geometry {
+  border-radius: styles.$radius-large;
+  min-height: $card-min-height;
+}
+
 .game-card {
   @include styles.flex($direction: column, $align: stretch);
 
   overflow: hidden;
-  min-height: $card-min-height;
   background-color: styles.$color-white;
-  border-radius: styles.$radius-large;
   border: styles.$border-medium solid styles.$color-on-primary;
   box-shadow: styles.$shadow-level-1;
   height: $card-mobile-height;

@@ -2,7 +2,7 @@ import starIcon from '../../assets/icons/star.svg';
 import favoriteIcon from '../../assets/icons/heart.svg';
 import { createElement, formatCount } from '../../utils/helpers';
 import type { Game } from '../../utils/types';
-import { openGameDetailDialog } from '../dialogs/game-detail-dialog';
+import { openDialog } from '../../router/dialog-router';
 
 export type CardVariant = 'main' | 'secondary';
 
@@ -51,7 +51,7 @@ export function createGameCard(game: Game, variant: CardVariant): CardReferences
   });
 
   imageWrapper.addEventListener('click', () => {
-    openGameDetailDialog();
+    openDialog({ game: '1' });
   });
 
   const root = createElement('div', {
