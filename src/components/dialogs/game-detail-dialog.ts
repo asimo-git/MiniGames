@@ -7,6 +7,7 @@ import { api } from '../../api/endpoints';
 import { createSkeleton } from '../skeleton';
 import type { GameDetails, GameComment } from '../../api/types';
 import { closeDialog } from '../../router/dialog-router';
+import { showSnackbar } from '../snackbar';
 
 // TODO: Change to real author initial
 const NEW_COMMENT_AUTHOR_INITIAL = 'U';
@@ -237,6 +238,7 @@ function createActions(game: GameDetails): HTMLElement {
     isFavorite = !isFavorite;
     buttonIcon.classList.toggle('game-detail-dialog__favorite-icon--active', isFavorite);
     labelSpan.textContent = isFavorite ? 'Remove from Favorites' : 'Add to Favorites';
+    showSnackbar({ variant: 'info', message: 'Adding to favorites will be implemented later' });
   });
 
   return createElement('div', {

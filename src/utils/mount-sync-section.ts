@@ -1,5 +1,6 @@
 import { createErrorBanner, type ErrorBannerSize } from '../components/error-banner';
 import { ApiError } from '../api/client';
+import { showSnackbar } from '../components/snackbar';
 
 interface SectionOptions<T> {
   load: () => Promise<T>;
@@ -22,12 +23,13 @@ export async function mountAsyncSection<T>(
     // If the container isn't there, the user has moved on, and the response is no longer needed.
     if (!container.isConnected) return;
 
-    // check a error ui
+    // check an error ui
     // throw new Error('Error');
     container.replaceChildren(...render(data));
+    showSnackbar({ variant: 'success', message: 'Data loaded successfully' });
   } catch (error) {
     if (!container.isConnected) return;
-    const message = error instanceof ApiError ? error.message : 'Something went wrong';
+    const message = error instanceof ApiError ? error.message : 'Failed to load data';
     container.replaceChildren(
       createErrorBanner({
         message,
@@ -37,5 +39,6 @@ export async function mountAsyncSection<T>(
         },
       }),
     );
+    showSnackbar({ variant: 'error', message });
   }
 }
