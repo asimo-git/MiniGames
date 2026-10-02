@@ -140,10 +140,14 @@ function createCommentsSection(slug: string): HTMLElement {
         textContent: `Comments (${comments.meta.totalComments})`,
       }),
       createNewCommentRow(),
-      createElement('ul', {
-        className: 'game-detail-dialog__comment-list',
-        children: comments.data.map((comment) => createCommentCard(comment)),
-      }),
+      comments.data.length === 0
+        ? createElement('p', {
+            textContent: 'There are no comments yet. Be the first to comment!',
+          })
+        : createElement('ul', {
+            className: 'game-detail-dialog__comment-list',
+            children: comments.data.map((comment) => createCommentCard(comment)),
+          }),
     ],
     skeleton: createCommentsSkeleton,
   });

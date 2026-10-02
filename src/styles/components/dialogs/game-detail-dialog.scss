@@ -101,7 +101,7 @@ $hero-height: 220px;
     background-color: styles.$color-white;
     border: styles.$border-thin solid styles.$color-outline-variant;
     border-radius: styles.$radius-small;
-    box-shadow: styles.$size-075 styles.$size-075 0 styles.$color-on-primary;
+    box-shadow: styles.$border-thick styles.$border-thick 0 styles.$color-on-primary;
   }
 
   &__widget-label {

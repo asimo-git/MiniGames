@@ -15,7 +15,7 @@ interface ActiveSnackbar {
   timeoutId?: ReturnType<typeof setTimeout>;
 }
 
-const DEFAULT_DURATION_MS = 0;
+const DEFAULT_DURATION_MS = 3000;
 const EXIT_ANIMATION_MS = 200;
 
 const VARIANT_ICON: Record<SnackbarVariant, string> = {
