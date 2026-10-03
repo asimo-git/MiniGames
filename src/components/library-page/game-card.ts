@@ -1,7 +1,7 @@
 import type { GameSummary } from '../../api/types';
 import { FREE_PRICE_LABEL } from '../../api/types';
 import { openDialog } from '../../router/dialog-router';
-import { createElement } from '../../utils/helpers';
+import { createElement, createImageWithFallback } from '../../utils/helpers';
 import { createStatsBadges } from './stats-badges';
 
 export function createGameCard(game: GameSummary): HTMLElement {
@@ -30,9 +30,10 @@ function createMedia(game: GameSummary): HTMLElement {
   return createElement('div', {
     className: 'game-card__media',
     children: [
-      createElement('img', {
+      createImageWithFallback({
+        src: game.cardImage,
+        alt: game.name,
         className: 'game-card__image',
-        attributes: { src: game.cardImage, alt: game.name, loading: 'lazy' },
       }),
     ],
   });

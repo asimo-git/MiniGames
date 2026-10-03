@@ -29,6 +29,37 @@ export function createElement<K extends keyof HTMLElementTagNameMap>(
   return element;
 }
 
+export interface ImageWithFallbackOptions {
+  src: string;
+  alt: string;
+  className?: string;
+  loading?: 'lazy' | 'eager';
+}
+
+export function createImageWithFallback({
+  src,
+  alt,
+  className,
+  loading = 'lazy',
+}: ImageWithFallbackOptions): HTMLImageElement {
+  const img = createElement('img', {
+    className: ['image-with-fallback', className].filter(Boolean).join(' '),
+    attributes: { src, alt, loading },
+  });
+
+  img.addEventListener(
+    'error',
+    () => {
+      img.src = '/error-img.png';
+      img.alt = '';
+      img.setAttribute('aria-hidden', 'true');
+    },
+    { once: true },
+  );
+
+  return img;
+}
+
 export function getAvatarLetters(nickname: string): string {
   const upperLetters = nickname.match(/[A-Z]/g) || [];
 

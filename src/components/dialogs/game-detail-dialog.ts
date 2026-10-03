@@ -1,6 +1,6 @@
 import { mountAsyncSection } from '../../utils/mount-sync-section';
 import closeIcon from '../../assets/icons/close.svg';
-import { createElement, formatRelativeTime } from '../../utils/helpers';
+import { createElement, createImageWithFallback, formatRelativeTime } from '../../utils/helpers';
 import { createStatsBadges } from '../library-page/stats-badges';
 import { showDialog } from './dialog-backdrop';
 import { api } from '../../api/endpoints';
@@ -44,21 +44,12 @@ function createHero(gamePromise: Promise<GameDetails>): HTMLElement {
     // load: () => Promise.reject(new Error('Error')),
     load: () => gamePromise,
     render: (game) => {
-      const img = createElement('img', {
+      const img = createImageWithFallback({
+        src: game.heroImage,
+        alt: game.name,
         className: 'game-detail-dialog__hero-image',
-        attributes: { src: game.heroImage, alt: game.name },
-      }) as HTMLImageElement;
-
-      img.addEventListener(
-        'error',
-        () => {
-          img.src = 'error-img.png';
-          img.alt = '';
-          img.setAttribute('aria-hidden', 'true');
-        },
-        { once: true },
-      );
-
+        loading: 'eager',
+      });
       return [img];
     },
     skeleton: () => [
