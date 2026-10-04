@@ -35,7 +35,13 @@ export function showSnackbar({
   duration = DEFAULT_DURATION_MS,
 }: SnackbarOptions): void {
   const key = `${variant}:${message}`;
-  const existing = activeSnackbars.get(key);
+  let existing = activeSnackbars.get(key);
+
+  if (existing && !existing.element.isConnected) {
+    if (existing.timeoutId) globalThis.clearTimeout(existing.timeoutId);
+    activeSnackbars.delete(key);
+    existing = undefined;
+  }
 
   if (existing) {
     existing.count += 1;

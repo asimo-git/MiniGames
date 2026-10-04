@@ -1,5 +1,7 @@
 export const API_BASE_URL = 'https://faxb76kxra.execute-api.eu-central-1.amazonaws.com';
 
+const REQUEST_TIMEOUT_MS = 10_000;
+
 export class ApiError extends Error {
   readonly status: number;
   readonly retryAfter?: number; // сек., только для 429
@@ -47,31 +49,34 @@ function buildQuery(query?: Query): string {
 export async function makeRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { method = 'GET', query, body, signal } = options;
 
+  const timeoutSignal = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
+  const combinedSignal = signal ? AbortSignal.any([signal, timeoutSignal]) : timeoutSignal;
+
   let response: Response;
 
   try {
     response = await fetch(`${API_BASE_URL}${path}${buildQuery(query)}`, {
       method,
-      signal,
+      signal: combinedSignal,
       headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch (error) {
     if (isAbortError(error)) throw error;
+    if (timeoutSignal.aborted) throw new ApiError(0, 'The server is taking too long to respond');
     throw new ApiError(0, 'No connection to the server');
   }
 
-  let payload;
+  let payload: unknown;
 
   try {
     payload = await response.json();
   } catch {
-    payload = undefined;
+    throw new ApiError(response.status, 'Invalid server response');
   }
 
   if (!response.ok) {
-    const message =
-      typeof payload?.error === 'string' ? payload.error : response.statusText || 'Ошибка запроса';
+    const message = readServerMessage(payload) || response.statusText || 'Request error';
 
     const retryAfter =
       response.status === 429
@@ -82,4 +87,10 @@ export async function makeRequest<T>(path: string, options: RequestOptions = {})
   }
 
   return payload as T;
+}
+
+function readServerMessage(payload: unknown): string | undefined {
+  if (typeof payload !== 'object' || payload === null) return undefined;
+  const { error } = payload as { error?: unknown };
+  return typeof error === 'string' ? error : undefined;
 }

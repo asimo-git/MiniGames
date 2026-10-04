@@ -21,9 +21,27 @@ export function openGameDetailDialog(gameId: string | undefined): void {
   showDialog(panel, { ariaLabel: 'Game details' });
 }
 
+function createGameLoader(slug: string): () => Promise<GameDetails> {
+  let promise: Promise<GameDetails> | undefined;
+
+  async function fetchGame(): Promise<GameDetails> {
+    try {
+      return await api.getGame(slug);
+    } catch (error) {
+      promise = undefined;
+      throw error;
+    }
+  }
+
+  return () => {
+    promise ??= fetchGame();
+    return promise;
+  };
+}
+
 function createContent(gameId: string | undefined, onClose: () => void): HTMLElement {
   const slug = gameId ?? '';
-  const gamePromise = api.getGame(slug);
+  const gamePromise = createGameLoader(slug);
 
   const body = createElement('div', {
     className: 'game-detail-dialog__body',
@@ -36,13 +54,13 @@ function createContent(gameId: string | undefined, onClose: () => void): HTMLEle
   });
 }
 
-function createHero(gamePromise: Promise<GameDetails>): HTMLElement {
+function createHero(gamePromise: () => Promise<GameDetails>): HTMLElement {
   const container = createElement('div', { className: 'game-detail-dialog__hero' });
 
   void mountAsyncSection(container, {
     // load: () => new Promise(() => {}),
     // load: () => Promise.reject(new Error('Error')),
-    load: () => gamePromise,
+    load: gamePromise,
     render: (game) => {
       const img = createImageWithFallback({
         src: game.heroImage,
@@ -63,12 +81,12 @@ function createHero(gamePromise: Promise<GameDetails>): HTMLElement {
   return container;
 }
 
-function createDetails(gamePromise: Promise<GameDetails>): HTMLElement {
+function createDetails(gamePromise: () => Promise<GameDetails>): HTMLElement {
   const container = createElement('div', { className: 'game-detail-dialog__details' });
 
   void mountAsyncSection(container, {
     // load: () => new Promise(() => {}),
-    load: () => gamePromise,
+    load: gamePromise,
     // load: () => Promise.reject(new Error('Error')),
     render: (game) => [
       createTitleRow(game),

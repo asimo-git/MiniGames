@@ -1,6 +1,6 @@
 import starIcon from '../../assets/icons/star.svg';
 import favoriteIcon from '../../assets/icons/heart.svg';
-import { createElement, createImageWithFallback, formatCount } from '../../utils/helpers';
+import { createElement, formatCount } from '../../utils/helpers';
 import { openDialog } from '../../router/dialog-router';
 import type { GameSummary } from '../../api/types';
 
@@ -15,9 +15,11 @@ export interface CardReferences {
 }
 
 export function createGameCard(game: GameSummary, variant: CardVariant): CardReferences {
-  const image = createImageWithFallback({
-    src: game.cardImage,
-    alt: game.name,
+  const image = createElement('img', {
+    attributes: {
+      src: game.cardImage,
+      alt: game.name,
+    },
     className: 'carousel__card-image',
   });
 

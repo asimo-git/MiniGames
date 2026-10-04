@@ -17,15 +17,11 @@ export async function mountAsyncSection<T>(
 
   container.replaceChildren(...skeleton());
 
+  let data: T;
   try {
-    const data = await load();
-
-    // If the container isn't there, the user has moved on, and the response is no longer needed.
-    if (!container.isConnected) return;
-
+    data = await load();
     // check an error ui
     // throw new Error('Error');
-    container.replaceChildren(...render(data));
     showSnackbar({ variant: 'success', message: 'Data loaded successfully' });
   } catch (error) {
     if (!container.isConnected) return;
@@ -40,5 +36,18 @@ export async function mountAsyncSection<T>(
       }),
     );
     showSnackbar({ variant: 'error', message });
+    return;
+  }
+
+  // If the container isn't there, the user has moved on, and the response is no longer needed.
+  if (!container.isConnected) return;
+
+  try {
+    container.replaceChildren(...render(data));
+  } catch (error) {
+    console.error('Render failed', error);
+    container.replaceChildren(
+      createErrorBanner({ message: 'Failed to display data', size: errorSize }),
+    );
   }
 }
