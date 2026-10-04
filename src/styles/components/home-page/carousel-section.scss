@@ -91,8 +91,14 @@ $carousel-easing: cubic-bezier(0.65, 0, 0.35, 1);
     border-radius: styles.$radius-large;
     border-left: styles.$border-medium solid styles.$color-on-primary;
     border-right: styles.$border-medium solid styles.$color-on-primary;
+    min-height: styles.$card-height-small;
+
+    @media (min-width: styles.$breakpoint-tablet) {
+      min-height: styles.$card-height-medium;
+    }
 
     @media (min-width: styles.$breakpoint-laptop) {
+      min-height: styles.$card-height-large;
       border-radius: styles.$radius-extra-large;
     }
   }

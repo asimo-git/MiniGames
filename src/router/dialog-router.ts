@@ -6,42 +6,52 @@ import {
   ROUTE_CHANGE_EVENT,
   updateQuery,
   type AuthMode,
+  type DialogParametrs,
   type RouteState,
 } from './router';
 
-type DialogParametrs = { game: string } | { auth: AuthMode };
-type DialogKey = 'game' | 'login' | 'register' | undefined;
+type DialogTarget =
+  { kind: 'game'; slug: string } | { kind: 'auth'; mode: AuthMode } | { kind: 'none' };
 
 export const dialogState: { dialogKey: string | undefined } = { dialogKey: undefined };
 
-function getDialogKey({ gameId, auth }: RouteState): DialogKey {
-  if (gameId) return 'game';
-  if (auth === 'login') return 'login';
-  if (auth === 'register') return 'register';
-  return undefined;
+function getDialogTarget({ gameId, auth }: RouteState): DialogTarget {
+  if (gameId) return { kind: 'game', slug: gameId };
+  if (auth) return { kind: 'auth', mode: auth };
+  return { kind: 'none' };
+}
+
+function getTargetKey(target: DialogTarget): string | undefined {
+  switch (target.kind) {
+    case 'game': {
+      return `game:${target.slug}`;
+    }
+    case 'auth': {
+      return `auth:${target.mode}`;
+    }
+    case 'none': {
+      return undefined;
+    }
+  }
 }
 
 function syncDialog(): void {
-  const routeState = getRouteState();
-  const key = getDialogKey(routeState);
+  const target = getDialogTarget(getRouteState());
+  const key = getTargetKey(target);
 
   if (key === dialogState.dialogKey) return;
   dialogState.dialogKey = key;
 
-  switch (key) {
+  switch (target.kind) {
     case 'game': {
-      openGameDetailDialog();
+      openGameDetailDialog(target.slug); // здесь slug: string
       break;
     }
-    case 'login': {
-      openAuthDialog('login');
+    case 'auth': {
+      openAuthDialog(target.mode);
       break;
     }
-    case 'register': {
-      openAuthDialog('register');
-      break;
-    }
-    case undefined: {
+    case 'none': {
       hideDialog();
       break;
     }
@@ -66,9 +76,6 @@ export function switchDialog(parametrs: DialogParametrs): void {
 }
 
 export function closeDialog(): void {
-  if (globalThis.history.state?.dialog) {
-    globalThis.history.back();
-  } else {
-    updateQuery({ game: undefined, auth: undefined }, { replace: true });
-  }
+  if (getDialogTarget(getRouteState()).kind === 'none') return;
+  updateQuery({ game: undefined, auth: undefined });
 }

@@ -6,7 +6,8 @@ import { updateQuery, type RouteState } from '../router/router';
 import type { Category, GamesListMeta, GameSummary } from '../api/types';
 import { api } from '../api/endpoints';
 import { mountAsyncSection } from '../utils/mount-sync-section';
-import { createSkeleton } from '../components/skeleton';
+import { createArraySkeletons } from '../components/skeleton';
+import { createEmptyState } from '../components/empty-state';
 
 const GAMES_PER_PAGE = 6;
 
@@ -23,10 +24,11 @@ export function createLibraryPage(routeState: RouteState): HTMLElement {
     // check a sceleton code
     // load: () => new Promise(() => {}),
     load: () => api.getCategories(),
+    // load: () => Promise.resolve([]),
     render: (categories) => renderFilters(categories, routeState),
     errorSize: 'compact',
     skeleton: () =>
-      createSkeleton({
+      createArraySkeletons({
         tag: 'span',
         width: '96px',
         count: 7,
@@ -41,7 +43,7 @@ export function createLibraryPage(routeState: RouteState): HTMLElement {
     skeleton: () => [
       createElement('ul', {
         className: 'library-page__games',
-        children: createSkeleton({
+        children: createArraySkeletons({
           tag: 'li',
           width: '100%',
           count: GAMES_PER_PAGE,
@@ -135,14 +137,11 @@ function renderGames({ games, meta }: GamesData, routeState: RouteState): Node[]
     return [];
   }
 
-  if (games.length === 0) {
-    return [
-      createElement('p', { className: 'library-page__status', textContent: 'No games found' }),
-    ];
-  }
+  const gameListContent =
+    meta.totalItems === 0 ? createEmptyState('No games found') : createGamesList(games);
 
   return [
-    createGamesList(games),
+    gameListContent,
     createPagination({ totalPages: meta.totalPages, currentPage: meta.page }),
   ];
 }

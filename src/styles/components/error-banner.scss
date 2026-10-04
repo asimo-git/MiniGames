@@ -7,6 +7,7 @@
   padding: tokens.$size-2 tokens.$size-2-5;
   border-radius: tokens.$radius-medium;
   background-color: tokens.$color-surface;
+  min-height: inherit;
 
   &__icon {
     flex-shrink: 0;
@@ -26,13 +27,13 @@
     }
   }
 
-  &__message {
-    flex: 1;
-    min-width: 0;
-    font-size: tokens.$font-size-body-small;
-    line-height: 1.4;
-    color: tokens.$color-on-bg;
-  }
+  // &__message {
+  //   flex: 1;
+  //   min-width: 0;
+  //   font-size: tokens.$font-size-body-small;
+  //   line-height: 1.4;
+  //   color: tokens.$color-on-bg;
+  // }
 
   &__retry {
     flex-shrink: 0;

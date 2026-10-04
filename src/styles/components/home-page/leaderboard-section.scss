@@ -42,6 +42,20 @@ $tablet-stat-width: math.percentage(math.div(110, $tablet-row-content-width));
     }
   }
 
+  &__table-container {
+    min-height: 216px;
+    width: 100%;
+    border-radius: styles.$radius-large;
+
+    @media (min-width: styles.$breakpoint-tablet) {
+      min-height: 228px;
+    }
+
+    @media (min-width: styles.$breakpoint-laptop) {
+      min-height: 427px;
+    }
+  }
+
   &__table {
     display: block;
     width: 100%;

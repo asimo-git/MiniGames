@@ -1,20 +1,12 @@
 import { createElement, getAvatarLetters } from '../../utils/helpers';
-import leaderboardData from '../../data/leaderboard.json';
 import { createSubtitle } from '../subtitle';
-
-interface TopPlayer {
-  rank: number;
-  playerName: string;
-  gamesPlayed: number;
-  totalScore: number;
-  streakDays: number;
-  favoriteGameSlug: string;
-  favoriteGameName: string;
-}
+import { api } from '../../api/endpoints';
+import type { LeaderboardEntry } from '../../api/types';
+import { mountAsyncSection } from '../../utils/mount-sync-section';
+import { createSkeleton } from '../skeleton';
+import { createEmptyState } from '../empty-state';
 
 type ColumnId = 'rank' | 'player' | 'games' | 'score' | 'streak' | 'favorite';
-
-const TOP_PLAYERS: TopPlayer[] = leaderboardData.data;
 
 const HEADER_COLUMNS: { id: ColumnId; label: string; shortLabel?: string }[] = [
   { id: 'rank', label: 'Rank' },
@@ -26,6 +18,21 @@ const HEADER_COLUMNS: { id: ColumnId; label: string; shortLabel?: string }[] = [
 ];
 
 export function createLeaderboardSection(): HTMLElement {
+  const tableContainer = createElement('div', { className: 'top-players__table-container' });
+
+  void mountAsyncSection(tableContainer, {
+    // load: () => new Promise(() => {}),
+    // load: () => Promise.resolve([]),
+    load: () => api.getLeaderboard(),
+    skeleton: () => [createSkeleton({})],
+    render: (players) => {
+      if (players.length === 0) {
+        return [createEmptyState('No Top Players found')];
+      }
+      return [createTable(players)];
+    },
+  });
+
   return createElement('section', {
     className: 'top-players',
     children: [
@@ -37,15 +44,15 @@ export function createLeaderboardSection(): HTMLElement {
         className: 'top-players__subtitle-short',
         children: [createSubtitle('Top Players')],
       }),
-      createTable(),
+      tableContainer,
     ],
   });
 }
 
-function createTable(): HTMLElement {
+function createTable(players: LeaderboardEntry[]): HTMLElement {
   return createElement('table', {
     className: 'top-players__table',
-    children: [createTableHead(), createTableBody()],
+    children: [createTableHead(), createTableBody(players)],
   });
 }
 
@@ -89,14 +96,14 @@ function createHeaderLabel(label: string, shortLabel?: string): HTMLElement[] {
   ];
 }
 
-function createTableBody(): HTMLElement {
+function createTableBody(players: LeaderboardEntry[]): HTMLElement {
   return createElement('tbody', {
     className: 'top-players__tbody',
-    children: TOP_PLAYERS.map((player) => createTableRow(player)),
+    children: players.map((player) => createTableRow(player)),
   });
 }
 
-function createTableRow(player: TopPlayer): HTMLElement {
+function createTableRow(player: LeaderboardEntry): HTMLElement {
   return createElement('tr', {
     className: 'top-players__row',
     children: [
@@ -110,7 +117,7 @@ function createTableRow(player: TopPlayer): HTMLElement {
   });
 }
 
-function createRankCell(player: TopPlayer): HTMLElement {
+function createRankCell(player: LeaderboardEntry): HTMLElement {
   return createElement('td', {
     className: [
       'top-players__cell',
@@ -124,7 +131,7 @@ function createRankCell(player: TopPlayer): HTMLElement {
   });
 }
 
-function createPlayerCell(player: TopPlayer): HTMLElement {
+function createPlayerCell(player: LeaderboardEntry): HTMLElement {
   return createElement('td', {
     className: 'top-players__cell top-players__cell--player',
     attributes: { 'data-column': 'player' },
@@ -138,7 +145,7 @@ function createPlayerCell(player: TopPlayer): HTMLElement {
   });
 }
 
-function createAvatar(player: TopPlayer): HTMLElement {
+function createAvatar(player: LeaderboardEntry): HTMLElement {
   return createElement('div', {
     className: 'top-players__avatar',
     textContent: getAvatarLetters(player.playerName),
@@ -148,7 +155,7 @@ function createAvatar(player: TopPlayer): HTMLElement {
   });
 }
 
-function createGamesCell(player: TopPlayer): HTMLElement {
+function createGamesCell(player: LeaderboardEntry): HTMLElement {
   return createElement('td', {
     className: 'top-players__cell top-players__cell--games',
     textContent: String(player.gamesPlayed),
@@ -156,7 +163,7 @@ function createGamesCell(player: TopPlayer): HTMLElement {
   });
 }
 
-function createScoreCell(player: TopPlayer): HTMLElement {
+function createScoreCell(player: LeaderboardEntry): HTMLElement {
   return createElement('td', {
     className: 'top-players__cell top-players__cell--score',
     attributes: { 'data-column': 'score' },
@@ -173,7 +180,7 @@ function createScoreCell(player: TopPlayer): HTMLElement {
   });
 }
 
-function createStreakCell(player: TopPlayer): HTMLElement {
+function createStreakCell(player: LeaderboardEntry): HTMLElement {
   return createElement('td', {
     className: 'top-players__cell top-players__cell--streak',
     attributes: { 'data-column': 'streak' },
@@ -190,7 +197,7 @@ function createStreakCell(player: TopPlayer): HTMLElement {
   });
 }
 
-function createFavoriteGameCell(player: TopPlayer): HTMLElement {
+function createFavoriteGameCell(player: LeaderboardEntry): HTMLElement {
   return createElement('td', {
     className: 'top-players__cell top-players__cell--favorite',
     attributes: { 'data-column': 'favorite' },

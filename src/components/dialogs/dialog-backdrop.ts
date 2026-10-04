@@ -33,6 +33,9 @@ const dialogElementStore = (() => {
 
       return element;
     },
+    peek(): HTMLDialogElement | undefined {
+      return element;
+    },
   };
 })();
 
@@ -69,4 +72,9 @@ export function hideDialog(): void {
     },
     { once: true },
   );
+}
+
+export function getTopLayerHost(): HTMLElement {
+  const dialog = dialogElementStore.peek();
+  return dialog?.open ? dialog : document.body;
 }

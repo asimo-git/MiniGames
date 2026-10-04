@@ -1,19 +1,29 @@
 @use '../abstracts/variables' as styles;
 
-@keyframes skeleton-breathe {
-  0%,
-  100% {
-    background-color: styles.$color-outline;
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -150% 0;
   }
-  50% {
-    background-color: styles.$color-outline-variant;
+  100% {
+    background-position: 250% 0;
   }
 }
 
 .skeleton {
   display: inline-block;
   background-color: styles.$color-outline;
-  animation: skeleton-breathe 1.8s ease-in-out infinite;
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(styles.$color-surface-low, 0.9) 50%,
+    transparent 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 50% 100%;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  height: 100%;
+  min-height: inherit;
+  border-radius: inherit;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;

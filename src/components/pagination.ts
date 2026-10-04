@@ -88,7 +88,7 @@ function getFirstVisiblePage(
 function getVisibleCount(totalPages: number): number {
   const maxForViewport = mobileQuery.matches ? MOBILE_VISIBLE_PAGES : DESKTOP_VISIBLE_PAGES;
 
-  return Math.min(maxForViewport, totalPages);
+  return Math.max(1, Math.min(maxForViewport, totalPages));
 }
 
 export function createPagination({ currentPage, totalPages }: PaginationOptions): HTMLElement {
@@ -96,11 +96,6 @@ export function createPagination({ currentPage, totalPages }: PaginationOptions)
     className: PAGINATION_CLASS,
     attributes: { 'aria-label': 'Pagination' },
   });
-
-  if (totalPages <= 1) {
-    navigation.hidden = true;
-    return navigation;
-  }
 
   let pageButtons: HTMLButtonElement[] = [];
 
