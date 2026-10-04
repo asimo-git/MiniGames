@@ -1,0 +1,32 @@
+@use '../abstracts' as styles;
+
+.not-found-page {
+  @include styles.flex($direction: column, $justify: center, $gap: styles.$size-3);
+  @include styles.responsive-padding;
+
+  text-align: center;
+
+  &__code {
+    padding: styles.$size-1 styles.$size-3;
+    font-weight: styles.$font-weight-extra-bold;
+    color: styles.$color-on-primary;
+    background-color: styles.$color-primary;
+    border-radius: styles.$radius-medium;
+    font-size: styles.$font-size-display-large;
+  }
+
+  &__title {
+    font-size: styles.$font-size-headline-large;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+  }
+
+  &__text {
+    font-size: styles.$font-size-body-large;
+    color: styles.$color-on-bg;
+  }
+
+  &__button {
+    @include styles.button-accent;
+  }
+}

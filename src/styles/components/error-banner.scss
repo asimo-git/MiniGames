@@ -1,0 +1,74 @@
+@use '../abstracts/variables' as tokens;
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: tokens.$size-1-5;
+  padding: tokens.$size-2 tokens.$size-2-5;
+  border-radius: tokens.$radius-medium;
+  background-color: tokens.$color-surface;
+  min-height: inherit;
+
+  &__icon {
+    flex-shrink: 0;
+    width: tokens.$size-3;
+    height: tokens.$size-3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: tokens.$radius-full;
+    background-color: rgba(tokens.$color-error, 0.12);
+    color: tokens.$color-error;
+    font-size: tokens.$font-size-label-medium;
+    font-weight: tokens.$font-weight-bold;
+
+    &::before {
+      content: '!';
+    }
+  }
+
+  // &__message {
+  //   flex: 1;
+  //   min-width: 0;
+  //   font-size: tokens.$font-size-body-small;
+  //   line-height: 1.4;
+  //   color: tokens.$color-on-bg;
+  // }
+
+  &__retry {
+    flex-shrink: 0;
+    padding: tokens.$size-05 tokens.$size-1-5;
+    border-radius: tokens.$radius-small;
+    font-size: tokens.$font-size-label-large;
+    font-weight: tokens.$font-weight-bold;
+    color: tokens.$color-error;
+    background-color: rgba(tokens.$color-error, 0.1);
+    white-space: nowrap;
+    transition: background-color 0.15s ease;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: rgba(tokens.$color-error, 0.18);
+      }
+    }
+  }
+
+  &--compact {
+    padding: tokens.$size-1 tokens.$size-1-5;
+    gap: tokens.$size-1;
+
+    .error-banner__icon {
+      width: tokens.$size-2-5;
+      height: tokens.$size-2-5;
+    }
+
+    .error-banner__message {
+      font-size: tokens.$font-size-label-large;
+    }
+
+    .error-banner__retry {
+      padding: tokens.$size-05 tokens.$size-1;
+      font-size: tokens.$font-size-label-medium;
+    }
+  }
+}

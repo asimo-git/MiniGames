@@ -1,58 +1,73 @@
 import arrowBackIcon from '../../assets/icons/arrow_back.svg';
 import arrowForwardIcon from '../../assets/icons/arrow_forward.svg';
-import gamesData from '../../data/all-games-seed.json';
 import { createElement } from '../../utils/helpers';
+
 import { createSubtitle } from '../subtitle';
-import type { Game } from '../../utils/types';
 import { enableSwipe } from '../../utils/enable-swipe';
 import { createAutoplay } from '../../utils/autoplay';
 import { createCarouselSlider, type Direction } from './carousel-slider';
-
-const GAMES: Game[] = gamesData.data;
+import { api } from '../../api/endpoints';
+import { mountAsyncSection } from '../../utils/mount-sync-section';
+import { createSkeleton } from '../skeleton';
+import { createEmptyState } from '../empty-state';
 
 export function createCarouselSection(): HTMLElement {
-  const featuredGames = GAMES.filter((game) => game.featured);
-  const slider = createCarouselSlider(featuredGames);
+  // let navigate: (direction: Direction) => void = () => {};
 
-  const autoplay = createAutoplay(() => slider.moveSlide(1));
+  const header = createElement('div', {
+    className: 'carousel__header',
+    children: [createSubtitle('New Games')],
+  });
 
-  const navigate = (direction: Direction): void => {
-    slider.moveSlide(direction);
-    autoplay.reset();
-  };
-
-  enableSwipe(slider.element, (swipe) => navigate(swipe));
-
-  const header = createCarouselHeader(
-    () => navigate(-1),
-    () => navigate(1),
-  );
+  const viewport = createElement('div', { className: 'carousel__viewport' });
 
   const section = createElement('section', {
     className: 'carousel',
-    children: [header, slider.element],
+    children: [header, viewport],
   });
 
-  autoplay.attach(section);
+  void mountAsyncSection(viewport, {
+    // load: () => new Promise(() => {}),
+    // load: () => Promise.reject(new Error('Error')),
+    // load: () => Promise.resolve([]),
+    load: () => api.getFeaturedGames(),
+    skeleton: () => [createSkeleton({ width: '100%' })],
+    render: (games) => {
+      if (games.length === 0) {
+        return [createEmptyState('No new games found')];
+      }
+
+      const slider = createCarouselSlider(games, viewport);
+      const autoplay = createAutoplay(() => slider.moveSlide(1));
+
+      const navigate = (direction: Direction) => {
+        slider.moveSlide(direction);
+        autoplay.reset();
+      };
+
+      const nav = createElement('div', {
+        className: 'carousel__nav',
+        attributes: { hidden: '' },
+        children: [
+          createNavButton(arrowBackIcon, 'Previous games', 'carousel__nav-button--prev', () =>
+            navigate(-1),
+          ),
+          createNavButton(arrowForwardIcon, 'Next games', 'carousel__nav-button--next', () =>
+            navigate(1),
+          ),
+        ],
+      });
+      header.append(nav);
+
+      enableSwipe(viewport, (swipe) => navigate(swipe));
+      autoplay.attach(section);
+      nav.hidden = false;
+
+      return [slider.element];
+    },
+  });
 
   return section;
-}
-
-function createCarouselHeader(onPrevious: () => void, onNext: () => void): HTMLElement {
-  const titleGroup = createSubtitle('New Games');
-
-  const nav = createElement('div', {
-    className: 'carousel__nav',
-    children: [
-      createNavButton(arrowBackIcon, 'Previous games', 'carousel__nav-button--prev', onPrevious),
-      createNavButton(arrowForwardIcon, 'Next games', 'carousel__nav-button--next', onNext),
-    ],
-  });
-
-  return createElement('div', {
-    className: 'carousel__header',
-    children: [titleGroup, nav],
-  });
 }
 
 function createNavButton(

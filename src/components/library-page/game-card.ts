@@ -1,13 +1,12 @@
-import { createElement } from '../../utils/helpers';
-import type { Game } from '../../utils/types';
-import { openGameDetailDialog } from '../dialogs/game-detail-dialog';
+import type { GameSummary } from '../../api/types';
+import { FREE_PRICE_LABEL } from '../../api/types';
+import { openDialog } from '../../router/dialog-router';
+import { createElement, createImageWithFallback } from '../../utils/helpers';
 import { createStatsBadges } from './stats-badges';
 
-const FREE_PRICE_LABEL = 'free';
-
-export function createGameCard(game: Game): HTMLElement {
+export function createGameCard(game: GameSummary): HTMLElement {
   const card = createElement('li', {
-    className: `game-card`,
+    className: `game-card game-card-geometry`,
     children: [
       createMedia(game),
       createElement('div', {
@@ -27,19 +26,20 @@ export function createGameCard(game: Game): HTMLElement {
   return card;
 }
 
-function createMedia(game: Game): HTMLElement {
+function createMedia(game: GameSummary): HTMLElement {
   return createElement('div', {
     className: 'game-card__media',
     children: [
-      createElement('img', {
+      createImageWithFallback({
+        src: game.cardImage,
+        alt: game.name,
         className: 'game-card__image',
-        attributes: { src: game.cardImage, alt: game.name, loading: 'lazy' },
       }),
     ],
   });
 }
 
-function createHeader(game: Game): HTMLElement {
+function createHeader(game: GameSummary): HTMLElement {
   const isFree = game.price.toLowerCase() === FREE_PRICE_LABEL;
 
   return createElement('div', {
@@ -60,7 +60,7 @@ function createHeader(game: Game): HTMLElement {
   });
 }
 
-function createFooter(game: Game): HTMLElement {
+function createFooter(game: GameSummary): HTMLElement {
   const detailsButton = createElement('button', {
     className: 'game-card__button',
     textContent: 'Details',
@@ -68,7 +68,7 @@ function createFooter(game: Game): HTMLElement {
   });
 
   detailsButton.addEventListener('click', () => {
-    openGameDetailDialog();
+    openDialog({ game: game.slug });
   });
 
   return createElement('div', {

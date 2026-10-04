@@ -2,6 +2,8 @@
 
 .library-page {
   @include styles.responsive-padding;
+  @include styles.flex($direction: column, $align: stretch);
+  flex: 1;
 
   &__header {
     @include styles.responsive-padding(0 0 styles.$size-2, 0 0 styles.$size-3, 0 0 styles.$size-5);
@@ -46,9 +48,18 @@
     }
   }
 
+  &__chip-geometry {
+    border-radius: styles.$radius-extra-large;
+    height: 31px;
+    flex-shrink: 0;
+
+    @media (min-width: styles.$breakpoint-mobile) {
+      height: 33px;
+    }
+  }
+
   &__chip {
     @include styles.button-base(
-      $radius: styles.$radius-extra-large,
       $padding-y: styles.$size-1,
       $padding-x: styles.$size-2,
       $font-size: styles.$font-size-body-small
@@ -79,10 +90,27 @@
 
     @media (min-width: styles.$breakpoint-laptop) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 1fr;
     }
 
     @media (max-width: styles.$breakpoint-mobile) {
       gap: styles.$size-2;
     }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    & > :first-child {
+      flex: 1;
+    }
+  }
+
+  &__empty-list {
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center;
   }
 }

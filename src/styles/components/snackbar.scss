@@ -1,0 +1,103 @@
+@use 'sass:map';
+@use '../abstracts/variables' as styles;
+@use '../abstracts/mixins' as mixins;
+
+$snackbar-variants: (
+  success: (
+    bg: styles.$color-price-free,
+    fg: styles.$color-white,
+  ),
+  error: (
+    bg: styles.$color-error,
+    fg: styles.$color-white,
+  ),
+  warning: (
+    bg: styles.$color-primary-high,
+    fg: styles.$color-white,
+  ),
+  info: (
+    bg: styles.$color-primary-high,
+    fg: styles.$color-white,
+  ),
+);
+
+.snackbar-container {
+  position: fixed;
+  z-index: styles.$z-index-overlay;
+  inset-block-end: styles.$size-2;
+  inset-inline: styles.$size-2;
+  max-width: 420px;
+  // margin-inline: auto;
+  // width: fit-content;
+
+  pointer-events: none;
+
+  @include mixins.flex($direction: column, $align: center, $gap: styles.$size-1);
+
+  @media (min-width: styles.$breakpoint-tablet) {
+    inset-inline-start: auto;
+    inset-inline-end: styles.$size-3;
+    align-items: flex-end;
+    transform: none;
+  }
+}
+
+.snackbar {
+  min-width: 280px;
+  max-width: 420px;
+  overflow-wrap: anywhere;
+  padding: styles.$size-1-5 styles.$size-2;
+  border-radius: styles.$radius-medium;
+  opacity: 0;
+  transform: translateY(#{styles.$size-1});
+  transition:
+    opacity styles.$duration-fast ease,
+    transform styles.$duration-fast ease;
+
+  pointer-events: auto;
+
+  @include mixins.flex($align: center, $gap: styles.$size-1-5);
+
+  &--visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @each $variant, $colors in $snackbar-variants {
+    &--#{$variant} {
+      background-color: map.get($colors, bg);
+      color: map.get($colors, fg);
+    }
+  }
+}
+
+.snackbar__icon {
+  flex-shrink: 0;
+  width: styles.$size-3;
+  height: styles.$size-3;
+  border-radius: styles.$radius-full;
+  background-color: styles.$color-transparent;
+  font-size: styles.$font-size-label-large;
+  font-weight: styles.$font-weight-bold;
+
+  @include mixins.flex($align: center, $justify: center);
+}
+
+.snackbar__message {
+  flex: 1;
+  font-size: styles.$font-size-body-small;
+}
+
+.snackbar__close {
+  flex-shrink: 0;
+  font-size: styles.$font-size-headline-small;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.8;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

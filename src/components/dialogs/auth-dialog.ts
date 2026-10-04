@@ -8,8 +8,8 @@ import {
   type FieldConfig,
 } from '../../data/auth-fields-config.ts';
 import { hideDialog, showDialog } from './dialog-backdrop.ts';
-
-export type AuthMode = 'login' | 'register';
+import type { AuthMode } from '../../router/router.ts';
+import { dialogState, switchDialog } from '../../router/dialog-router.ts';
 
 function buildTabClassName(isActive: boolean): string {
   return isActive ? `auth-dialog__tab auth-dialog__tab--active` : `auth-dialog__tab`;
@@ -238,6 +238,9 @@ function createAuthDialogContent(initialMode: AuthMode): HTMLElement {
     mode = nextMode;
     tabsSlot.replaceChildren(createTabs(mode, switchMode));
     animatePanelSwap(panel, mode, switchMode);
+
+    dialogState.dialogKey = `auth=${nextMode}`; // помечаем как уже обработанное синхронизацией
+    switchDialog({ auth: nextMode });
   }
 
   tabsSlot.replaceChildren(createTabs(mode, switchMode));

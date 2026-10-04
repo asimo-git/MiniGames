@@ -8,3 +8,11 @@ body {
   background-color: tokens.$color-bg;
   color: tokens.$color-on-bg;
 }
+
+.image-with-fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: url('/load-img.gif') center / tokens.$size-5 no-repeat tokens.$color-surface;
+}

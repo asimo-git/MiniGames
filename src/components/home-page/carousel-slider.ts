@@ -7,7 +7,7 @@ import {
   type CardReferences,
   type CardVariant,
 } from './carousel-card';
-import type { Game } from '../../utils/types';
+import type { GameSummary } from '../../api/types';
 
 export type Direction = -1 | 1;
 
@@ -20,7 +20,7 @@ const RING_BUFFER_SIZE = 3;
 const CENTER_POSITION = RING_BUFFER_SIZE;
 const FALLBACK_TIMEOUT_MS = 700;
 
-export function createCarouselSlider(games: Game[]): CarouselSlider {
+export function createCarouselSlider(games: GameSummary[], viewport: HTMLElement): CarouselSlider {
   let centerRealIndex = 0;
   let isAnimating = false;
 
@@ -33,11 +33,6 @@ export function createCarouselSlider(games: Game[]): CarouselSlider {
 
   track.style.setProperty('--ring', String(RING_BUFFER_SIZE));
   track.style.setProperty('--shift', '0');
-
-  const viewport = createElement('div', {
-    className: 'carousel__viewport',
-    children: [track],
-  });
 
   const moveSlide = (direction: Direction): void => {
     if (isAnimating) return;
@@ -64,10 +59,10 @@ export function createCarouselSlider(games: Game[]): CarouselSlider {
     });
   };
 
-  return { element: viewport, moveSlide };
+  return { element: track, moveSlide };
 }
 
-function createCards(games: Game[], centerRealIndex: number): CardReferences[] {
+function createCards(games: GameSummary[], centerRealIndex: number): CardReferences[] {
   const windowSize = RING_BUFFER_SIZE * 2 + 1;
   const cards: CardReferences[] = [];
 
@@ -86,7 +81,7 @@ function createCards(games: Game[], centerRealIndex: number): CardReferences[] {
 function rotateCards(
   track: HTMLElement,
   cards: CardReferences[],
-  games: Game[],
+  games: GameSummary[],
   centerRealIndex: number,
   direction: Direction,
 ): void {
