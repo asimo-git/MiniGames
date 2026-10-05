@@ -129,6 +129,10 @@ $shadow-offset-hard: 8px;
       background-color: styles.$color-surface-low;
       border-color: styles.$color-on-primary;
     }
+
+    &:has(.auth-dialog__input--invalid):has(.auth-dialog__input) {
+      border-color: styles.$color-error;
+    }
   }
 
   &__input {
@@ -162,19 +166,14 @@ $shadow-offset-hard: 8px;
   }
 
   &__visibility-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: none;
-    order: 2;
     width: styles.$size-3;
     height: styles.$size-3;
     cursor: pointer;
+    background: url('../../../assets/icons/auth/eye-off.svg') center / contain no-repeat;
   }
 
-  &__visibility-icon {
-    width: 100%;
-    height: 100%;
+  &__visibility-toggle--visible {
+    background-image: url('../../../assets/icons/auth/visibility.svg');
   }
 
   &__actions {
@@ -247,4 +246,16 @@ $shadow-offset-hard: 8px;
     text-decoration: underline;
     cursor: pointer;
   }
+
+  &__error {
+    margin-top: styles.$size-05;
+    font-size: styles.$font-size-label-large;
+    color: styles.$color-error;
+    width: 100%;
+    text-align: center;
+  }
+
+  // &__input-wrapper:has(> .auth-dialog__input--invalid) {
+  //   border: styles.$border-normal solid styles.$color-error;
+  // }
 }

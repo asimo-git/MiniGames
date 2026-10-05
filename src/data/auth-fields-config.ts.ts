@@ -1,6 +1,7 @@
 import personIcon from '../assets/icons/auth/person.svg';
 import mailIcon from '../assets/icons/auth/mail.svg';
 import lockIcon from '../assets/icons/auth/lock.svg';
+import type { FieldName } from '../utils/auth-validation';
 
 export const ICONS = {
   person: personIcon,
@@ -9,7 +10,7 @@ export const ICONS = {
 } as const;
 
 export interface FieldConfig {
-  key: string;
+  key: FieldName;
   label: string;
   icon: keyof typeof ICONS;
   placeholder: string;
@@ -19,7 +20,7 @@ export interface FieldConfig {
 
 export const LOGIN_FIELDS: FieldConfig[] = [
   {
-    key: 'identifier',
+    key: 'email',
     label: 'Email Address',
     icon: 'mail',
     placeholder: 'e.g. alex@minigames.com',
@@ -56,6 +57,7 @@ export const REGISTER_FIELDS: FieldConfig[] = [
     icon: 'lock',
     placeholder: 'Min. 8 characters',
     type: 'password',
+    showVisibilityToggle: true,
   },
   {
     key: 'confirmPassword',
@@ -63,5 +65,6 @@ export const REGISTER_FIELDS: FieldConfig[] = [
     icon: 'lock',
     placeholder: 'Repeat your password',
     type: 'password',
+    showVisibilityToggle: true,
   },
 ];
