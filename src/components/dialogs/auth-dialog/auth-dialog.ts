@@ -5,6 +5,7 @@ import {
   REGISTER_FIELDS,
   LOGIN_FIELDS,
   type FieldConfig,
+  SUBMIT_LABELS,
 } from '../../../data/auth-fields-config.ts.ts';
 import { hideDialog, showDialog } from '../dialog-backdrop.ts';
 import type { AuthMode } from '../../../router/router.ts';
@@ -156,6 +157,17 @@ function createForm(state: AuthFormState): HTMLElement {
     );
   }
 
+  const formError = createElement('p', {
+    className: 'auth-dialog__error',
+    attributes: {
+      'aria-live': 'polite',
+      hidden: '',
+    },
+  });
+
+  state.formError = formError;
+  fields.push(formError);
+
   const form = createElement('form', {
     className: `auth-dialog__form`,
     attributes: {
@@ -189,8 +201,8 @@ function createDivider(): HTMLElement {
 function createActions(state: AuthFormState): HTMLElement {
   const cta = createElement('button', {
     className: `auth-dialog__action`,
-    textContent: state.mode === 'login' ? 'Login' : 'Create Account',
-    attributes: { type: 'submit', form: AUTH_FORM_ID },
+    textContent: SUBMIT_LABELS[state.mode],
+    attributes: { type: 'submit', form: AUTH_FORM_ID, disabled: '' },
   });
 
   state.submitButton = cta;

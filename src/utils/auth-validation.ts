@@ -96,14 +96,6 @@ export function validateField(
   return FIELD_VALIDATORS[name](mode, values);
 }
 
-export function areFieldsValid(
-  mode: AuthMode,
-  requiredFields: readonly FieldName[],
-  values: FormValues,
-): boolean {
-  return requiredFields.every((name) => validateField(mode, name, values));
-}
-
 export const AUTH_REQUIRED_FIELDS: Record<AuthMode, readonly FieldName[]> = {
   login: ['email', 'password'],
   register: ['email', 'username', 'password', 'confirmPassword'],

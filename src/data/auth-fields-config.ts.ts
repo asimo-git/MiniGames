@@ -2,6 +2,12 @@ import personIcon from '../assets/icons/auth/person.svg';
 import mailIcon from '../assets/icons/auth/mail.svg';
 import lockIcon from '../assets/icons/auth/lock.svg';
 import type { FieldName } from '../utils/auth-validation';
+import type { AuthMode } from '../router/router';
+
+export const SUBMIT_LABELS: Record<AuthMode, string> = {
+  login: 'Login',
+  register: 'Create account',
+};
 
 export const ICONS = {
   person: personIcon,
@@ -68,3 +74,16 @@ export const REGISTER_FIELDS: FieldConfig[] = [
     showVisibilityToggle: true,
   },
 ];
+
+// ---------- Error messages ----------
+
+export const DEFAULT_ERROR_MESSAGE = 'Failed to complete the request. Please try again.';
+
+export const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  'auth/invalid-credential': 'Incorrect email or password.',
+  'auth/invalid-email': 'Invalid email.',
+  'auth/email-already-in-use': 'This email is already registered.',
+  'auth/weak-password': 'The password is too weak.',
+  'auth/network-request-failed': 'No internet connection.',
+  'auth/too-many-requests': 'Too many attempts. Please try again later.',
+};
