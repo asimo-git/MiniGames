@@ -17,6 +17,8 @@ import {
 } from '../../../utils/auth-validation';
 import { hideDialog, setDialogLocked } from '../dialog-backdrop';
 import { showSnackbar } from '../../../components/snackbar.ts';
+import { saveSession } from '../../../api/login-session.ts';
+import type { User } from 'firebase/auth';
 
 export const AUTH_FORM_ID = 'auth-dialog-form';
 const INVALID_INPUT_CLASS = 'auth-dialog__input--invalid';
@@ -66,11 +68,7 @@ export function refreshSubmitButton(state: AuthFormState): void {
 export async function handleFormSubmit(event: Event, state: AuthFormState): Promise<void> {
   event.preventDefault();
 
-  if (state.isPending) {
-    return;
-  }
-
-  if (!isFormValid(state)) {
+  if (state.isPending || !isFormValid(state)) {
     return;
   }
 
@@ -78,7 +76,8 @@ export async function handleFormSubmit(event: Event, state: AuthFormState): Prom
   setPendingState(state, true);
 
   try {
-    await runAuthOperation(state);
+    const user = await runAuthOperation(state);
+    saveSession(user);
     hideDialog();
     showSnackbar({
       message: state.mode === 'login' ? 'Login successful!' : 'Account created successfully!',
@@ -140,17 +139,18 @@ function setPendingState(state: AuthFormState, isPending: boolean): void {
 
 // ---------- Firebase ----------
 
-async function runAuthOperation(state: AuthFormState): Promise<void> {
+async function runAuthOperation(state: AuthFormState): Promise<User> {
   setDialogLocked(true);
 
   try {
     // await new Promise(() => {});
     const { username, email, password } = state.values;
-    if (state.mode === 'login') {
-      await signInWithEmail(email, password);
-    } else {
-      await registerWithEmail(username, email, password);
-    }
+    const user: User =
+      state.mode === 'login'
+        ? await signInWithEmail(email, password)
+        : await registerWithEmail(username, email, password);
+
+    return user;
   } finally {
     setDialogLocked(false);
   }
