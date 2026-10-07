@@ -53,13 +53,13 @@ export function getActiveSession(): AppSession | undefined {
   return session;
 }
 
-export async function endSession(): Promise<void> {
+export async function endSession(isSilent: boolean = true): Promise<void> {
   localStorage.removeItem(SESSION_KEY);
   globalThis.dispatchEvent(new Event(SESSION_CHANGED_EVENT));
 
   try {
     await signOut(auth);
-    showSnackbar({ message: 'You have been logged out.', variant: 'success' });
+    if (!isSilent) showSnackbar({ message: 'You have been logged out.', variant: 'success' });
   } catch {
     showSnackbar({ message: 'Problems occurred during logout.', variant: 'error' });
   }

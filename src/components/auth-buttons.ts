@@ -14,7 +14,7 @@ export function createAuthButtons(classPrefix: string, onClick?: () => void): HT
       });
 
       logOut.addEventListener('click', () => {
-        void endSession();
+        void endSession(false);
         onClick?.();
       });
 
