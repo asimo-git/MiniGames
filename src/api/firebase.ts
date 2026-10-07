@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -32,6 +32,14 @@ export async function registerWithEmail(
   const credential = await createUserWithEmailAndPassword(auth, email, password);
 
   await updateProfile(credential.user, { displayName: username });
+
+  return credential.user;
+}
+
+const googleProvider = new GoogleAuthProvider();
+
+export async function signInWithGoogle(): Promise<User> {
+  const credential = await signInWithPopup(auth, googleProvider);
 
   return credential.user;
 }

@@ -15,6 +15,7 @@ import {
   createAuthFormState,
   handleFieldUpdate,
   handleFormSubmit,
+  handleGoogleSignIn,
   refreshSubmitButton,
   type AuthFormState,
 } from './auth-form-controller.ts';
@@ -224,6 +225,10 @@ function createActions(state: AuthFormState): HTMLElement {
     className: `auth-dialog__google-button`,
     attributes: { type: 'button' },
     children: [googleIconElement, googleLabel],
+  });
+  state.googleButton = googleButton;
+  googleButton.addEventListener('click', () => {
+    void handleGoogleSignIn(state);
   });
 
   return createElement('div', {
