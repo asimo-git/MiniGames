@@ -67,31 +67,6 @@ export function refreshSubmitButton(state: AuthFormState): void {
   state.submitButton.disabled = state.isPending || !isFormValid(state);
 }
 
-// export async function handleFormSubmit(event: Event, state: AuthFormState): Promise<void> {
-//   event.preventDefault();
-
-//   if (state.isPending || !isFormValid(state)) {
-//     return;
-//   }
-
-//   clearFormError(state);
-//   setPendingState(state, true);
-
-//   try {
-//     const user = await runAuthOperation(state);
-//     saveSession(user);
-//     hideDialog();
-//     showSnackbar({
-//       message: state.mode === 'login' ? 'Login successful!' : 'Account created successfully!',
-//       variant: 'success',
-//     });
-//   } catch (error) {
-//     showFormError(state, error);
-//   } finally {
-//     setPendingState(state, false);
-//   }
-// }
-
 export function handleFieldUpdate(state: AuthFormState, name: FieldName): void {
   const field = state.fields.get(name);
 
