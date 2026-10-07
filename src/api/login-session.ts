@@ -57,7 +57,12 @@ export async function endSession(): Promise<void> {
   localStorage.removeItem(SESSION_KEY);
   globalThis.dispatchEvent(new Event(SESSION_CHANGED_EVENT));
 
-  await signOut(auth);
+  try {
+    await signOut(auth);
+    showSnackbar({ message: 'You have been logged out.', variant: 'success' });
+  } catch {
+    showSnackbar({ message: 'Problems occurred during logout.', variant: 'error' });
+  }
 }
 
 function parseSession(raw: string): AppSession | undefined {
