@@ -444,6 +444,14 @@ $hero-height: 220px;
     -webkit-mask-size: contain;
   }
 
+  &__comment-like-button--loading {
+    -webkit-mask-image: none;
+    mask-image: none;
+    background-color: transparent;
+    background-image: url('/load-img.gif');
+    background-size: contain;
+  }
+
   &__comment-likes--active {
     color: styles.$color-like;
   }

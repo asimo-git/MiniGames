@@ -6,6 +6,7 @@ import { createSkeleton } from '../../skeleton';
 import type { GameComment, ListResponse, CommentsMeta } from '../../../api/types';
 import { getActiveSession, type AppSession } from '../../../api/login-session';
 import { showSnackbar } from '../../../components/snackbar';
+import { openDialog } from '../../../router/dialog-router';
 
 const TEXTAREA_MAX_HEIGHT_PX = 76;
 const AUTHOR_NAME_MAX_LENGTH = 30;
@@ -66,7 +67,7 @@ function renderSection(
         })
       : createElement('ul', {
           className: 'game-detail-dialog__comment-list',
-          children: comments.data.map((comment) => createCommentCard(comment)),
+          children: comments.data.map((comment) => createCommentCard(comment, session)),
         }),
   );
 
@@ -198,9 +199,24 @@ function createCommentHeader(comment: GameComment): HTMLElement {
   });
 }
 
-function createCommentLikes(comment: GameComment): HTMLElement {
+function createCommentCard(comment: GameComment, session?: AppSession): HTMLElement {
+  return createElement('li', {
+    className: 'game-detail-dialog__comment',
+    children: [
+      createCommentHeader(comment),
+      createElement('p', {
+        className: 'game-detail-dialog__comment-text',
+        textContent: comment.text,
+      }),
+      createCommentLikes(comment, session),
+    ],
+  });
+}
+
+function createCommentLikes(comment: GameComment, session: AppSession | undefined): HTMLElement {
   let likesCount = comment.likesCount;
   let isLiked = comment.isLikedByCurrentUser;
+  let isPending = false;
 
   const commentLikeButton = createElement('button', {
     className: 'game-detail-dialog__comment-like-button',
@@ -214,27 +230,40 @@ function createCommentLikes(comment: GameComment): HTMLElement {
   });
 
   commentLikeButton.addEventListener('click', () => {
-    isLiked = !isLiked;
-    likesCount += isLiked ? 1 : -1;
-    commentLikesContainer.classList.toggle('game-detail-dialog__comment-likes--active', isLiked);
-    likesCounter.textContent = String(likesCount);
+    void handleLikeClick();
   });
+
+  async function handleLikeClick(): Promise<void> {
+    if (isPending) return;
+
+    if (!session) {
+      showSnackbar({ variant: 'warning', message: 'Log in to like comments' });
+      openDialog({ auth: 'login' });
+      return;
+    }
+
+    isPending = true;
+    commentLikeButton.disabled = true;
+    commentLikeButton.classList.add('game-detail-dialog__comment-like-button--loading');
+
+    try {
+      const result = await api.toggleCommentLike(comment.commentId, session.email);
+      isLiked = result.isLikedByCurrentUser;
+      likesCount = result.likesCount;
+      commentLikesContainer.classList.toggle('game-detail-dialog__comment-likes--active', isLiked);
+      likesCounter.textContent = String(likesCount);
+    } catch (error) {
+      const message =
+        error instanceof ApiError ? error.message : 'Failed to update like. Try again.';
+      showSnackbar({ variant: 'error', message });
+    } finally {
+      isPending = false;
+      commentLikeButton.disabled = false;
+      commentLikeButton.classList.remove('game-detail-dialog__comment-like-button--loading');
+    }
+  }
 
   return commentLikesContainer;
-}
-
-function createCommentCard(comment: GameComment): HTMLElement {
-  return createElement('li', {
-    className: 'game-detail-dialog__comment',
-    children: [
-      createCommentHeader(comment),
-      createElement('p', {
-        className: 'game-detail-dialog__comment-text',
-        textContent: comment.text,
-      }),
-      createCommentLikes(comment),
-    ],
-  });
 }
 
 /////////////////////////////////
