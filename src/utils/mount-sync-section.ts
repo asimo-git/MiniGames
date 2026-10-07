@@ -22,7 +22,6 @@ export async function mountAsyncSection<T>(
     data = await load();
     // check an error ui
     // throw new Error('Error');
-    showSnackbar({ variant: 'success', message: 'Data loaded successfully' });
   } catch (error) {
     if (!container.isConnected) return;
     const message = error instanceof ApiError ? error.message : 'Failed to load data';

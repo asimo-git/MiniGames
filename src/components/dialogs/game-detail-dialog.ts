@@ -6,8 +6,9 @@ import { showDialog } from './dialog-backdrop';
 import { api } from '../../api/endpoints';
 import { createSkeleton } from '../skeleton';
 import type { GameDetails, GameComment } from '../../api/types';
-import { closeDialog } from '../../router/dialog-router';
+import { closeDialog, openDialog } from '../../router/dialog-router';
 import { showSnackbar } from '../snackbar';
+import { getActiveSession } from '../../api/login-session';
 
 // TODO: Change to real author initial
 const NEW_COMMENT_AUTHOR_INITIAL = 'U';
@@ -26,7 +27,8 @@ function createGameLoader(slug: string): () => Promise<GameDetails> {
 
   async function fetchGame(): Promise<GameDetails> {
     try {
-      return await api.getGame(slug);
+      const session = getActiveSession();
+      return await api.getGame(slug, session?.email);
     } catch (error) {
       promise = undefined;
       throw error;
@@ -45,7 +47,7 @@ function createContent(gameId: string | undefined, onClose: () => void): HTMLEle
 
   const body = createElement('div', {
     className: 'game-detail-dialog__body',
-    children: [createDetails(gamePromise), createCommentsSection(slug)],
+    children: [createDetails(gamePromise, slug), createCommentsSection(slug)],
   });
 
   return createElement('div', {
@@ -81,7 +83,7 @@ function createHero(gamePromise: () => Promise<GameDetails>): HTMLElement {
   return container;
 }
 
-function createDetails(gamePromise: () => Promise<GameDetails>): HTMLElement {
+function createDetails(gamePromise: () => Promise<GameDetails>, slug: string): HTMLElement {
   const container = createElement('div', { className: 'game-detail-dialog__details' });
 
   void mountAsyncSection(container, {
@@ -95,43 +97,13 @@ function createDetails(gamePromise: () => Promise<GameDetails>): HTMLElement {
         textContent: game.fullDescription,
       }),
       createInfoWidgets(game),
-      createActions(game),
+      createActions(game, slug),
       createRecordsSection(game),
     ],
     skeleton: createDetailsSkeleton,
   });
 
   return container;
-}
-
-function createDetailsSkeleton(): HTMLElement[] {
-  return [
-    createSkeleton({
-      width: '100%',
-      height: '44px',
-      className: 'game-detail-dialog__title-row',
-    }),
-    createSkeleton({
-      width: '100%',
-      height: '100px',
-      className: 'game-detail-dialog__description',
-    }),
-    createSkeleton({
-      width: '100%',
-      height: '58px',
-      className: 'game-detail-dialog__widgets',
-    }),
-    createSkeleton({
-      width: '100%',
-      height: '48px',
-      className: 'game-detail-dialog__actions',
-    }),
-    createSkeleton({
-      width: '100%',
-      height: '200px',
-      className: 'game-detail-dialog__records',
-    }),
-  ];
 }
 
 function createCommentsSection(slug: string): HTMLElement {
@@ -162,21 +134,6 @@ function createCommentsSection(slug: string): HTMLElement {
   });
 
   return container;
-}
-
-function createCommentsSkeleton(): HTMLElement[] {
-  return [
-    createSkeleton({
-      width: '100%',
-      height: '84px',
-      className: 'game-detail-dialog__new-comment',
-    }),
-    createSkeleton({
-      width: '100%',
-      height: '128px',
-      className: 'game-detail-dialog__comment-list',
-    }),
-  ];
 }
 
 ///////////////////////////
@@ -232,8 +189,9 @@ function createInfoWidget(widget: { label: string; value: string }): HTMLElement
   });
 }
 
-function createActions(game: GameDetails): HTMLElement {
+function createActions(game: GameDetails, slug: string): HTMLElement {
   let isFavorite = game.isLikedByCurrentUser;
+  let isPending = false;
 
   const labelSpan = createElement('span', {
     textContent: isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
@@ -248,11 +206,37 @@ function createActions(game: GameDetails): HTMLElement {
   });
 
   addToFavoritesButton.addEventListener('click', () => {
-    isFavorite = !isFavorite;
-    buttonIcon.classList.toggle('game-detail-dialog__favorite-icon--active', isFavorite);
-    labelSpan.textContent = isFavorite ? 'Remove from Favorites' : 'Add to Favorites';
-    showSnackbar({ variant: 'info', message: 'Adding to favorites will be implemented later' });
+    void handleFavoriteClick();
   });
+
+  async function handleFavoriteClick(): Promise<void> {
+    if (isPending) return;
+
+    const session = getActiveSession();
+
+    if (!session) {
+      showSnackbar({ variant: 'warning', message: 'Log in to add games to favorites' });
+      openDialog({ auth: 'login' });
+      return;
+    }
+
+    isPending = true;
+    addToFavoritesButton.disabled = true;
+    addToFavoritesButton.classList.add('game-detail-dialog__favorite-button--pending');
+
+    try {
+      const result = await api.toggleFavorite(slug, session.email);
+      isFavorite = result.isFavorited;
+      buttonIcon.classList.toggle('game-detail-dialog__favorite-icon--active', isFavorite);
+      labelSpan.textContent = isFavorite ? 'Remove from Favorites' : 'Add to Favorites';
+    } catch {
+      showSnackbar({ variant: 'error', message: 'Could not update favorites. Try again.' });
+    } finally {
+      isPending = false;
+      addToFavoritesButton.disabled = false;
+      addToFavoritesButton.classList.remove('game-detail-dialog__favorite-button--pending');
+    }
+  }
 
   return createElement('div', {
     className: 'game-detail-dialog__actions',
@@ -266,6 +250,41 @@ function createActions(game: GameDetails): HTMLElement {
     ],
   });
 }
+
+// function createActions(game: GameDetails): HTMLElement {
+//   let isFavorite = game.isLikedByCurrentUser;
+
+//   const labelSpan = createElement('span', {
+//     textContent: isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
+//   });
+//   const buttonIcon = createElement('span', {
+//     className: `game-detail-dialog__favorite-icon${isFavorite ? ' game-detail-dialog__favorite-icon--active' : ''}`,
+//   });
+//   const addToFavoritesButton = createElement('button', {
+//     className: 'game-detail-dialog__favorite-button',
+//     attributes: { type: 'button' },
+//     children: [buttonIcon, labelSpan],
+//   });
+
+//   addToFavoritesButton.addEventListener('click', () => {
+//     isFavorite = !isFavorite;
+//     buttonIcon.classList.toggle('game-detail-dialog__favorite-icon--active', isFavorite);
+//     labelSpan.textContent = isFavorite ? 'Remove from Favorites' : 'Add to Favorites';
+//     showSnackbar({ variant: 'info', message: 'Adding to favorites will be implemented later' });
+//   });
+
+//   return createElement('div', {
+//     className: 'game-detail-dialog__actions',
+//     children: [
+//       createElement('button', {
+//         className: 'game-detail-dialog__play-button',
+//         textContent: 'Play Now',
+//         attributes: { type: 'button' },
+//       }),
+//       addToFavoritesButton,
+//     ],
+//   });
+// }
 
 function createRecordsSection(game: GameDetails): HTMLElement {
   const records = game.topRecords.map((record) => createRecordRow(record));
@@ -434,4 +453,52 @@ function createCommentCard(comment: GameComment): HTMLElement {
       createCommentLikes(comment),
     ],
   });
+}
+
+/////////////////////////////////
+// Skeletons
+/////////////////////////////////
+function createDetailsSkeleton(): HTMLElement[] {
+  return [
+    createSkeleton({
+      width: '100%',
+      height: '44px',
+      className: 'game-detail-dialog__title-row',
+    }),
+    createSkeleton({
+      width: '100%',
+      height: '100px',
+      className: 'game-detail-dialog__description',
+    }),
+    createSkeleton({
+      width: '100%',
+      height: '58px',
+      className: 'game-detail-dialog__widgets',
+    }),
+    createSkeleton({
+      width: '100%',
+      height: '48px',
+      className: 'game-detail-dialog__actions',
+    }),
+    createSkeleton({
+      width: '100%',
+      height: '200px',
+      className: 'game-detail-dialog__records',
+    }),
+  ];
+}
+
+function createCommentsSkeleton(): HTMLElement[] {
+  return [
+    createSkeleton({
+      width: '100%',
+      height: '84px',
+      className: 'game-detail-dialog__new-comment',
+    }),
+    createSkeleton({
+      width: '100%',
+      height: '128px',
+      className: 'game-detail-dialog__comment-list',
+    }),
+  ];
 }
