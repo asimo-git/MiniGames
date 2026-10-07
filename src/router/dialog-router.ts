@@ -1,5 +1,5 @@
 import { hideDialog } from '../components/dialogs/dialog-backdrop';
-import { openAuthDialog } from '../components/dialogs/auth-dialog';
+import { openAuthDialog } from '../components/dialogs/auth-dialog/auth-dialog';
 import { openGameDetailDialog } from '../components/dialogs/game-detail-dialog';
 import {
   getRouteState,

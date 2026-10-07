@@ -5,6 +5,8 @@ interface ShowDialogOptions {
   ariaLabel: string;
 }
 
+const LOCKED_ATTRIBUTE = 'data-locked';
+
 const dialogElementStore = (() => {
   let element: HTMLDialogElement | undefined;
 
@@ -15,13 +17,24 @@ const dialogElementStore = (() => {
 
     dialog.addEventListener('cancel', (event) => {
       event.preventDefault();
+
+      if (isDialogLocked()) {
+        return;
+      }
+
       closeDialog();
     });
 
     dialog.addEventListener('click', (event) => {
-      if (event.target === dialog) {
-        closeDialog();
+      if (event.target !== dialog) {
+        return;
       }
+
+      if (isDialogLocked()) {
+        return;
+      }
+
+      closeDialog();
     });
 
     return dialog;
@@ -30,7 +43,6 @@ const dialogElementStore = (() => {
   return {
     get(): HTMLDialogElement {
       element ??= createDialogElement();
-
       return element;
     },
     peek(): HTMLDialogElement | undefined {
@@ -38,6 +50,29 @@ const dialogElementStore = (() => {
     },
   };
 })();
+
+function blockEscape(event: KeyboardEvent): void {
+  if (event.key === 'Escape') {
+    event.preventDefault();
+  }
+}
+
+export function setDialogLocked(isLocked: boolean): void {
+  const element = dialogElementStore.get();
+  element.toggleAttribute(LOCKED_ATTRIBUTE, isLocked);
+  element.inert = isLocked;
+
+  if (isLocked) {
+    document.addEventListener('keydown', blockEscape, { capture: true });
+  } else {
+    document.removeEventListener('keydown', blockEscape, { capture: true });
+  }
+}
+
+export function isDialogLocked(): boolean {
+  const element = dialogElementStore.peek();
+  return element?.hasAttribute(LOCKED_ATTRIBUTE) ?? false;
+}
 
 export function showDialog(content: HTMLElement, { ariaLabel }: ShowDialogOptions): void {
   const element = dialogElementStore.get();
@@ -57,7 +92,7 @@ export function showDialog(content: HTMLElement, { ariaLabel }: ShowDialogOption
 export function hideDialog(): void {
   const element = dialogElementStore.get();
 
-  if (!element.open) {
+  if (!element.open || isDialogLocked()) {
     return;
   }
 
@@ -76,5 +111,7 @@ export function hideDialog(): void {
 
 export function getTopLayerHost(): HTMLElement {
   const dialog = dialogElementStore.peek();
-  return dialog?.open ? dialog : document.body;
+  const isClosing = !dialog?.classList.contains('dialog-backdrop--visible');
+
+  return !isClosing && dialog?.open ? dialog : document.body;
 }
