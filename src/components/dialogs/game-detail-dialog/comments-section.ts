@@ -13,13 +13,38 @@ const AUTHOR_NAME_MAX_LENGTH = 30;
 const COMMENT_TEXT_MAX_LENGTH = 500;
 const RECENT_COMMENTS_LIMIT = 3;
 
+const AVATAR_COLOR_CLASSES = [
+  'game-detail-dialog__avatar--color-1',
+  'game-detail-dialog__avatar--color-2',
+  'game-detail-dialog__avatar--color-3',
+  'game-detail-dialog__avatar--color-4',
+  'game-detail-dialog__avatar--color-5',
+];
+
+function createAvatarColorAssigner(): (name: string) => string {
+  const assigned = new Map<string, string>();
+
+  return (name: string): string => {
+    const key = name.trim();
+    const cached = assigned.get(key);
+    if (cached) return cached;
+
+    const colorClass =
+      AVATAR_COLOR_CLASSES[Math.floor(Math.random() * AVATAR_COLOR_CLASSES.length)];
+    assigned.set(key, colorClass as string);
+    return colorClass as string;
+  };
+}
+
 export function createCommentsSection(slug: string): HTMLElement {
   const container = createElement('section', {
     className: 'game-detail-dialog__comments',
   });
 
   const session = getActiveSession();
-  void mountComments(container, slug, session);
+  const getAvatarColorClass = createAvatarColorAssigner();
+
+  void mountComments(container, slug, session, getAvatarColorClass);
 
   return container;
 }
@@ -28,6 +53,7 @@ function mountComments(
   container: HTMLElement,
   slug: string,
   session: AppSession | undefined,
+  getAvatarColorClass: (name: string) => string,
 ): Promise<void> {
   return mountAsyncSection(container, {
     load: () =>
@@ -36,7 +62,7 @@ function mountComments(
         sort: 'newest',
         userEmail: session?.email,
       }),
-    render: (comments) => renderSection(slug, comments, container, session),
+    render: (comments) => renderSection(slug, comments, container, session, getAvatarColorClass),
     skeleton: createCommentsSkeleton,
   });
 }
@@ -45,9 +71,10 @@ function renderSection(
   slug: string,
   comments: ListResponse<GameComment, CommentsMeta>,
   container: HTMLElement,
-  session?: AppSession,
+  session: AppSession | undefined,
+  getAvatarColorClass: (name: string) => string,
 ): HTMLElement[] {
-  const refresh = (): Promise<void> => mountComments(container, slug, session);
+  const refresh = (): Promise<void> => mountComments(container, slug, session, getAvatarColorClass);
 
   const items: HTMLElement[] = [
     createElement('h3', {
@@ -57,7 +84,7 @@ function renderSection(
   ];
 
   if (session) {
-    items.push(createNewCommentRow(slug, refresh, session));
+    items.push(createNewCommentRow(slug, refresh, session, getAvatarColorClass));
   }
 
   items.push(
@@ -67,7 +94,9 @@ function renderSection(
         })
       : createElement('ul', {
           className: 'game-detail-dialog__comment-list',
-          children: comments.data.map((comment) => createCommentCard(comment, session)),
+          children: comments.data.map((comment) =>
+            createCommentCard(comment, session, getAvatarColorClass),
+          ),
         }),
   );
 
@@ -82,6 +111,7 @@ function createNewCommentRow(
   slug: string,
   onSubmitted: () => Promise<void>,
   session: AppSession,
+  getAvatarColorClass: (name: string) => string,
 ): HTMLElement {
   const commentInput = createElement('textarea', {
     className: 'game-detail-dialog__comment-input',
@@ -136,7 +166,7 @@ function createNewCommentRow(
     try {
       await api.createComment(slug, {
         userEmail: session.email,
-        authorName: session?.displayName.slice(0, AUTHOR_NAME_MAX_LENGTH) || '',
+        authorName: session.displayName.slice(0, AUTHOR_NAME_MAX_LENGTH) || '',
         text,
       });
 
@@ -160,12 +190,14 @@ function createNewCommentRow(
     updateSendButtonState();
   }
 
+  const authorName = session.displayName || 'User';
+
   return createElement('div', {
     className: 'game-detail-dialog__new-comment',
     children: [
       createElement('span', {
-        className: 'game-detail-dialog__avatar',
-        textContent: session?.displayName.charAt(0).toUpperCase() || 'U',
+        className: `game-detail-dialog__avatar ${getAvatarColorClass(authorName)}`,
+        textContent: authorName.trim().charAt(0).toUpperCase() || 'U',
       }),
       inputWrapper,
       sendButton,
@@ -173,10 +205,13 @@ function createNewCommentRow(
   });
 }
 
-function createCommentHeader(comment: GameComment): HTMLElement {
+function createCommentHeader(
+  comment: GameComment,
+  getAvatarColorClass: (name: string) => string,
+): HTMLElement {
   const avatar = createElement('span', {
-    className: 'game-detail-dialog__avatar',
-    textContent: comment.authorName.charAt(0).toUpperCase(),
+    className: `game-detail-dialog__avatar ${getAvatarColorClass(comment.authorName)}`,
+    textContent: comment.authorName.trim().charAt(0).toUpperCase(),
   });
   return createElement('div', {
     className: 'game-detail-dialog__comment-header',
@@ -199,11 +234,15 @@ function createCommentHeader(comment: GameComment): HTMLElement {
   });
 }
 
-function createCommentCard(comment: GameComment, session?: AppSession): HTMLElement {
+function createCommentCard(
+  comment: GameComment,
+  session: AppSession | undefined,
+  getAvatarColorClass: (name: string) => string,
+): HTMLElement {
   return createElement('li', {
     className: 'game-detail-dialog__comment',
     children: [
-      createCommentHeader(comment),
+      createCommentHeader(comment, getAvatarColorClass),
       createElement('p', {
         className: 'game-detail-dialog__comment-text',
         textContent: comment.text,

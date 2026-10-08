@@ -280,12 +280,20 @@ $hero-height: 220px;
 
     @include styles.solid-border($width: styles.$border-thin);
 
-    &--random-1 {
+    &--color-1 {
       background-color: styles.$color-avatar-random-1;
     }
-
-    &--random-3 {
+    &--color-2 {
+      background-color: styles.$color-avatar-random-2;
+    }
+    &--color-3 {
       background-color: styles.$color-avatar-random-3;
+    }
+    &--color-4 {
+      background-color: styles.$color-avatar-random-4;
+    }
+    &--color-5 {
+      background-color: styles.$color-avatar-random-5;
     }
   }
 
