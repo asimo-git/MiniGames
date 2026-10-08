@@ -11,7 +11,8 @@ function checkRule(rules: ReadonlyArray<[condition: boolean, message: string]>):
   return undefined;
 }
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const EMAIL_PATTERN =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 const USERNAME_ALLOWED_PATTERN = /^[\dA-Za-z]+$/;
 const USERNAME_START_PATTERN = /^[A-Z]/;
 const PASSWORD_ALLOWED_PATTERN = /^[!-~]+$/;

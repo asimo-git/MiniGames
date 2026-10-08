@@ -75,6 +75,7 @@ export const api = {
     });
   },
 
+  // for the dialog box
   getGame: async (slug: string, userEmail?: string, signal?: AbortSignal) => {
     const response = await makeRequest<DataResponse<GameDetails>>(
       `/api/games/${encodeURIComponent(slug)}`,

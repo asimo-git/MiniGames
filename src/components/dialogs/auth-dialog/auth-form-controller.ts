@@ -15,10 +15,11 @@ import {
   type FormValues,
   type ValidationError,
 } from '../../../utils/auth-validation';
-import { hideDialog, setDialogLocked } from '../dialog-backdrop';
+import { setDialogLocked } from '../dialog-backdrop';
 import { showSnackbar } from '../../../components/snackbar.ts';
 import { saveSession } from '../../../api/login-session.ts';
 import type { User } from 'firebase/auth';
+import { closeDialog } from '../../../router/dialog-router.ts';
 
 export const AUTH_FORM_ID = 'auth-dialog-form';
 const INVALID_INPUT_CLASS = 'auth-dialog__input--invalid';
@@ -66,31 +67,6 @@ export function refreshSubmitButton(state: AuthFormState): void {
 
   state.submitButton.disabled = state.isPending || !isFormValid(state);
 }
-
-// export async function handleFormSubmit(event: Event, state: AuthFormState): Promise<void> {
-//   event.preventDefault();
-
-//   if (state.isPending || !isFormValid(state)) {
-//     return;
-//   }
-
-//   clearFormError(state);
-//   setPendingState(state, true);
-
-//   try {
-//     const user = await runAuthOperation(state);
-//     saveSession(user);
-//     hideDialog();
-//     showSnackbar({
-//       message: state.mode === 'login' ? 'Login successful!' : 'Account created successfully!',
-//       variant: 'success',
-//     });
-//   } catch (error) {
-//     showFormError(state, error);
-//   } finally {
-//     setPendingState(state, false);
-//   }
-// }
 
 export function handleFieldUpdate(state: AuthFormState, name: FieldName): void {
   const field = state.fields.get(name);
@@ -198,7 +174,8 @@ async function runAuthFlow(
 
     saveSession(user);
     setDialogLocked(false);
-    hideDialog();
+    // hideDialog();
+    closeDialog();
     showSnackbar({
       message: state.mode === 'login' ? 'Login successful!' : 'Account created successfully!',
       variant: 'success',

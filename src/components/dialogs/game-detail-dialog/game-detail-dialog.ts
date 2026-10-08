@@ -1,17 +1,15 @@
-import { mountAsyncSection } from '../../utils/mount-sync-section';
-import closeIcon from '../../assets/icons/close.svg';
-import { createElement, createImageWithFallback, formatRelativeTime } from '../../utils/helpers';
-import { createStatsBadges } from '../library-page/stats-badges';
-import { showDialog } from './dialog-backdrop';
-import { api } from '../../api/endpoints';
-import { createSkeleton } from '../skeleton';
-import type { GameDetails, GameComment } from '../../api/types';
-import { closeDialog } from '../../router/dialog-router';
-import { showSnackbar } from '../snackbar';
-
-// TODO: Change to real author initial
-const NEW_COMMENT_AUTHOR_INITIAL = 'U';
-const TEXTAREA_MAX_HEIGHT_PX = 76;
+import { mountAsyncSection } from '../../../utils/mount-sync-section';
+import closeIcon from '../../../assets/icons/close.svg';
+import { createElement, createImageWithFallback, formatRelativeTime } from '../../../utils/helpers';
+import { createStatsBadges } from '../../library-page/stats-badges';
+import { showDialog } from '../dialog-backdrop';
+import { api } from '../../../api/endpoints';
+import { createSkeleton } from '../../skeleton';
+import type { GameDetails } from '../../../api/types';
+import { closeDialog, openDialog } from '../../../router/dialog-router';
+import { showSnackbar } from '../../snackbar';
+import { getActiveSession } from '../../../api/login-session';
+import { createCommentsSection } from './comments-section';
 
 export function openGameDetailDialog(gameId: string | undefined): void {
   const panel = createContent(gameId, () => {
@@ -26,7 +24,8 @@ function createGameLoader(slug: string): () => Promise<GameDetails> {
 
   async function fetchGame(): Promise<GameDetails> {
     try {
-      return await api.getGame(slug);
+      const session = getActiveSession();
+      return await api.getGame(slug, session?.email);
     } catch (error) {
       promise = undefined;
       throw error;
@@ -45,7 +44,7 @@ function createContent(gameId: string | undefined, onClose: () => void): HTMLEle
 
   const body = createElement('div', {
     className: 'game-detail-dialog__body',
-    children: [createDetails(gamePromise), createCommentsSection(slug)],
+    children: [createDetails(gamePromise, slug), createCommentsSection(slug)],
   });
 
   return createElement('div', {
@@ -81,7 +80,7 @@ function createHero(gamePromise: () => Promise<GameDetails>): HTMLElement {
   return container;
 }
 
-function createDetails(gamePromise: () => Promise<GameDetails>): HTMLElement {
+function createDetails(gamePromise: () => Promise<GameDetails>, slug: string): HTMLElement {
   const container = createElement('div', { className: 'game-detail-dialog__details' });
 
   void mountAsyncSection(container, {
@@ -95,88 +94,13 @@ function createDetails(gamePromise: () => Promise<GameDetails>): HTMLElement {
         textContent: game.fullDescription,
       }),
       createInfoWidgets(game),
-      createActions(game),
+      createActions(game, slug),
       createRecordsSection(game),
     ],
     skeleton: createDetailsSkeleton,
   });
 
   return container;
-}
-
-function createDetailsSkeleton(): HTMLElement[] {
-  return [
-    createSkeleton({
-      width: '100%',
-      height: '44px',
-      className: 'game-detail-dialog__title-row',
-    }),
-    createSkeleton({
-      width: '100%',
-      height: '100px',
-      className: 'game-detail-dialog__description',
-    }),
-    createSkeleton({
-      width: '100%',
-      height: '58px',
-      className: 'game-detail-dialog__widgets',
-    }),
-    createSkeleton({
-      width: '100%',
-      height: '48px',
-      className: 'game-detail-dialog__actions',
-    }),
-    createSkeleton({
-      width: '100%',
-      height: '200px',
-      className: 'game-detail-dialog__records',
-    }),
-  ];
-}
-
-function createCommentsSection(slug: string): HTMLElement {
-  const container = createElement('section', {
-    className: 'game-detail-dialog__comments',
-  });
-
-  void mountAsyncSection(container, {
-    // load: () => new Promise(() => {}),
-    // load: () => Promise.reject(new Error('Error')),
-    load: () => api.getComments(slug, { limit: 3, sort: 'newest' }),
-    render: (comments) => [
-      createElement('h3', {
-        className: 'game-detail-dialog__section-title',
-        textContent: `Comments (${comments.meta.totalComments})`,
-      }),
-      createNewCommentRow(),
-      comments.data.length === 0
-        ? createElement('p', {
-            textContent: 'There are no comments yet. Be the first to comment!',
-          })
-        : createElement('ul', {
-            className: 'game-detail-dialog__comment-list',
-            children: comments.data.map((comment) => createCommentCard(comment)),
-          }),
-    ],
-    skeleton: createCommentsSkeleton,
-  });
-
-  return container;
-}
-
-function createCommentsSkeleton(): HTMLElement[] {
-  return [
-    createSkeleton({
-      width: '100%',
-      height: '84px',
-      className: 'game-detail-dialog__new-comment',
-    }),
-    createSkeleton({
-      width: '100%',
-      height: '128px',
-      className: 'game-detail-dialog__comment-list',
-    }),
-  ];
 }
 
 ///////////////////////////
@@ -232,8 +156,9 @@ function createInfoWidget(widget: { label: string; value: string }): HTMLElement
   });
 }
 
-function createActions(game: GameDetails): HTMLElement {
+function createActions(game: GameDetails, slug: string): HTMLElement {
   let isFavorite = game.isLikedByCurrentUser;
+  let isPending = false;
 
   const labelSpan = createElement('span', {
     textContent: isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
@@ -248,11 +173,37 @@ function createActions(game: GameDetails): HTMLElement {
   });
 
   addToFavoritesButton.addEventListener('click', () => {
-    isFavorite = !isFavorite;
-    buttonIcon.classList.toggle('game-detail-dialog__favorite-icon--active', isFavorite);
-    labelSpan.textContent = isFavorite ? 'Remove from Favorites' : 'Add to Favorites';
-    showSnackbar({ variant: 'info', message: 'Adding to favorites will be implemented later' });
+    void handleFavoriteClick();
   });
+
+  async function handleFavoriteClick(): Promise<void> {
+    if (isPending) return;
+
+    const session = getActiveSession();
+
+    if (!session) {
+      openDialog({ auth: 'login' });
+      showSnackbar({ variant: 'warning', message: 'Log in to add games to favorites' });
+      return;
+    }
+
+    isPending = true;
+    addToFavoritesButton.disabled = true;
+    addToFavoritesButton.classList.add('game-detail-dialog__favorite-button--pending');
+
+    try {
+      const result = await api.toggleFavorite(slug, session.email);
+      isFavorite = result.isFavorited;
+      buttonIcon.classList.toggle('game-detail-dialog__favorite-icon--active', isFavorite);
+      labelSpan.textContent = isFavorite ? 'Remove from Favorites' : 'Add to Favorites';
+    } catch {
+      showSnackbar({ variant: 'error', message: 'Could not update favorites. Try again.' });
+    } finally {
+      isPending = false;
+      addToFavoritesButton.disabled = false;
+      addToFavoritesButton.classList.remove('game-detail-dialog__favorite-button--pending');
+    }
+  }
 
   return createElement('div', {
     className: 'game-detail-dialog__actions',
@@ -331,107 +282,35 @@ function createRecordResult(record: GameDetails['topRecords'][number]): HTMLElem
   });
 }
 
-////////////////////////////////////
-// Comments section
-////////////////////////////////////
-
-function createNewCommentRow(): HTMLElement {
-  const commentInput = createElement('textarea', {
-    className: 'game-detail-dialog__comment-input',
-    attributes: { rows: '1', placeholder: 'Write a comment...' },
-  });
-
-  const inputWrapper = createElement('div', {
-    className: 'game-detail-dialog__input-wrapper',
-    children: [commentInput],
-  });
-
-  const sendButton = createElement('button', {
-    className: 'game-detail-dialog__send-button',
-    attributes: { type: 'button', 'aria-label': 'Send comment', disabled: '' },
-    children: [createElement('span', { className: 'game-detail-dialog__send-icon' })],
-  });
-
-  commentInput.addEventListener('input', () => {
-    commentInput.style.height = 'auto';
-    commentInput.style.height = `${Math.min(commentInput.scrollHeight, TEXTAREA_MAX_HEIGHT_PX)}px`;
-    sendButton.disabled = commentInput.value.trim().length === 0;
-  });
-
-  return createElement('div', {
-    className: 'game-detail-dialog__new-comment',
-    children: [
-      createElement('span', {
-        className: 'game-detail-dialog__avatar',
-        textContent: NEW_COMMENT_AUTHOR_INITIAL,
-      }),
-      inputWrapper,
-      sendButton,
-    ],
-  });
-}
-
-function createCommentHeader(comment: GameComment): HTMLElement {
-  const avatar = createElement('span', {
-    className: 'game-detail-dialog__avatar',
-    textContent: comment.authorName.charAt(0).toUpperCase(),
-  });
-  return createElement('div', {
-    className: 'game-detail-dialog__comment-header',
-    children: [
-      createElement('div', {
-        className: 'game-detail-dialog__comment-author',
-        children: [
-          avatar,
-          createElement('span', {
-            className: 'game-detail-dialog__comment-username',
-            textContent: comment.authorName,
-          }),
-        ],
-      }),
-      createElement('span', {
-        className: 'game-detail-dialog__comment-time',
-        textContent: formatRelativeTime(comment.createdAt),
-      }),
-    ],
-  });
-}
-
-function createCommentLikes(comment: GameComment): HTMLElement {
-  let likesCount = comment.likesCount;
-  let isLiked = comment.isLikedByCurrentUser;
-
-  const commentLikeButton = createElement('button', {
-    className: 'game-detail-dialog__comment-like-button',
-    attributes: { type: 'button' },
-  });
-  const likesCounter = createElement('span', { textContent: String(likesCount) });
-
-  const commentLikesContainer = createElement('div', {
-    className: `game-detail-dialog__comment-likes${isLiked ? ' game-detail-dialog__comment-likes--active' : ''}`,
-    children: [commentLikeButton, likesCounter],
-  });
-
-  commentLikeButton.addEventListener('click', () => {
-    isLiked = !isLiked;
-    likesCount += isLiked ? 1 : -1;
-    commentLikesContainer.classList.toggle('game-detail-dialog__comment-likes--active', isLiked);
-    likesCounter.textContent = String(likesCount);
-  });
-
-  return commentLikesContainer;
-}
-
-function createCommentCard(comment: GameComment): HTMLElement {
-  return createElement('li', {
-    className: 'game-detail-dialog__comment',
-    children: [
-      createCommentHeader(comment),
-      createElement('p', {
-        className: 'game-detail-dialog__comment-text',
-        textContent: comment.text,
-      }),
-      createCommentLikes(comment),
-    ],
-  });
+/////////////////////////////////
+// Skeletons
+/////////////////////////////////
+function createDetailsSkeleton(): HTMLElement[] {
+  return [
+    createSkeleton({
+      width: '100%',
+      height: '44px',
+      className: 'game-detail-dialog__title-row',
+    }),
+    createSkeleton({
+      width: '100%',
+      height: '100px',
+      className: 'game-detail-dialog__description',
+    }),
+    createSkeleton({
+      width: '100%',
+      height: '58px',
+      className: 'game-detail-dialog__widgets',
+    }),
+    createSkeleton({
+      width: '100%',
+      height: '48px',
+      className: 'game-detail-dialog__actions',
+    }),
+    createSkeleton({
+      width: '100%',
+      height: '200px',
+      className: 'game-detail-dialog__records',
+    }),
+  ];
 }
