@@ -15,10 +15,11 @@ import {
   type FormValues,
   type ValidationError,
 } from '../../../utils/auth-validation';
-import { hideDialog, setDialogLocked } from '../dialog-backdrop';
+import { setDialogLocked } from '../dialog-backdrop';
 import { showSnackbar } from '../../../components/snackbar.ts';
 import { saveSession } from '../../../api/login-session.ts';
 import type { User } from 'firebase/auth';
+import { closeDialog } from '../../../router/dialog-router.ts';
 
 export const AUTH_FORM_ID = 'auth-dialog-form';
 const INVALID_INPUT_CLASS = 'auth-dialog__input--invalid';
@@ -173,7 +174,8 @@ async function runAuthFlow(
 
     saveSession(user);
     setDialogLocked(false);
-    hideDialog();
+    // hideDialog();
+    closeDialog();
     showSnackbar({
       message: state.mode === 'login' ? 'Login successful!' : 'Account created successfully!',
       variant: 'success',

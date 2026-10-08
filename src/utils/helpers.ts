@@ -61,14 +61,13 @@ export function createImageWithFallback({
 }
 
 export function getAvatarLetters(nickname: string): string {
-  const upperLetters = nickname.match(/[A-Z]/g) || [];
+  const words = nickname.trim().split(/\s+/).filter(Boolean).slice(0, 2);
+  const initials = words
+    .map((word) => word.match(/[\p{L}\p{N}]/u)?.[0] ?? '')
+    .join('')
+    .toUpperCase();
 
-  if (upperLetters.length >= 2) {
-    return upperLetters.slice(0, 2).join('').toUpperCase();
-  }
-
-  const firstTwo = nickname.slice(0, 2);
-  return firstTwo.toUpperCase();
+  return initials;
 }
 
 const COUNT_FORMATTER = new Intl.NumberFormat('en-US', {

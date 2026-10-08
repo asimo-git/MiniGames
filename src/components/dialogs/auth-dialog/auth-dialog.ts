@@ -7,7 +7,7 @@ import {
   type FieldConfig,
   SUBMIT_LABELS,
 } from '../../../data/auth-fields-config.ts.ts';
-import { hideDialog, showDialog } from '../dialog-backdrop.ts';
+import { showDialog } from '../dialog-backdrop.ts';
 import type { AuthMode } from '../../../router/router.ts';
 import { dialogState, switchDialog } from '../../../router/dialog-router.ts';
 import {
@@ -325,6 +325,6 @@ export function openAuthDialog(mode: AuthMode = 'login'): void {
   showDialog(content, { ariaLabel: 'Log in' });
 }
 
-export function closeAuthDialog(): void {
-  hideDialog();
-}
+// export function closeAuthDialog(): void {
+//   hideDialog();
+// }

@@ -276,8 +276,8 @@ function createCommentLikes(comment: GameComment, session: AppSession | undefine
     if (isPending) return;
 
     if (!session) {
-      showSnackbar({ variant: 'warning', message: 'Log in to like comments' });
       openDialog({ auth: 'login' });
+      showSnackbar({ variant: 'warning', message: 'Log in to like comments' });
       return;
     }
 

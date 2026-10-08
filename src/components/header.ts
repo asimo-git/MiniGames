@@ -1,5 +1,5 @@
 import { ICONS } from '../utils/icons';
-import { createElement } from '../utils/helpers';
+import { createElement, getAvatarLetters } from '../utils/helpers';
 import { createBurgerMenu } from './burger-menu';
 import { createLogoLink } from './logo-link';
 import { createAuthButtons } from './auth-buttons';
@@ -30,20 +30,6 @@ function createNavLinks(): HTMLElement {
   return nav;
 }
 
-// function createButtons(): HTMLElement {
-//   const wrapper = createElement('div', { className: 'header__buttons' });
-//   const { menu, open } = createBurgerMenu();
-
-//   const burgerButton = createElement('button', {
-//     className: 'header__button header__button--burger',
-//     attributes: { type: 'button', 'aria-label': 'Open menu' },
-//   });
-//   burgerButton.innerHTML = ICONS.burger;
-//   burgerButton.addEventListener('click', () => open());
-
-//   wrapper.append(createAuthButtons('header__button'), burgerButton, menu);
-//   return wrapper;
-// }
 function createButtons(): HTMLElement {
   const wrapper = createElement('div', { className: 'header__buttons' });
   const { menu, open } = createBurgerMenu();
@@ -80,11 +66,7 @@ function createProfileContent(session: AppSession): HTMLElement[] {
 
 function renderAvatar(avatar: HTMLElement, avatarUrl: string | undefined, name: string): void {
   const showInitialsFallback = (): void => {
-    const words = name.trim().split(/\s+/).filter(Boolean).slice(0, 2);
-    const initials = words
-      .map((word) => word.match(/[\p{L}\p{N}]/u)?.[0] ?? '')
-      .join('')
-      .toUpperCase();
+    const initials = getAvatarLetters(name);
 
     if (initials) {
       avatar.replaceChildren();

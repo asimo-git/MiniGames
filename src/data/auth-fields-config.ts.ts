@@ -61,7 +61,7 @@ export const REGISTER_FIELDS: FieldConfig[] = [
     key: 'password',
     label: 'Password',
     icon: 'lock',
-    placeholder: 'Min. 8 characters',
+    placeholder: 'Min. 6 characters',
     type: 'password',
     showVisibilityToggle: true,
   },

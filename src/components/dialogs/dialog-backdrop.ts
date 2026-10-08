@@ -9,6 +9,7 @@ const LOCKED_ATTRIBUTE = 'data-locked';
 
 const dialogElementStore = (() => {
   let element: HTMLDialogElement | undefined;
+  let isClosed = false;
 
   function createDialogElement(): HTMLDialogElement {
     const dialog = createElement('dialog', { className: 'dialog-backdrop' });
@@ -48,6 +49,12 @@ const dialogElementStore = (() => {
     peek(): HTMLDialogElement | undefined {
       return element;
     },
+    isClosing(): boolean {
+      return isClosed;
+    },
+    setClosing(shouldClose: boolean): void {
+      isClosed = shouldClose;
+    },
   };
 })();
 
@@ -77,6 +84,8 @@ export function isDialogLocked(): boolean {
 export function showDialog(content: HTMLElement, { ariaLabel }: ShowDialogOptions): void {
   const element = dialogElementStore.get();
 
+  dialogElementStore.setClosing(false);
+
   element.replaceChildren(content);
   element.setAttribute('aria-label', ariaLabel);
 
@@ -96,6 +105,8 @@ export function hideDialog(): void {
     return;
   }
 
+  dialogElementStore.setClosing(true);
+
   element.classList.remove('dialog-backdrop--visible');
 
   element.addEventListener(
@@ -111,7 +122,6 @@ export function hideDialog(): void {
 
 export function getTopLayerHost(): HTMLElement {
   const dialog = dialogElementStore.peek();
-  const isClosing = !dialog?.classList.contains('dialog-backdrop--visible');
 
-  return !isClosing && dialog?.open ? dialog : document.body;
+  return !dialogElementStore.isClosing() && dialog?.open ? dialog : document.body;
 }

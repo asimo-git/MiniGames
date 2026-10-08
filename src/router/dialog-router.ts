@@ -42,8 +42,8 @@ function syncDialog(): void {
   const target = getDialogTarget(route);
 
   if (target.kind === 'auth' && getActiveSession()) {
-    showSnackbar({ variant: 'info', message: 'You are already logged in' });
     updateQuery({ auth: undefined }, { replace: true });
+    showSnackbar({ variant: 'info', message: 'You are already logged in' });
     return;
   }
 

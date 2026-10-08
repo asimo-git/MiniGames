@@ -1,5 +1,5 @@
-import { signOut, type User } from 'firebase/auth';
-import { auth } from './firebase';
+import { type User } from 'firebase/auth';
+import { signOutUser } from './firebase';
 import { showSnackbar } from '../components/snackbar.ts';
 
 export const SESSION_KEY = `minigames:${import.meta.env.VITE_FIREBASE_APP_ID}:app-session`;
@@ -58,7 +58,7 @@ export async function endSession(isSilent: boolean = true): Promise<void> {
   globalThis.dispatchEvent(new Event(SESSION_CHANGED_EVENT));
 
   try {
-    await signOut(auth);
+    await signOutUser();
     if (!isSilent) showSnackbar({ message: 'You have been logged out.', variant: 'success' });
   } catch {
     showSnackbar({ message: 'Problems occurred during logout.', variant: 'error' });

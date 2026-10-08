@@ -182,8 +182,8 @@ function createActions(game: GameDetails, slug: string): HTMLElement {
     const session = getActiveSession();
 
     if (!session) {
-      showSnackbar({ variant: 'warning', message: 'Log in to add games to favorites' });
       openDialog({ auth: 'login' });
+      showSnackbar({ variant: 'warning', message: 'Log in to add games to favorites' });
       return;
     }
 
