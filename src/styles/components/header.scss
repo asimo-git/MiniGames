@@ -116,4 +116,48 @@ $nav-bar-width: 409px;
       display: inline-flex;
     }
   }
+
+  // user-profile
+
+  &__user {
+    @include styles.flex($gap: styles.$size-1);
+
+    &:empty {
+      display: none;
+    }
+
+    @media (max-width: styles.$breakpoint-laptop) {
+      display: none;
+    }
+  }
+
+  &__user-name {
+    font-family: styles.$font-family-primary;
+    font-weight: styles.$font-weight-bold;
+    color: styles.$color-on-primary;
+    white-space: nowrap;
+
+    @media (max-width: styles.$breakpoint-mobile) {
+      display: none;
+    }
+  }
+
+  &__avatar {
+    @include styles.flex($justify: center);
+    flex-shrink: 0;
+    width: styles.$size-4;
+    height: styles.$size-4;
+    border-radius: styles.$radius-full;
+    background-color: styles.$color-on-primary;
+    color: styles.$color-white;
+    font-family: styles.$font-family-primary;
+    font-weight: styles.$font-weight-bold;
+    font-size: styles.$font-size-body-small;
+    overflow: hidden;
+
+    svg {
+      width: styles.$size-2-5;
+      height: styles.$size-2-5;
+    }
+  }
 }

@@ -2,7 +2,6 @@ import { ICONS } from '../utils/icons';
 import { createElement } from '../utils/helpers';
 import { createLogoLink } from './logo-link';
 import { createAuthButtons } from './auth-buttons';
-// import { getCurrentPath, handleLinkClick, routes, type RoutePath } from '../router/router';
 import { createNavLinksComponent } from './nav-links-component';
 
 const OPEN_CLASS = 'header__mobile-menu--open';

@@ -18,7 +18,6 @@ export const SORT_OPTIONS: SortOption[] = [
   { value: 'name-desc', label: 'Name Z→A' },
 ];
 
-// Неизвестное или отсутствующее значение из URL заменяется сортировкой по умолчанию
 export function findSortOption(value: string | undefined): SortOption {
   return SORT_OPTIONS.find((option) => option.value === value) ?? DEFAULT_SORT_OPTION;
 }

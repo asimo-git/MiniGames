@@ -1,21 +1,32 @@
-import { createElement } from '../../utils/helpers';
-import eyeIcon from '../../assets/icons/auth/visibility.svg';
-import googleIcon from '../../assets/icons/google.svg';
+import { createElement } from '../../../utils/helpers.ts';
+import googleIcon from '../../../assets/icons/google.svg';
 import {
   ICONS,
   REGISTER_FIELDS,
   LOGIN_FIELDS,
   type FieldConfig,
-} from '../../data/auth-fields-config.ts';
-import { hideDialog, showDialog } from './dialog-backdrop.ts';
-import type { AuthMode } from '../../router/router.ts';
-import { dialogState, switchDialog } from '../../router/dialog-router.ts';
+  SUBMIT_LABELS,
+} from '../../../data/auth-fields-config.ts';
+import { showDialog } from '../dialog-backdrop.ts';
+import type { AuthMode } from '../../../router/router.ts';
+import { dialogState, switchDialog } from '../../../router/dialog-router.ts';
+import {
+  AUTH_FORM_ID,
+  createAuthFormState,
+  handleFieldUpdate,
+  handleFormSubmit,
+  handleGoogleSignIn,
+  refreshSubmitButton,
+  type AuthFormState,
+} from './auth-form-controller.ts';
 
 function buildTabClassName(isActive: boolean): string {
   return isActive ? `auth-dialog__tab auth-dialog__tab--active` : `auth-dialog__tab`;
 }
 
-function createField(config: FieldConfig): HTMLElement {
+function createField(config: FieldConfig, state: AuthFormState): HTMLElement {
+  const errorId = `${AUTH_FORM_ID}-${config.key}-error`;
+
   const label = createElement('label', {
     className: 'auth-dialog__label',
     textContent: config.label,
@@ -36,27 +47,26 @@ function createField(config: FieldConfig): HTMLElement {
       type: config.type,
       placeholder: config.placeholder,
       name: config.key,
+      'aria-describedby': errorId,
     },
   });
+
+  const errorElement = createElement('p', {
+    className: 'auth-dialog__error',
+    attributes: {
+      id: errorId,
+      'aria-live': 'polite',
+      hidden: '',
+    },
+  });
+
+  state.fields.set(config.key, { input, errorElement, touched: false });
+  input.addEventListener('input', () => handleFieldUpdate(state, config.key));
 
   const wrapperChildren: HTMLElement[] = [icon, input];
 
   if (config.showVisibilityToggle) {
-    const visibilityIcon = createElement('span', {
-      className: 'auth-dialog__visibility-toggle',
-      children: [
-        createElement('img', {
-          className: 'auth-dialog__visibility-icon',
-          attributes: {
-            src: eyeIcon,
-            alt: '',
-            'aria-hidden': 'true',
-          },
-        }),
-      ],
-    });
-
-    wrapperChildren.push(visibilityIcon);
+    wrapperChildren.push(createPasswordVisibilityToggle(input));
   }
 
   const inputWrapper = createElement('div', {
@@ -66,8 +76,30 @@ function createField(config: FieldConfig): HTMLElement {
 
   return createElement('div', {
     className: 'auth-dialog__field',
-    children: [label, inputWrapper],
+    children: [label, inputWrapper, errorElement],
   });
+}
+
+function createPasswordVisibilityToggle(input: HTMLInputElement): HTMLButtonElement {
+  const toggle = createElement('button', {
+    className: 'auth-dialog__visibility-toggle',
+    attributes: {
+      type: 'button',
+      'aria-label': 'Show password',
+      'aria-pressed': 'false',
+    },
+  });
+
+  toggle.addEventListener('click', () => {
+    const isHidden = input.type === 'password';
+
+    input.type = isHidden ? 'text' : 'password';
+    toggle.classList.toggle('auth-dialog__visibility-toggle--visible', isHidden);
+    toggle.setAttribute('aria-pressed', String(isHidden));
+    toggle.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+  });
+
+  return toggle;
 }
 
 function createTabs(mode: AuthMode, onSwitch: (nextMode: AuthMode) => void): HTMLElement {
@@ -112,11 +144,11 @@ function createHeader(mode: AuthMode): HTMLElement {
   });
 }
 
-function createForm(mode: AuthMode): HTMLElement {
-  const actualFields = mode === 'login' ? LOGIN_FIELDS : REGISTER_FIELDS;
-  const fields = actualFields.map((config) => createField(config));
+function createForm(state: AuthFormState): HTMLElement {
+  const actualFields = state.mode === 'login' ? LOGIN_FIELDS : REGISTER_FIELDS;
+  const fields = actualFields.map((config) => createField(config, state));
 
-  if (mode === 'login') {
+  if (state.mode === 'login') {
     fields.push(
       createElement('a', {
         className: 'auth-dialog__forgot-password-link',
@@ -126,10 +158,31 @@ function createForm(mode: AuthMode): HTMLElement {
     );
   }
 
-  return createElement('form', {
+  const formError = createElement('p', {
+    className: 'auth-dialog__error',
+    attributes: {
+      'aria-live': 'polite',
+      hidden: '',
+    },
+  });
+
+  state.formError = formError;
+  fields.push(formError);
+
+  const form = createElement('form', {
     className: `auth-dialog__form`,
+    attributes: {
+      id: AUTH_FORM_ID,
+      novalidate: '',
+    },
     children: fields,
   });
+
+  form.addEventListener('submit', (event) => {
+    handleFormSubmit(event, state);
+  });
+
+  return form;
 }
 
 function createDivider(): HTMLElement {
@@ -146,12 +199,14 @@ function createDivider(): HTMLElement {
   });
 }
 
-function createActions(mode: AuthMode): HTMLElement {
+function createActions(state: AuthFormState): HTMLElement {
   const cta = createElement('button', {
     className: `auth-dialog__action`,
-    textContent: mode === 'login' ? 'Login' : 'Create Account',
-    attributes: { type: 'submit' },
+    textContent: SUBMIT_LABELS[state.mode],
+    attributes: { type: 'submit', form: AUTH_FORM_ID, disabled: '' },
   });
+
+  state.submitButton = cta;
 
   const googleIconElement = createElement('img', {
     className: `auth-dialog__google-icon`,
@@ -163,13 +218,17 @@ function createActions(mode: AuthMode): HTMLElement {
   });
 
   const googleLabel = createElement('span', {
-    textContent: mode === 'login' ? 'Continue with Google' : 'Sign up with Google',
+    textContent: state.mode === 'login' ? 'Continue with Google' : 'Sign up with Google',
   });
 
   const googleButton = createElement('button', {
     className: `auth-dialog__google-button`,
     attributes: { type: 'button' },
     children: [googleIconElement, googleLabel],
+  });
+  state.googleButton = googleButton;
+  googleButton.addEventListener('click', () => {
+    void handleGoogleSignIn(state);
   });
 
   return createElement('div', {
@@ -199,7 +258,18 @@ function createFooter(mode: AuthMode, onSwitch: (nextMode: AuthMode) => void): H
 }
 
 function createPanelContent(mode: AuthMode, onSwitch: (nextMode: AuthMode) => void): HTMLElement[] {
-  return [createHeader(mode), createForm(mode), createActions(mode), createFooter(mode, onSwitch)];
+  const state = createAuthFormState(mode);
+
+  const content = [
+    createHeader(mode),
+    createForm(state),
+    createActions(state),
+    createFooter(mode, onSwitch),
+  ];
+
+  refreshSubmitButton(state);
+
+  return content;
 }
 
 function animatePanelSwap(
@@ -239,7 +309,7 @@ function createAuthDialogContent(initialMode: AuthMode): HTMLElement {
     tabsSlot.replaceChildren(createTabs(mode, switchMode));
     animatePanelSwap(panel, mode, switchMode);
 
-    dialogState.dialogKey = `auth=${nextMode}`; // помечаем как уже обработанное синхронизацией
+    dialogState.dialogKey = `auth=${nextMode}`;
     switchDialog({ auth: nextMode });
   }
 
@@ -253,8 +323,4 @@ export function openAuthDialog(mode: AuthMode = 'login'): void {
   const content = createAuthDialogContent(mode);
 
   showDialog(content, { ariaLabel: 'Log in' });
-}
-
-export function closeAuthDialog(): void {
-  hideDialog();
 }
