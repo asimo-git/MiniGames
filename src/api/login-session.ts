@@ -4,7 +4,7 @@ import { showSnackbar } from '../components/snackbar.ts';
 
 export const SESSION_KEY = `minigames:${import.meta.env.VITE_FIREBASE_APP_ID}:app-session`;
 
-const SESSION_LIFETIME_MS = 5 * 60 * 1000;
+export const SESSION_LIFETIME_MS = 5 * 60 * 1000;
 
 export const SESSION_CHANGED_EVENT = 'app-session-change';
 

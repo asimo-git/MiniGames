@@ -25,7 +25,7 @@ async function loadCategories(): Promise<Category[]> {
     const response = await makeRequest<ListResponse<Category>>('/api/categories');
     return response.data;
   } catch (error) {
-    cache.categories = undefined; // при ошибке не кэшируем, иначе «Повторить» вернёт ту же ошибку
+    cache.categories = undefined;
     throw error;
   }
 }
@@ -59,7 +59,7 @@ export const api = {
     parameters: GamesListParameters = {},
     signal?: AbortSignal,
   ): Promise<ListResponse<GameSummary, GamesListMeta>> => {
-    const categories = await api.getCategories(); // после первого раза берётся из кэша
+    const categories = await api.getCategories();
 
     return makeRequest<ListResponse<GameSummary, GamesListMeta>>('/api/games', {
       query: {

@@ -36,7 +36,7 @@ export interface GamesListParameters {
   sort?: GamesSort;
 }
 
-export const FREE_PRICE_LABEL = 'Free';
+export const FREE_PRICE_LABEL = 'free';
 
 export interface GameSummary {
   slug: string;
