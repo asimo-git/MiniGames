@@ -19,7 +19,6 @@ describe('createFooter', () => {
     expect(footer.tagName).toBe('FOOTER');
     expect(mocks.createLogoLink).toHaveBeenCalledWith('light');
 
-    // верхняя часть
     expect(footer.querySelector('.footer__description')?.textContent).toContain('mini-games');
     const titles = [...footer.querySelectorAll('.footer__column-title')].map((t) => t.textContent);
     expect(titles).toEqual(['Explore', 'Company', 'Community']);
@@ -37,7 +36,6 @@ describe('createFooter', () => {
     expect(socials.map((a) => a.getAttribute('aria-label'))).toEqual(['Share', 'Chat', 'RSS feed']);
     expect(footer.querySelectorAll('img.footer__social-icon')).toHaveLength(3);
 
-    // нижняя часть
     const bottom = footer.querySelector('.footer__bottom');
     expect(bottom?.querySelector('p')?.textContent).toBe('© 2026 MiniGames. All rights reserved.');
     expect(bottom?.querySelector('.footer__designed-with-love')?.textContent).toBe(

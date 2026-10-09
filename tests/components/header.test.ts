@@ -15,7 +15,7 @@ vi.mock('../../src/api/login-session', () => ({
   SESSION_CHANGED_EVENT: 'session-changed',
 }));
 vi.mock('../../src/utils/icons', () => ({ ICONS: { burger: '<svg id="burger"></svg>' } }));
-// настоящий createElement нужен, подменяем только getAvatarLetters
+
 vi.mock('../../src/utils/helpers', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../../src/utils/helpers')>()),
   getAvatarLetters: mocks.getAvatarLetters,

@@ -80,7 +80,7 @@ describe('createCarouselSlider', () => {
     expect(mocks.setCardVariant).toHaveBeenNthCalledWith(2, cards[4], 'main');
     expect(track.style.getPropertyValue('--shift')).toBe('1');
 
-    moveSlide(1); // анимация ещё идёт: вызов игнорируется
+    moveSlide(1);
     expect(mocks.setCardVariant).toHaveBeenCalledTimes(2);
 
     vi.advanceTimersByTime(700);
@@ -91,7 +91,7 @@ describe('createCarouselSlider', () => {
     expect(viewport.classList.contains('carousel__viewport--static')).toBe(false);
     expect(track.style.getPropertyValue('--shift')).toBe('0');
 
-    moveSlide(1); // после завершения можно двигаться снова
+    moveSlide(1);
     expect(mocks.setCardVariant).toHaveBeenCalledTimes(4);
   });
 

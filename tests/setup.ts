@@ -1,4 +1,3 @@
-// tests/setup.ts
 import { vi } from 'vitest';
 
 if (!globalThis.matchMedia) {

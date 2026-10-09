@@ -100,17 +100,6 @@ describe('createImageWithFallback', () => {
     expect(image.alt).toBe('');
     expect(image.getAttribute('aria-hidden')).toBe('true');
   });
-
-  // it('does not loop by re-triggering the fallback (listener is { once: true })', () => {
-  //   const image = createImageWithFallback({ src: '/broken.png', alt: 'Broken image' });
-
-  //   image.dispatchEvent(new Event('error'));
-  //   const srcAfterFirstError = image.src;
-
-  //   image.dispatchEvent(new Event('error'));
-
-  //   expect(image.src).toBe(srcAfterFirstError);
-  // });
 });
 
 describe('getAvatarLetters', () => {

@@ -53,7 +53,7 @@ describe('showSnackbar', () => {
 
     vi.advanceTimersByTime(1);
     expect(element.classList.contains('snackbar--visible')).toBe(false);
-    expect(element.isConnected).toBe(true); // ждёт анимацию выхода
+    expect(element.isConnected).toBe(true);
 
     vi.advanceTimersByTime(200);
     expect(element.isConnected).toBe(false);
@@ -71,7 +71,7 @@ describe('showSnackbar', () => {
     expect(snackbars()[0].querySelector('.snackbar__icon')?.textContent).toBe('✕');
     expect(snackbars()[0].querySelector('.snackbar__message')?.textContent).toBe('Oops (3)');
 
-    vi.advanceTimersByTime(2999); // без перезапуска таймера снэкбар уже исчез бы
+    vi.advanceTimersByTime(2999);
     expect(snackbars()[0].classList.contains('snackbar--visible')).toBe(true);
 
     vi.advanceTimersByTime(1 + 200);
@@ -109,7 +109,7 @@ describe('showSnackbar', () => {
     vi.advanceTimersByTime(200);
     expect(element.isConnected).toBe(false);
 
-    showSnackbar({ message: 'Bye' }); // тот же ключ после закрытия: новый снэкбар
+    showSnackbar({ message: 'Bye' });
     expect(snackbars()).toHaveLength(1);
   });
 

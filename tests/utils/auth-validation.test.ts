@@ -51,7 +51,7 @@ describe('validateUsername', () => {
   });
 
   it('rejects a username longer than the maximum length', () => {
-    const tooLong = `A${'b'.repeat(30)}`; // 31 chars
+    const tooLong = `A${'b'.repeat(30)}`;
     expect(validateUsername(tooLong)).toBe('Username must be 2–30 characters long');
   });
 
@@ -78,7 +78,7 @@ describe('validateUsername', () => {
   });
 
   it('accepts a username at the maximum boundary length', () => {
-    const exactlyMax = `A${'b'.repeat(29)}`; // 30 chars total
+    const exactlyMax = `A${'b'.repeat(29)}`;
     expect(exactlyMax).toHaveLength(30);
     expect(validateUsername(exactlyMax)).toBeUndefined();
   });
