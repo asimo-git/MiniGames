@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { beforeEach, vi } from 'vitest';
 
 if (!globalThis.matchMedia) {
   globalThis.matchMedia = vi.fn().mockImplementation((query: string) => ({
@@ -21,3 +21,12 @@ if (!globalThis.IntersectionObserver) {
     constructor(_callback: IntersectionObserverCallback) {}
   } as unknown as typeof IntersectionObserver;
 }
+
+beforeEach(() => {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(() => {
+      throw new Error('Real network call in a unit test: mock fetch or the API layer');
+    }),
+  );
+});
