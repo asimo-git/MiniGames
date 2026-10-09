@@ -73,14 +73,6 @@ function createFooter(game: GameSummary): HTMLElement {
 
   return createElement('div', {
     className: 'game-card__footer',
-    children: [
-      createStatsBadges(game.rating, game.likesCount),
-      // createElement('a', {
-      //   className: 'game-card__button',
-      //   textContent: 'Details',
-      //   attributes: { href: `/games/${game.slug}`, 'aria-label': `Details of ${game.name}` },
-      // }),
-      detailsButton,
-    ],
+    children: [createStatsBadges(game.rating, game.likesCount), detailsButton],
   });
 }
